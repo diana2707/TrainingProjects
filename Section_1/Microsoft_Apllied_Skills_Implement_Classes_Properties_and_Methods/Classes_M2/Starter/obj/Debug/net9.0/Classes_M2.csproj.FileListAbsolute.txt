@@ -1,0 +1,14 @@
+C:\Users\druican\Projects\Microsoft_Apllied_Skills\Classes_M2\Starter\bin\Debug\net9.0\Classes_M2.exe
+C:\Users\druican\Projects\Microsoft_Apllied_Skills\Classes_M2\Starter\bin\Debug\net9.0\Classes_M2.deps.json
+C:\Users\druican\Projects\Microsoft_Apllied_Skills\Classes_M2\Starter\bin\Debug\net9.0\Classes_M2.runtimeconfig.json
+C:\Users\druican\Projects\Microsoft_Apllied_Skills\Classes_M2\Starter\bin\Debug\net9.0\Classes_M2.dll
+C:\Users\druican\Projects\Microsoft_Apllied_Skills\Classes_M2\Starter\bin\Debug\net9.0\Classes_M2.pdb
+C:\Users\druican\Projects\Microsoft_Apllied_Skills\Classes_M2\Starter\obj\Debug\net9.0\Classes_M2.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\druican\Projects\Microsoft_Apllied_Skills\Classes_M2\Starter\obj\Debug\net9.0\Classes_M2.AssemblyInfoInputs.cache
+C:\Users\druican\Projects\Microsoft_Apllied_Skills\Classes_M2\Starter\obj\Debug\net9.0\Classes_M2.AssemblyInfo.cs
+C:\Users\druican\Projects\Microsoft_Apllied_Skills\Classes_M2\Starter\obj\Debug\net9.0\Classes_M2.csproj.CoreCompileInputs.cache
+C:\Users\druican\Projects\Microsoft_Apllied_Skills\Classes_M2\Starter\obj\Debug\net9.0\Classes_M2.dll
+C:\Users\druican\Projects\Microsoft_Apllied_Skills\Classes_M2\Starter\obj\Debug\net9.0\refint\Classes_M2.dll
+C:\Users\druican\Projects\Microsoft_Apllied_Skills\Classes_M2\Starter\obj\Debug\net9.0\Classes_M2.pdb
+C:\Users\druican\Projects\Microsoft_Apllied_Skills\Classes_M2\Starter\obj\Debug\net9.0\Classes_M2.genruntimeconfig.cache
+C:\Users\druican\Projects\Microsoft_Apllied_Skills\Classes_M2\Starter\obj\Debug\net9.0\ref\Classes_M2.dll

@@ -1,0 +1,14 @@
+C:\Users\druican\Projects\CSharp_Basics_For_Absolute_Beginners\bin\Debug\net9.0\CSharp_Basics_For_Absolute_Beginners.exe
+C:\Users\druican\Projects\CSharp_Basics_For_Absolute_Beginners\bin\Debug\net9.0\CSharp_Basics_For_Absolute_Beginners.deps.json
+C:\Users\druican\Projects\CSharp_Basics_For_Absolute_Beginners\bin\Debug\net9.0\CSharp_Basics_For_Absolute_Beginners.runtimeconfig.json
+C:\Users\druican\Projects\CSharp_Basics_For_Absolute_Beginners\bin\Debug\net9.0\CSharp_Basics_For_Absolute_Beginners.dll
+C:\Users\druican\Projects\CSharp_Basics_For_Absolute_Beginners\bin\Debug\net9.0\CSharp_Basics_For_Absolute_Beginners.pdb
+C:\Users\druican\Projects\CSharp_Basics_For_Absolute_Beginners\obj\Debug\net9.0\CSharp_Basics_For_Absolute_Beginners.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\druican\Projects\CSharp_Basics_For_Absolute_Beginners\obj\Debug\net9.0\CSharp_Basics_For_Absolute_Beginners.AssemblyInfoInputs.cache
+C:\Users\druican\Projects\CSharp_Basics_For_Absolute_Beginners\obj\Debug\net9.0\CSharp_Basics_For_Absolute_Beginners.AssemblyInfo.cs
+C:\Users\druican\Projects\CSharp_Basics_For_Absolute_Beginners\obj\Debug\net9.0\CSharp_Basics_For_Absolute_Beginners.csproj.CoreCompileInputs.cache
+C:\Users\druican\Projects\CSharp_Basics_For_Absolute_Beginners\obj\Debug\net9.0\CSharp_Basics_For_Absolute_Beginners.dll
+C:\Users\druican\Projects\CSharp_Basics_For_Absolute_Beginners\obj\Debug\net9.0\refint\CSharp_Basics_For_Absolute_Beginners.dll
+C:\Users\druican\Projects\CSharp_Basics_For_Absolute_Beginners\obj\Debug\net9.0\CSharp_Basics_For_Absolute_Beginners.pdb
+C:\Users\druican\Projects\CSharp_Basics_For_Absolute_Beginners\obj\Debug\net9.0\CSharp_Basics_For_Absolute_Beginners.genruntimeconfig.cache
+C:\Users\druican\Projects\CSharp_Basics_For_Absolute_Beginners\obj\Debug\net9.0\ref\CSharp_Basics_For_Absolute_Beginners.dll
