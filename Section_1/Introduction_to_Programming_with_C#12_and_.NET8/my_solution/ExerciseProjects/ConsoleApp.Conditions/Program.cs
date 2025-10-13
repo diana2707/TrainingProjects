@@ -1,7 +1,7 @@
 ﻿
 // Prompt for input
 Console.WriteLine("Please enter Student's grade: ");
-int grade = Convert.ToInt32(Console.ReadLine());
+int grade = Convert.ToInt32(Console.ReadLine()); // variable with global scope
 
 // Simple If-else condition
 Console.WriteLine();
