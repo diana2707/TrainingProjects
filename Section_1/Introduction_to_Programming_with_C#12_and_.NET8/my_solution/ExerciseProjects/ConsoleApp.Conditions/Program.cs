@@ -66,3 +66,45 @@ Console.WriteLine($"You have {passStatus}ed the exam.");
 Console.WriteLine();
 Console.WriteLine("---------- End Ternary operator ----------");
 Console.WriteLine();
+
+// Switch statement
+Console.WriteLine();
+Console.WriteLine("---------- Switch statements ----------");
+Console.WriteLine();
+
+// Accept an integer as the day of the week and print the appropriate day
+
+Console.WriteLine("Please enter a number between 1 and 7 to get the corresponding day of the week: ");
+int dayOfWeek = Convert.ToInt32(Console.ReadLine());
+
+switch (dayOfWeek)
+{
+    case 1:
+        Console.WriteLine("Monday");
+        break;
+    case 2:
+        Console.WriteLine("Tuesday");
+        break;
+    case 3:
+        Console.WriteLine("Wednesday");
+        break;
+    case 4:
+        Console.WriteLine("Thursday");
+        break;
+    case 5:
+        Console.WriteLine("Friday");
+        break;
+    case 6:
+        Console.WriteLine("Saturday");
+        break;
+    case 7:
+        Console.WriteLine("Sunday");
+        break;
+    default:
+        Console.WriteLine("Enter a valid day of the week.");
+        break;
+}
+
+Console.WriteLine();
+Console.WriteLine("---------- End Switch statements ----------");
+Console.WriteLine();
