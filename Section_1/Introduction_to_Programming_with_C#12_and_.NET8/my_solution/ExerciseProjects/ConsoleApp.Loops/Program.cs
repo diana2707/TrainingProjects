@@ -57,4 +57,25 @@ Console.WriteLine();
 Console.WriteLine("---------- While  Loop End ----------");
 Console.WriteLine();
 
+// Do While loop
+Console.WriteLine();
+Console.WriteLine("---------- Do While Loop ----------");
+Console.WriteLine();
+
+Console.WriteLine("Enter numbers to sum them up. Enter -1 to exit.");
+sum = 0;
+num = -1;
+
+do
+{
+    num = Convert.ToInt32(Console.ReadLine());
+    sum = num == -1 ? sum : sum + num;
+} while (num != -1);
+
+Console.WriteLine($"The total sum is: {sum}");
+
+Console.WriteLine();
+Console.WriteLine("---------- Do While  Loop End ----------");
+Console.WriteLine();
+
 
