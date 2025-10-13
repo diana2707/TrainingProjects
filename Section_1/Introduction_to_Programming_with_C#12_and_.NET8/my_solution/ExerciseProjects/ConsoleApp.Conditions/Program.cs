@@ -54,3 +54,15 @@ else if (grade >= 85 && grade <= 100)
 Console.WriteLine();
 Console.WriteLine("---------- End COmplex If-Else if Condition ----------");
 Console.WriteLine();
+
+// Ternary operator
+Console.WriteLine();
+Console.WriteLine("---------- Ternary operator ----------");
+Console.WriteLine();
+
+string passStatus = grade < 50 ? "Fail" : "Pass";
+Console.WriteLine($"You have {passStatus}ed the exam.");
+
+Console.WriteLine();
+Console.WriteLine("---------- End Ternary operator ----------");
+Console.WriteLine();
