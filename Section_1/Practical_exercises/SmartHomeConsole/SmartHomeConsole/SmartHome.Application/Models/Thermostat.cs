@@ -8,5 +8,10 @@ namespace SmartHome.Application.Models
 {
     public class Thermostat : SmartDevice
     {
+        public override bool SelfTest()
+        {
+            Console.WriteLine("Performing self-test for Thermostat...");
+            return true;
+        }
     }
 }

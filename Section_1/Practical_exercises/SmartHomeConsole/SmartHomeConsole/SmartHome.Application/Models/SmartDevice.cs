@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Application.Models
 {
-    public abstract class SmartDevice : IPowerSwitch
+    public abstract class SmartDevice : IPowerSwitch, ISelfTest
     {
         public Guid Id { get; private set; }
         public string Name { get; set; }
@@ -29,5 +29,7 @@ namespace SmartHome.Application.Models
         {
             Console.WriteLine("Device is powered off.");
         }
+
+        public abstract bool SelfTest();
     }
 }
