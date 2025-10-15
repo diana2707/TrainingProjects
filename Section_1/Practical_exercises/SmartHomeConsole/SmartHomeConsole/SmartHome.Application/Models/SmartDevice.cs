@@ -25,12 +25,14 @@ namespace SmartHome.Application.Models
         public void PowerOn()
         {
             GetStatus = "On";
+            IsOn = true;
             Console.WriteLine("Device is powered on.");
         }
 
         public void PowerOff()
         {
             GetStatus = "Off";
+            IsOn = false;
             Console.WriteLine("Device is powered off.");
         }
 

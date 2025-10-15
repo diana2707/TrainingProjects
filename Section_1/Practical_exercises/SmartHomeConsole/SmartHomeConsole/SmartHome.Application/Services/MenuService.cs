@@ -66,7 +66,7 @@ namespace SmartHome.Application.Services
                         ManageRemovingDevices();
                         break;
                     case 4:
-
+                        ManageTogglePower();
                         break;
                     case 5:
 
@@ -81,6 +81,63 @@ namespace SmartHome.Application.Services
                 }
             }
            
+        }
+
+        private void ManageTogglePower()
+        {
+            Console.WriteLine("Choose device id to toggle power state: ");
+            PrintDeviceList();
+
+            int deviceId = 0;
+
+            if (int.TryParse(Console.ReadLine(), out int value))
+            {
+                deviceId = value;
+            }
+            else
+            {
+                Console.WriteLine("Invalid input. Please select a valid device id.");
+                return;
+            }
+
+            SmartDevice deviceToPowerToggle = _deviceRegistry.GetById(deviceId);
+
+            Console.WriteLine($"Device {deviceToPowerToggle.Name} (Id: {deviceToPowerToggle.Id}) is {deviceToPowerToggle.GetStatus}.");
+            Console.WriteLine($"Do you want to turn it {(deviceToPowerToggle.IsOn ? "off" : "on")}? (y/n): ");
+
+            bool inputValidated = false;
+            string? input = string.Empty;
+
+            while (true)
+            {
+                input = Console.ReadLine();
+
+                if (input?.ToLower() == "y" || input?.ToLower() == "n")
+                {
+                    break;
+                }
+
+                Console.WriteLine("Invalid input. Please enter 'y' or 'n'.");
+            }
+
+           
+            if (input?.ToLower() == "y")
+            {
+                if (deviceToPowerToggle.IsOn)
+                {
+                    deviceToPowerToggle.PowerOff();
+                }
+                else
+                {
+                    deviceToPowerToggle.PowerOn();
+                }
+            }
+            else
+            {
+                Console.WriteLine("No changes made to the device power state.");
+            }
+            
+
         }
 
         private void ManageListingDevices()
@@ -132,6 +189,7 @@ namespace SmartHome.Application.Services
             _deviceRegistry.Remove(deviceToRemove);
         }
 
+        // rename method more clearly
         private void PrintDeviceList()
         {
             if (_deviceRegistry.Devices.Count == 0)
