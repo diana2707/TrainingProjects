@@ -7,12 +7,7 @@ int operation = 0;
 while (operation != -1)
 {
     try {
-        Console.WriteLine("Please select an operation (-1 to exit):");
-        Console.WriteLine("Addition (1)");
-        Console.WriteLine("Subtraction (2)");
-        Console.WriteLine("Multiplication (3)");
-        Console.WriteLine("Division (4)");
-        Console.WriteLine("Accumulator (5)");
+        PrintMenu();
 
         operation = Convert.ToInt32(Console.ReadLine());
       
@@ -35,22 +30,19 @@ while (operation != -1)
         switch (operation)
         {
             case 1:
-                result = num1 + num2;
+                result = AddNumbers(num1, num2);
                 break;
             case 2:
-                result = num1 - num2;
+                result = SubtractNumbers(num1, num2);
                 break;
             case 3:
-                result = num1 * num2;
+                result = MultiplyNumbers(num1, num2);
                 break;
             case 4:
-                result = num1 / num2;
+                result = DivideNumbers(num1, num2);
                 break;
             case 5:
-                for (int i = num1; i < num2; i++)
-                {
-                    result += i;
-                }
+                result = Fibonacci(num1, num2);
                 break;
             default:
                 throw new Exception("Invalid operation selected.");
@@ -76,3 +68,44 @@ while (operation != -1)
     
 }
 
+int DivideNumbers(int num1, int num2)
+{
+    return num1 / num2;
+}
+
+int MultiplyNumbers(int num1, int num2)
+{
+    return num1 * num2;
+}
+
+int SubtractNumbers(int num1, int num2)
+{
+    return num1 - num2;
+}
+
+int AddNumbers(int num1, int num2)
+{
+    return num1 + num2;
+}
+
+int Fibonacci(int num1, int num2)
+{
+    var result = 0;
+    for (int i = num1; i < num2; i++)
+    {
+        result += i;
+    }
+
+    return result;
+}
+
+void PrintMenu()
+{
+    Console.Clear();
+    Console.WriteLine("Please select an operation (-1 to exit):");
+    Console.WriteLine("Addition (1)");
+    Console.WriteLine("Subtraction (2)");
+    Console.WriteLine("Multiplication (3)");
+    Console.WriteLine("Division (4)");
+    Console.WriteLine("Accumulator (5)");
+}
