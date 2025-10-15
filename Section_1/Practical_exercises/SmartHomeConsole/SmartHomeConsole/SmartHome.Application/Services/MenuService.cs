@@ -1,4 +1,5 @@
-﻿using SmartHome.Application.Models;
+﻿using Microsoft.VisualBasic.FileIO;
+using SmartHome.Application.Models;
 using SmartHome.Application.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -34,24 +35,8 @@ namespace SmartHome.Application.Services
                 Console.WriteLine("6. Self-test all");
                 Console.WriteLine("7. Exit");
                 Console.WriteLine();
-                
-                bool isValidInput = false;
 
-                while (true)
-                {
-                    Console.Write("Select an option: ");
-                    string? input = Console.ReadLine();
-                    Console.WriteLine();
-
-                    if (int.TryParse(input, out int value) && value >= 1 && value <= 7)
-                    {
-                        option = value;
-                        break;
-                    }
-
-                    Console.WriteLine("Invalid input. Please select a number between 1 and 7.");
-                    Console.WriteLine();
-                }
+                option = GetValidMainMenuOption();
 
                 switch (option)
                 {
@@ -104,6 +89,29 @@ namespace SmartHome.Application.Services
                 Console.WriteLine(deviceDetails);
             }
         }
+
+        private void ManageAddingDevice()
+        {
+            string? deviceType = GetValidDeviceType();
+            string deviceName = GetDeviceName();
+
+            SmartDevice newDevice;
+
+            try
+            {
+                newDevice = _deviceFactory.CreateDevice(deviceType, deviceName);
+                _deviceRegistry.Add(newDevice);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return;
+            }
+            
+            DisplayDeviceAddedMessage(newDevice);
+        }
+
+        
 
         private void PressKeyToContinue()
         {
@@ -270,28 +278,7 @@ namespace SmartHome.Application.Services
 
         }
 
-        // separate the responsability
-        private void ManageAddingDevice()
-        {
-            Console.Write("Choose device type (Light bulb/Thermostat/Smart plug): ");
-            string? deviceType = Console.ReadLine();
-
-            Console.Write("Choose device name: ");
-            string? deviceName = Console.ReadLine();
-
-            SmartDevice newDevice;
-            try
-            {
-                newDevice = _deviceFactory.CreateDevice(deviceType, deviceName);
-            }
-            catch (ArgumentException ex)
-            {
-                Console.WriteLine(ex.Message);
-                return;
-            }
-
-            _deviceRegistry.Add(newDevice);
-        }
+        
 
         private void ManageRemovingDevices()
         {
@@ -311,6 +298,68 @@ namespace SmartHome.Application.Services
             
             SmartDevice deviceToRemove = _deviceRegistry.GetById(deviceId);
             _deviceRegistry.Remove(deviceToRemove);
+        }
+
+        private int GetValidMainMenuOption()
+        {
+            while (true)
+            {
+                Console.Write("Select an option: ");
+                string? input = Console.ReadLine();
+                Console.WriteLine();
+
+                if (int.TryParse(input, out int value) && value >= 1 && value <= 7)
+                {
+                    return value;
+                }
+
+                Console.WriteLine("Invalid input. Please select a number between 1 and 7.");
+                Console.WriteLine();
+            }
+        }
+
+        private string GetValidDeviceType()
+        {
+            while (true)
+            {
+                Console.Write("Choose device type (Light bulb/Thermostat/Smart plug): ");
+                string input = Console.ReadLine()?.ToLower();
+                Console.WriteLine();
+
+                if (input == "light bulb" || input == "thermostat" || input == "smart plug")
+                {
+                    return input;
+                }
+
+                Console.WriteLine("Invalid input.");
+                Console.WriteLine();
+            }
+        }
+
+        private string GetDeviceName()
+        {
+            Console.Write("Choose device name: ");
+            string? input = Console.ReadLine();
+            return string.IsNullOrWhiteSpace(input) ? "Unknown" : input;
+        }
+
+        private void DisplayDeviceAddedMessage(SmartDevice newDevice)
+        {
+            switch (newDevice)
+            {
+                case LightBulb lightBulb:
+                    Console.WriteLine($"Device {lightBulb.Name} ({lightBulb.GetDeviceType()}) is added: " +
+                        $"Power - {lightBulb.GetStatus}, Brightness - {lightBulb.Brightness}");
+                    break;
+                case Thermostat thermostat:
+                    Console.WriteLine($"Device {thermostat.Name} ({thermostat.GetDeviceType()}) is added: " +
+                        $"Power - {thermostat.GetStatus}, Target temperature - {thermostat.TargetCelsius}");
+                    break;
+                case SmartPlug smartPlug:
+                    Console.WriteLine($"Device {smartPlug.Name} ({smartPlug.GetDeviceType()}) is added: " +
+                        $"Power - {smartPlug.GetStatus}, Total Wh - {smartPlug.TotalWh}");
+                    break;
+            }
         }
     }
 }

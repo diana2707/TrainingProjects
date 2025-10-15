@@ -19,24 +19,10 @@ namespace SmartHome.Application.Services
         {
             if (devices.Contains(device))
             {
-                Console.WriteLine($"Device {device.Name} is already in the registry.");
-                return;
+                throw new InvalidOperationException($"Device {device.Name} is already in the registry.");
             }
 
             devices.Add(device);
-
-            switch (device)
-            {
-                case LightBulb lightBulb:
-                    Console.WriteLine($"Device {lightBulb.Name} ({lightBulb.GetDeviceType()}) is added: Power - {lightBulb.GetStatus}, Brightness - {lightBulb.Brightness}");
-                    break;
-                case Thermostat thermostat:
-                    Console.WriteLine($"Device {thermostat.Name} ({thermostat.GetDeviceType()}) is added: Power - {thermostat.GetStatus}, Target temperature - {thermostat.TargetCelsius}");
-                    break;
-                case SmartPlug smartPlug:
-                    Console.WriteLine($"Device {smartPlug.Name} ({smartPlug.GetDeviceType()}) is added: Power - {smartPlug.GetStatus}, Total Wh - {smartPlug.TotalWh}");
-                    break;
-            }
             
         }
 
@@ -50,35 +36,6 @@ namespace SmartHome.Application.Services
 
             Console.WriteLine($"Device {device.Name} not found in the registry.");
         }
-
-        //public void ListAll()
-        //{
-        //    if (devices.Count == 0)
-        //    {
-        //        Console.WriteLine("No devices registered.");
-        //        return;
-        //    }
-
-        //    foreach (var device in devices)
-        //    {
-        //        Console.WriteLine($"- {device.Name} (" +
-        //            $"ID: {device.Id}, " +
-        //            $"Type: {device.GetDeviceType()}, " +
-        //            $"Power: {device.GetStatus}, " +
-        //            $"{PrintParticularAttribute()})");
-
-        //        string PrintParticularAttribute()
-        //        {
-        //            return device switch
-        //            {
-        //                IDimmable lightBulb => $"Brightness: {lightBulb.Brightness}%",
-        //                ITemperatureControl thermostat => $"Target Temperature: {thermostat.TargetCelsius}°C",
-        //                IMeasurableLoad smartPlug => $"Total Wh: {smartPlug.TotalWh}",
-        //                _ => "Unknown device type"
-        //            };
-        //        }
-        //    }
-        //}
 
         public List<string> ListAll()
         {
