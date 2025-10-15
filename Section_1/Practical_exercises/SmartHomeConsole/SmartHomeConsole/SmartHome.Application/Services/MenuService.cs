@@ -19,60 +19,65 @@ namespace SmartHome.Application.Services
             _deviceFactory = deviceFactory;
         }
 
-        public void Run() {
-            Console.WriteLine("=== SMART HOME CONSOLE REMOTE ===");
-            Console.WriteLine("1. List devices");
-            Console.WriteLine("2. Add device");
-            Console.WriteLine("3. Remove device");
-            Console.WriteLine("4. Toggle power");
-            Console.WriteLine("5. Device actions");
-            Console.WriteLine("6. Self-test all");
-            Console.WriteLine("7. Exit");
-
+        public void Run() 
+        {
             int option = 0;
 
             while (option != 7)
             {
+                Console.WriteLine("=== SMART HOME CONSOLE REMOTE ===");
+                Console.WriteLine("1. List devices");
+                Console.WriteLine("2. Add device");
+                Console.WriteLine("3. Remove device");
+                Console.WriteLine("4. Toggle power");
+                Console.WriteLine("5. Device actions");
+                Console.WriteLine("6. Self-test all");
+                Console.WriteLine("7. Exit");
                 Console.WriteLine();
-                Console.Write("Select an option: ");
+                
+                bool isValidInput = false;
 
-                string? input = Console.ReadLine();
-
-
-                if (int.TryParse(input, out int value))
+                while (true)
                 {
-                    if (value < 1 || value > 7)
+                    Console.Write("Select an option: ");
+                    string? input = Console.ReadLine();
+                    Console.WriteLine();
+
+                    if (int.TryParse(input, out int value) && value >= 1 && value <= 7)
                     {
-                        Console.WriteLine("Invalid option. Please select a number between 1 and 7.");
-                        return;
+                        option = value;
+                        break;
                     }
 
-                    option = value;
-                }
-                else
-                {
                     Console.WriteLine("Invalid input. Please select a number between 1 and 7.");
+                    Console.WriteLine();
                 }
 
                 switch (option)
                 {
                     case 1:
                         ManageListingDevices();
+                        PressKeyToContinue();
                         break;
                     case 2:
                         ManageAddingDevice();
+                        PressKeyToContinue();
                         break;
                     case 3:
                         ManageRemovingDevices();
+                        PressKeyToContinue();
                         break;
                     case 4:
                         ManageTogglePower();
+                        PressKeyToContinue();
                         break;
                     case 5:
                         ManageDeviceActions();
+                        PressKeyToContinue();
                         break;
                     case 6:
                         ManageSelfTestAll();
+                        PressKeyToContinue();
                         break;
                     case 7:
                         break;
@@ -81,6 +86,14 @@ namespace SmartHome.Application.Services
                 }
             }
            
+        }
+
+        private void PressKeyToContinue()
+        {
+            Console.WriteLine();
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadKey();
+            Console.Clear();
         }
 
         private void ManageSelfTestAll()
