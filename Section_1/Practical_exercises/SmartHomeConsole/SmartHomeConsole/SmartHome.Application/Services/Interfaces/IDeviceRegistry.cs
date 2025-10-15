@@ -8,7 +8,7 @@ namespace SmartHome.Application.Services.Interfaces
         public void Add(SmartDevice device);
         public void Remove(SmartDevice device);
 
-        public void ListAll();
+        public List<string> ListAll();
 
         public SmartDevice? GetById(int id);
     }

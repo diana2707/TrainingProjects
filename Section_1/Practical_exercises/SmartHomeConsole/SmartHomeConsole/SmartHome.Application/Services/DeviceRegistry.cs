@@ -51,23 +51,53 @@ namespace SmartHome.Application.Services
             Console.WriteLine($"Device {device.Name} not found in the registry.");
         }
 
-        public void ListAll()
+        //public void ListAll()
+        //{
+        //    if (devices.Count == 0)
+        //    {
+        //        Console.WriteLine("No devices registered.");
+        //        return;
+        //    }
+
+        //    foreach (var device in devices)
+        //    {
+        //        Console.WriteLine($"- {device.Name} (" +
+        //            $"ID: {device.Id}, " +
+        //            $"Type: {device.GetDeviceType()}, " +
+        //            $"Power: {device.GetStatus}, " +
+        //            $"{PrintParticularAttribute()})");
+
+        //        string PrintParticularAttribute()
+        //        {
+        //            return device switch
+        //            {
+        //                IDimmable lightBulb => $"Brightness: {lightBulb.Brightness}%",
+        //                ITemperatureControl thermostat => $"Target Temperature: {thermostat.TargetCelsius}°C",
+        //                IMeasurableLoad smartPlug => $"Total Wh: {smartPlug.TotalWh}",
+        //                _ => "Unknown device type"
+        //            };
+        //        }
+        //    }
+        //}
+
+        public List<string> ListAll()
         {
+            List<string> deviceDetails = new List<string>();
+
             if (devices.Count == 0)
             {
-                Console.WriteLine("No devices registered.");
-                return;
+                return [];
             }
 
             foreach (var device in devices)
             {
-                Console.WriteLine($"- {device.Name} (" +
+                deviceDetails.Add($"- {device.Name} (" +
                     $"ID: {device.Id}, " +
                     $"Type: {device.GetDeviceType()}, " +
                     $"Power: {device.GetStatus}, " +
-                    $"{PrintAttribute()})");
+                    $"{GetParticularAttribute()})");
 
-                string PrintAttribute()
+                string GetParticularAttribute()
                 {
                     return device switch
                     {
@@ -78,6 +108,8 @@ namespace SmartHome.Application.Services
                     };
                 }
             }
+
+            return deviceDetails;
         }
 
         public SmartDevice? GetById(int id)

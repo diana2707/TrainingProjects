@@ -88,6 +88,23 @@ namespace SmartHome.Application.Services
            
         }
 
+        private void ManageListingDevices()
+        {
+            Console.WriteLine("Devices added to your smart home are: ");
+            List<string> devicesDetails = _deviceRegistry.ListAll();
+
+            if (devicesDetails.Count == 0)
+            {
+                Console.WriteLine("No devices registered.");
+                return;
+            }
+
+            foreach (var deviceDetails in devicesDetails)
+            {
+                Console.WriteLine(deviceDetails);
+            }
+        }
+
         private void PressKeyToContinue()
         {
             Console.WriteLine();
@@ -109,7 +126,6 @@ namespace SmartHome.Application.Services
         private void ManageDeviceActions()
         {
             Console.WriteLine("Choose device id to perform actions: ");
-            //PrintDeviceList();
             _deviceRegistry.ListAll();
 
             int deviceId = 0;
@@ -254,12 +270,6 @@ namespace SmartHome.Application.Services
 
         }
 
-        private void ManageListingDevices()
-        {
-            Console.WriteLine("Devices added to your smart home are: ");
-            _deviceRegistry.ListAll();
-        }
-
         // separate the responsability
         private void ManageAddingDevice()
         {
@@ -302,21 +312,5 @@ namespace SmartHome.Application.Services
             SmartDevice deviceToRemove = _deviceRegistry.GetById(deviceId);
             _deviceRegistry.Remove(deviceToRemove);
         }
-
-        // rename method more clearly
-        //private void PrintDeviceList()
-        //{
-        //    if (_deviceRegistry.Devices.Count == 0)
-        //    {
-        //        Console.WriteLine("No devices found in your smart home.");
-        //        return;
-        //    }
-
-        //    foreach (var device in _deviceRegistry.Devices)
-        //    {
-        //        Console.WriteLine($"{device.Name} (Id: {device.Id})");
-        //    }
-        //}
-
     }
 }
