@@ -72,7 +72,7 @@ namespace SmartHome.Application.Services
                         ManageDeviceActions();
                         break;
                     case 6:
-
+                        ManageSelfTestAll();
                         break;
                     case 7:
                         break;
@@ -81,6 +81,16 @@ namespace SmartHome.Application.Services
                 }
             }
            
+        }
+
+        private void ManageSelfTestAll()
+        {
+            Console.WriteLine("Running self-tests on all devices:");
+            foreach (var device in _deviceRegistry.Devices)
+            {
+                bool result = device.SelfTest();
+                Console.WriteLine($"Device {device.Name} (Id: {device.Id}) self-test result: {(result ? "Passed" : "Failed")}");
+            }
         }
 
         private void ManageDeviceActions()
