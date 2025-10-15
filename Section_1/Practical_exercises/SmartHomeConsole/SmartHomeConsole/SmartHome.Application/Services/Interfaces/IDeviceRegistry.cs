@@ -4,8 +4,8 @@ namespace SmartHome.Application.Services.Interfaces
 {
     public interface IDeviceRegistry
     {
-        IEnumerable<SmartDevice> Devices { get; }
-        void Add(SmartDevice device);
-        void Remove(SmartDevice device);
+        public IEnumerable<SmartDevice> Devices { get; }
+        public void Add(SmartDevice device);
+        public void Remove(SmartDevice device);
     }
 }

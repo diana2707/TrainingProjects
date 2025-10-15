@@ -1,4 +1,5 @@
-﻿using SmartHome.Application.Services.Interfaces;
+﻿using SmartHome.Application.Models;
+using SmartHome.Application.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,51 +29,56 @@ namespace SmartHome.Application.Services
             Console.WriteLine("6. Self-test all");
             Console.WriteLine("7. Exit");
 
-            Console.WriteLine();
-            Console.Write("Select an option: ");
-            
-            string? input = Console.ReadLine();
             int option = 0;
-            
-            if (int.TryParse(input, out int value))
+
+            while (option != 7)
             {
-                if (value < 1 || value > 7)
+                Console.WriteLine();
+                Console.Write("Select an option: ");
+
+                string? input = Console.ReadLine();
+
+
+                if (int.TryParse(input, out int value))
                 {
-                    Console.WriteLine("Invalid option. Please select a number between 1 and 7.");
-                    return;
+                    if (value < 1 || value > 7)
+                    {
+                        Console.WriteLine("Invalid option. Please select a number between 1 and 7.");
+                        return;
+                    }
+
+                    option = value;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid input. Please select a number between 1 and 7.");
                 }
 
-                option = value;
-            }
-            else
-            {
-                Console.WriteLine("Invalid input. Please select a number between 1 and 7.");
-            }
+                switch (option)
+                {
+                    case 1:
+                        ShowListDevicesMenu();
+                        break;
+                    case 2:
+                        ShowAddDeviceMenu();
+                        break;
+                    case 3:
 
-            switch (option)
-            {
-                case 1:
-                    ShowListDevicesMenu();
-                    break;
-                case 2:
-                    ShowAddDeviceMenu();
-                    break;
-                case 3:
-                    
-                    break;
-                case 4:
-                   
-                    break;
-                case 5:
-                    
-                    break;
-                case 6:
-                   
-                    break;
-                case 7:
-                    
-                    break;
+                        break;
+                    case 4:
+
+                        break;
+                    case 5:
+
+                        break;
+                    case 6:
+
+                        break;
+                    case 7:
+                        break;
+                }
             }
+           
         }
 
         private void ShowListDevicesMenu()
@@ -92,8 +98,8 @@ namespace SmartHome.Application.Services
             Console.Write("Choose device name: ");
             string? deviceName = Console.ReadLine();
 
-            _deviceFactory.CreateDevice(deviceType, deviceName);
-            Console.WriteLine($"Device {deviceName} of type {deviceType} was added successfully to your smart home.");
+            SmartDevice newDevice = _deviceFactory.CreateDevice(deviceType, deviceName);
+            _deviceRegistry.Add(newDevice);
         }
     }
 }
