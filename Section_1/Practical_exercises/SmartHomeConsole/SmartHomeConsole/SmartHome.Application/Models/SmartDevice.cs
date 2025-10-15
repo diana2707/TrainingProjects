@@ -15,6 +15,7 @@ namespace SmartHome.Application.Models
         public bool IsOn { get; set; }
 
         public string GetStatus {  get; set; }
+
         public SmartDevice()
         {
             Id = Guid.NewGuid();

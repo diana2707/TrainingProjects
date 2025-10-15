@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SmartHome.Application.Services.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,15 @@ namespace SmartHome.Application.Services
 {
     public class MenuService
     {
+        IDeviceFactory _deviceFactory;
+        IDeviceRegistry _deviceRegistry;
+
+        public MenuService(IDeviceFactory deviceFactory, IDeviceRegistry deviceRegistry)
+        {
+            _deviceRegistry = deviceRegistry;
+            _deviceFactory = deviceFactory;
+        }
+
         public void Run() {
             Console.WriteLine("=== SMART HOME CONSOLE REMOTE ===");
             Console.WriteLine("1. List devices");
@@ -19,7 +29,7 @@ namespace SmartHome.Application.Services
             Console.WriteLine("7. Exit");
 
             Console.WriteLine();
-            Console.WriteLine("Select an option: ");
+            Console.Write("Select an option: ");
             
             string? input = Console.ReadLine();
             int option = 0;
@@ -45,7 +55,7 @@ namespace SmartHome.Application.Services
                     ShowListDevicesMenu();
                     break;
                 case 2:
-                   
+                    ShowAddDeviceMenu();
                     break;
                 case 3:
                     
@@ -67,8 +77,23 @@ namespace SmartHome.Application.Services
 
         private void ShowListDevicesMenu()
         {
-            
+            Console.WriteLine("Devices added to your home are: ");
+            foreach (var device in _deviceRegistry.Devices)
+            {
+                Console.WriteLine(device.Name);
+            }
         }
-        
+
+        private void ShowAddDeviceMenu()
+        {
+            Console.Write("Choose device type (Light bulb/Thermostat/Smart plug): ");
+            string? deviceType = Console.ReadLine();
+
+            Console.Write("Choose device name: ");
+            string? deviceName = Console.ReadLine();
+
+            _deviceFactory.CreateDevice(deviceType, deviceName);
+            Console.WriteLine($"Device {deviceName} of type {deviceType} was added successfully to your smart home.");
+        }
     }
 }

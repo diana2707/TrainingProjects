@@ -1,4 +1,5 @@
 ﻿using SmartHome.Application.Models;
+using SmartHome.Application.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +8,11 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Application.Services
 {
-    public class DeviceRegistry
+    public class DeviceRegistry : IDeviceRegistry
     {
         HashSet<SmartDevice> devices = [];
+
+        public IEnumerable<SmartDevice> Devices => devices;
 
         public void Add(SmartDevice device)
         {
@@ -18,7 +21,7 @@ namespace SmartHome.Application.Services
                 Console.WriteLine($"Device {device.Name} is added to your smart home.");
                 return;
             }
-            
+
             Console.WriteLine($"Device {device.Name} is already in the registry.");
         }
 
