@@ -1,5 +1,6 @@
 ﻿using SmartHome.Application.Models;
 using SmartHome.Application.Services.Interfaces;
+
 namespace SmartHome.Application.Services
 {
     public class DeviceFactory : IDeviceFactory

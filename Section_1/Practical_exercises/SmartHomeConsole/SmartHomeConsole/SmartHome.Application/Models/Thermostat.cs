@@ -9,7 +9,7 @@ namespace SmartHome.Application.Models
 {
     public class Thermostat : SmartDevice, ITemperatureControl
     {
-        public double TargetCelsius { get; private set; }
+        public double TargetCelsius { get; private set; } = 20;
 
         public void SetTarget(double celsius)
         {
@@ -28,6 +28,10 @@ namespace SmartHome.Application.Models
             return true;
         }
 
+        public override string GetType()
+        {
+            return "Thermostat";
 
+        }
     }
 }

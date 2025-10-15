@@ -9,28 +9,33 @@ namespace SmartHome.Application.Models
 {
     public abstract class SmartDevice : IPowerSwitch, ISelfTest
     {
-        public Guid Id { get; private set; }
+        private static int deviceCount = 0;
+        public int Id { get; private set; }
         public string Name { get; set; }
         
         public bool IsOn { get; set; }
 
-        public string GetStatus {  get; set; }
+        public string GetStatus {  get; set; } = "Off";
 
         public SmartDevice()
         {
-            Id = Guid.NewGuid();
+            Id = deviceCount++;
         }
 
         public void PowerOn()
         {
+            GetStatus = "On";
             Console.WriteLine("Device is powered on.");
         }
 
         public void PowerOff()
         {
+            GetStatus = "Off";
             Console.WriteLine("Device is powered off.");
         }
 
         public abstract bool SelfTest();
+
+        public abstract string GetType();
     }
 }

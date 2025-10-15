@@ -57,13 +57,13 @@ namespace SmartHome.Application.Services
                 switch (option)
                 {
                     case 1:
-                        ShowListDevicesMenu();
+                        ManageListingDevices();
                         break;
                     case 2:
-                        ShowAddDeviceMenu();
+                        ManageAddingDevice();
                         break;
                     case 3:
-
+                        ManageRemovingDevices();
                         break;
                     case 4:
 
@@ -76,21 +76,21 @@ namespace SmartHome.Application.Services
                         break;
                     case 7:
                         break;
+                    default:
+                        break;
                 }
             }
            
         }
 
-        private void ShowListDevicesMenu()
+        private void ManageListingDevices()
         {
-            Console.WriteLine("Devices added to your home are: ");
-            foreach (var device in _deviceRegistry.Devices)
-            {
-                Console.WriteLine(device.Name);
-            }
+            Console.WriteLine("Devices added to your smart home are: ");
+            _deviceRegistry.ListAll();
         }
 
-        private void ShowAddDeviceMenu()
+        // separate the responsability
+        private void ManageAddingDevice()
         {
             Console.Write("Choose device type (Light bulb/Thermostat/Smart plug): ");
             string? deviceType = Console.ReadLine();
@@ -98,8 +98,53 @@ namespace SmartHome.Application.Services
             Console.Write("Choose device name: ");
             string? deviceName = Console.ReadLine();
 
-            SmartDevice newDevice = _deviceFactory.CreateDevice(deviceType, deviceName);
+            SmartDevice newDevice;
+            try
+            {
+                newDevice = _deviceFactory.CreateDevice(deviceType, deviceName);
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return;
+            }
+
             _deviceRegistry.Add(newDevice);
         }
+
+        private void ManageRemovingDevices()
+        {
+            Console.WriteLine("Choose device id to remove from your current devices: ");
+            PrintDeviceList();
+            int deviceId = 0;
+            
+            if(int.TryParse(Console.ReadLine(), out int value))
+            {
+                deviceId = value;
+            }
+            else
+            {
+                Console.WriteLine("Invalid input. Please select a valid device id.");
+                return;
+            }
+            
+            SmartDevice deviceToRemove = _deviceRegistry.GetById(deviceId);
+            _deviceRegistry.Remove(deviceToRemove);
+        }
+
+        private void PrintDeviceList()
+        {
+            if (_deviceRegistry.Devices.Count == 0)
+            {
+                Console.WriteLine("No devices found in your smart home.");
+                return;
+            }
+
+            foreach (var device in _deviceRegistry.Devices)
+            {
+                Console.WriteLine($"{device.Name} (Id: {device.Id})");
+            }
+        }
+
     }
 }

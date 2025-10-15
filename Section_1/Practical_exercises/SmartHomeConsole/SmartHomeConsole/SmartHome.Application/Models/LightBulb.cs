@@ -22,5 +22,10 @@ namespace SmartHome.Application.Models
             Brightness = value;
             Console.WriteLine($"Brightness set to: {Brightness}%.");
         }
+
+        public override string GetType()
+        {
+            return "Light bulb";
+        }
     }
 }

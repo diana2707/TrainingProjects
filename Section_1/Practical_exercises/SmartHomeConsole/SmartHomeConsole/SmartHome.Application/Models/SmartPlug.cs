@@ -16,11 +16,16 @@ namespace SmartHome.Application.Models
         }
 
         public double CurrentWatts { get; private set; }
-        public double TotalWh { get; private set; }
+        public double TotalWh { get; private set; } = 0;
         public void ResetEnergy()
         {
             TotalWh = 0;
             Console.WriteLine("Total energy consumption reset.");
+        }
+
+        public override string GetType()
+        {
+            return "Smart plug";
         }
     }
 }
