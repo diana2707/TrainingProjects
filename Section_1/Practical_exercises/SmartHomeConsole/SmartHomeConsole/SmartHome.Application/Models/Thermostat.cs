@@ -28,7 +28,7 @@ namespace SmartHome.Application.Models
             return true;
         }
 
-        public override string GetType()
+        public override string GetDeviceType()
         {
             return "Thermostat";
 

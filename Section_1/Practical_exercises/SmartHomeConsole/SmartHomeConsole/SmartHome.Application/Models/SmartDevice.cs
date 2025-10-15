@@ -38,6 +38,6 @@ namespace SmartHome.Application.Models
 
         public abstract bool SelfTest();
 
-        public abstract string GetType();
+        public abstract string GetDeviceType();
     }
 }

@@ -23,7 +23,7 @@ namespace SmartHome.Application.Models
             Console.WriteLine("Total energy consumption reset.");
         }
 
-        public override string GetType()
+        public override string GetDeviceType()
         {
             return "Smart plug";
         }

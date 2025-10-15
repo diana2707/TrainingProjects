@@ -1,4 +1,5 @@
 ﻿using SmartHome.Application.Models;
+using SmartHome.Application.Models.Interfaces;
 using SmartHome.Application.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -27,13 +28,13 @@ namespace SmartHome.Application.Services
             switch (device)
             {
                 case LightBulb lightBulb:
-                    Console.WriteLine($"Device {lightBulb.Name} ({lightBulb.GetType()}) is added: Power - {lightBulb.GetStatus}, Brightness - {lightBulb.Brightness}");
+                    Console.WriteLine($"Device {lightBulb.Name} ({lightBulb.GetDeviceType()}) is added: Power - {lightBulb.GetStatus}, Brightness - {lightBulb.Brightness}");
                     break;
                 case Thermostat thermostat:
-                    Console.WriteLine($"Device {thermostat.Name} ({thermostat.GetType()}) is added: Power - {thermostat.GetStatus}, Target temperature - {thermostat.TargetCelsius}");
+                    Console.WriteLine($"Device {thermostat.Name} ({thermostat.GetDeviceType()}) is added: Power - {thermostat.GetStatus}, Target temperature - {thermostat.TargetCelsius}");
                     break;
                 case SmartPlug smartPlug:
-                    Console.WriteLine($"Device {smartPlug.Name} ({smartPlug.GetType()}) is added: Power - {smartPlug.GetStatus}, Total Wh - {smartPlug.TotalWh}");
+                    Console.WriteLine($"Device {smartPlug.Name} ({smartPlug.GetDeviceType()}) is added: Power - {smartPlug.GetStatus}, Total Wh - {smartPlug.TotalWh}");
                     break;
             }
             
@@ -62,7 +63,7 @@ namespace SmartHome.Application.Services
             {
                 Console.WriteLine($"- {device.Name} (" +
                     $"ID: {device.Id}, " +
-                    $"Type: {device.GetType()}, " +
+                    $"Type: {device.GetDeviceType()}, " +
                     $"Power: {device.GetStatus}, " +
                     $"{PrintAttribute()})");
 
@@ -70,9 +71,9 @@ namespace SmartHome.Application.Services
                 {
                     return device switch
                     {
-                        LightBulb lightBulb => $"Brightness: {lightBulb.Brightness}%",
-                        Thermostat thermostat => $"Target Temperature: {thermostat.TargetCelsius}°C",
-                        SmartPlug smartPlug => $"Total Wh: {smartPlug.TotalWh}",
+                        IDimmable lightBulb => $"Brightness: {lightBulb.Brightness}%",
+                        ITemperatureControl thermostat => $"Target Temperature: {thermostat.TargetCelsius}°C",
+                        IMeasurableLoad smartPlug => $"Total Wh: {smartPlug.TotalWh}",
                         _ => "Unknown device type"
                     };
                 }
