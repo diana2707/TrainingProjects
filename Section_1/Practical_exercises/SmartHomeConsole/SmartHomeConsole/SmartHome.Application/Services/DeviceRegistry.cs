@@ -23,18 +23,12 @@ namespace SmartHome.Application.Services
             }
 
             devices.Add(device);
-            
+
         }
 
-        public void Remove(SmartDevice device)
+        public bool Remove(SmartDevice device)
         {
-            if (devices.Remove(device))
-            {
-                Console.WriteLine($"Device {device.Name} removed from registry.");
-                return;
-            }
-
-            Console.WriteLine($"Device {device.Name} not found in the registry.");
+            return devices.Remove(device);
         }
 
         public List<string> ListAll()

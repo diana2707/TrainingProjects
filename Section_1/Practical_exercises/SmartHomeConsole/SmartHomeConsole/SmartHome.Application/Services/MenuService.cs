@@ -111,7 +111,56 @@ namespace SmartHome.Application.Services
             DisplayDeviceAddedMessage(newDevice);
         }
 
-        
+        private void ManageRemovingDevices()
+        {
+            ManageListingDevices();
+            Console.WriteLine();
+
+            if (_deviceRegistry.Devices.Count == 0)
+            {
+                return;
+            }
+
+            SmartDevice? deviceToRemove = GetValidDevice();
+
+            if (deviceToRemove == null)
+            {
+                return;
+            }
+
+            _deviceRegistry.Remove(deviceToRemove);
+            Console.WriteLine($"Device removed from registry.");
+        }
+
+        private SmartDevice? GetValidDevice()
+        {
+            int deviceId = 0;
+            SmartDevice smartDevice = null;
+
+            while (true)
+            {
+                Console.Write("Choose device id to remove from your current devices: ");
+                string? input = Console.ReadLine();
+                Console.WriteLine();
+
+                if (int.TryParse(input, out int value))
+                {
+                    deviceId = value;
+                    break;
+                }
+
+                Console.WriteLine("Invalid input.");
+                Console.WriteLine();
+            }
+
+            smartDevice = _deviceRegistry.GetById(deviceId);
+            if (smartDevice == null)
+            {
+                Console.WriteLine("Device not found in the registry.");
+            }
+
+            return smartDevice;
+        }
 
         private void PressKeyToContinue()
         {
@@ -276,28 +325,6 @@ namespace SmartHome.Application.Services
             }
             
 
-        }
-
-        
-
-        private void ManageRemovingDevices()
-        {
-            Console.WriteLine("Choose device id to remove from your current devices: ");
-            _deviceRegistry.ListAll();
-            int deviceId = 0;
-            
-            if(int.TryParse(Console.ReadLine(), out int value))
-            {
-                deviceId = value;
-            }
-            else
-            {
-                Console.WriteLine("Invalid input. Please select a valid device id.");
-                return;
-            }
-            
-            SmartDevice deviceToRemove = _deviceRegistry.GetById(deviceId);
-            _deviceRegistry.Remove(deviceToRemove);
         }
 
         private int GetValidMainMenuOption()
