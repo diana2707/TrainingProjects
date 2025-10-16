@@ -6,7 +6,7 @@ namespace SmartHome.Application.Models
     {
         public override bool SelfTest()
         {
-            Console.WriteLine("Performing self-test for LightBulb...");
+            Console.WriteLine($"Performing self-test for {Name} light bulb (id: {Id})...");
             return true;
         }
 

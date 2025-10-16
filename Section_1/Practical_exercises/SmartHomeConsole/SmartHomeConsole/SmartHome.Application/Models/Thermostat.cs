@@ -24,7 +24,7 @@ namespace SmartHome.Application.Models
 
         public override bool SelfTest()
         {
-            Console.WriteLine("Performing self-test for Thermostat...");
+            Console.WriteLine($"Performing self-test for {Name} thermostat (id: {Id})...");
             return true;
         }
 

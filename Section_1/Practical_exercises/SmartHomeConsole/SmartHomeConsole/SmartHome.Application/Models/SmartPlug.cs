@@ -1,9 +1,4 @@
 ﻿using SmartHome.Application.Models.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SmartHome.Application.Models
 {
@@ -11,7 +6,7 @@ namespace SmartHome.Application.Models
     {
         public override bool SelfTest()
         {
-            Console.WriteLine("Performing self-test for SmartPlug...");
+            Console.WriteLine($"Performing self-test for {Name} smart plug (id: {Id})...");
             return true;
         }
 
