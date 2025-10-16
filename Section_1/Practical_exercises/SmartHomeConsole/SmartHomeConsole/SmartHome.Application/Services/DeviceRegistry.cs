@@ -24,10 +24,27 @@ namespace SmartHome.Application.Services
 
             devices.Add(device);
 
+            switch (device)
+            {
+                case LightBulb lightBulb:
+                    Console.WriteLine($"Device {lightBulb.Name} ({lightBulb.GetDeviceType()}) is added: " +
+                        $"Power - {lightBulb.GetStatus}, Brightness - {lightBulb.Brightness}");
+                    break;
+                case Thermostat thermostat:
+                    Console.WriteLine($"Device {thermostat.Name} ({thermostat.GetDeviceType()}) is added: " +
+                        $"Power - {thermostat.GetStatus}, Target temperature - {thermostat.TargetCelsius}");
+                    break;
+                case SmartPlug smartPlug:
+                    Console.WriteLine($"Device {smartPlug.Name} ({smartPlug.GetDeviceType()}) is added: " +
+                        $"Power - {smartPlug.GetStatus}, Total Wh - {smartPlug.TotalWh}");
+                    break;
+            }
         }
 
+        // do the method void
         public bool Remove(SmartDevice device)
         {
+            Console.WriteLine($"Device removed from registry.");
             return devices.Remove(device);
         }
 

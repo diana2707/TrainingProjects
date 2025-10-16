@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualBasic.FileIO;
 using SmartHome.Application.Models;
+using SmartHome.Application.Models.Interfaces;
 using SmartHome.Application.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -107,19 +108,19 @@ namespace SmartHome.Application.Services
                 Console.WriteLine(ex.Message);
                 return;
             }
-            
-            DisplayDeviceAddedMessage(newDevice);
         }
 
         private void ManageRemovingDevices()
         {
             ManageListingDevices();
-            Console.WriteLine();
 
             if (_deviceRegistry.Devices.Count == 0)
             {
                 return;
             }
+
+            Console.WriteLine();
+            Console.Write("Choose device to remove. ");
 
             SmartDevice? deviceToRemove = GetValidDevice();
 
@@ -129,7 +130,63 @@ namespace SmartHome.Application.Services
             }
 
             _deviceRegistry.Remove(deviceToRemove);
-            Console.WriteLine($"Device removed from registry.");
+        }
+
+        private void ManageTogglePower()
+        {
+            ManageListingDevices();
+
+            if (_deviceRegistry.Devices.Count == 0)
+            {
+                return;
+            }
+
+            Console.WriteLine();
+            Console.Write("Choose device to toggle power state. ");
+
+            SmartDevice? deviceToPowerToggle = GetValidDevice();
+
+            if (deviceToPowerToggle == null)
+            {
+                return;
+            }
+
+            Console.WriteLine($"Device {deviceToPowerToggle.Name} (Id: {deviceToPowerToggle.Id}) is {deviceToPowerToggle.GetStatus}.");
+            Console.Write($"Do you want to turn it {(deviceToPowerToggle.IsOn ? "off" : "on")}? (y/n): ");
+
+            string? input = GetYesNoChoice();
+
+            if (input?.ToLower() == "y")
+            {
+                if (deviceToPowerToggle.IsOn)
+                {
+                    deviceToPowerToggle.PowerOff();
+                }
+                else
+                {
+                    deviceToPowerToggle.PowerOn();
+                }
+            }
+            else
+            {
+                Console.WriteLine("No changes made to the device power state.");
+            }
+        }
+
+        private string? GetYesNoChoice()
+        {
+            string? input = string.Empty;
+            while (true)
+            {
+                input = Console.ReadLine();
+
+                if (input?.ToLower() == "y" || input?.ToLower() == "n")
+                {
+                    return input;
+                }
+
+                Console.WriteLine("Invalid input. Please enter 'y' or 'n'.");
+            }
         }
 
         private SmartDevice? GetValidDevice()
@@ -139,7 +196,7 @@ namespace SmartHome.Application.Services
 
             while (true)
             {
-                Console.Write("Choose device id to remove from your current devices: ");
+                Console.Write("Select device by id: ");
                 string? input = Console.ReadLine();
                 Console.WriteLine();
 
@@ -162,14 +219,6 @@ namespace SmartHome.Application.Services
             return smartDevice;
         }
 
-        private void PressKeyToContinue()
-        {
-            Console.WriteLine();
-            Console.WriteLine("Press any key to continue...");
-            Console.ReadKey();
-            Console.Clear();
-        }
-
         private void ManageSelfTestAll()
         {
             Console.WriteLine("Running self-tests on all devices:");
@@ -182,117 +231,42 @@ namespace SmartHome.Application.Services
 
         private void ManageDeviceActions()
         {
-            Console.WriteLine("Choose device id to perform actions: ");
-            _deviceRegistry.ListAll();
-
-            int deviceId = 0;
-
-            if (int.TryParse(Console.ReadLine(), out int value))
+            ManageListingDevices();
+            if (_deviceRegistry.Devices.Count == 0)
             {
-                deviceId = value;
-            }
-            else
-            {
-                Console.WriteLine("Invalid input. Please select a valid device id.");
                 return;
             }
 
-            SmartDevice device = _deviceRegistry.GetById(deviceId);
+            Console.WriteLine();
+            Console.WriteLine("Choose a device to perform actions. ");
 
-            switch (device)
+            SmartDevice? device = GetValidDevice();
+
+            if (device == null)
             {
-                case LightBulb lightBulb:
-                    Console.Write("Set brightness (0-100): ");
-                    if (int.TryParse(Console.ReadLine(), out int brightness))
-                    {
-                        try
-                        {
-                            lightBulb.SetBrightness(brightness);
-                        }
-                        catch (ArgumentOutOfRangeException ex)
-                        {
-                            Console.WriteLine(ex.Message);
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Invalid input. Please enter a number between 0 and 100.");
-                    }
-                    break;
-                case Thermostat thermostat:
-                    Console.Write("Set target temperature in Celsius (10-30°C): ");
-                    if (double.TryParse(Console.ReadLine(), out double temperature))
-                    {
-                        try
-                        {
-                            thermostat.SetTarget(temperature);
-                        }
-                        catch (ArgumentOutOfRangeException ex)
-                        {
-                            Console.WriteLine(ex.Message);
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Invalid input. Please enter a valid temperature between 10-30°C.");
-                    }
-                    break;
-                case SmartPlug smartPlug:
-                    Console.WriteLine($"Total energy consumption: {smartPlug.TotalWh} Wh");
-                    Console.Write("Do you want to reset energy consumption? (y/n): ");
-                    string? input = string.Empty;
+                return;
+            }
 
-                    while (true)
-                    {
-                        input = Console.ReadLine();
+            if (device is IDimmable dimmable)
+            {
+                ManageDimmableMenu(dimmable);
+            }
 
-                        if (input?.ToLower() == "y" || input?.ToLower() == "n")
-                        {
-                            break;
-                        }
+            if (device is ITemperatureControl temperatureControl)
+            {
+                ManageTemperatureControlMenu(temperatureControl);
+            }
 
-                        Console.WriteLine("Invalid input. Please enter 'y' or 'n'.");
-                    }
-
-                    if (input?.ToLower() == "y")
-                    {
-                        smartPlug.ResetEnergy();
-                        Console.WriteLine("Energy counter reset to 0 Wh.");
-                    }
-                    else
-                    {
-                        Console.WriteLine("No changes made to the energy counter.");
-                    }
-                    break;
-                default:
-                    Console.WriteLine("Unknown device type.");
-                    break;
+            if (device is IMeasurableLoad measurableLoad)
+            {
+                ManageMeasurableLoadMenu(measurableLoad);
             }
         }
 
-        private void ManageTogglePower()
+        private void ManageMeasurableLoadMenu(IMeasurableLoad device)
         {
-            Console.WriteLine("Choose device id to toggle power state: ");
-            _deviceRegistry.ListAll();
-
-            int deviceId = 0;
-
-            if (int.TryParse(Console.ReadLine(), out int value))
-            {
-                deviceId = value;
-            }
-            else
-            {
-                Console.WriteLine("Invalid input. Please select a valid device id.");
-                return;
-            }
-
-            SmartDevice deviceToPowerToggle = _deviceRegistry.GetById(deviceId);
-
-            Console.WriteLine($"Device {deviceToPowerToggle.Name} (Id: {deviceToPowerToggle.Id}) is {deviceToPowerToggle.GetStatus}.");
-            Console.WriteLine($"Do you want to turn it {(deviceToPowerToggle.IsOn ? "off" : "on")}? (y/n): ");
-
-            bool inputValidated = false;
+            Console.WriteLine($"Total energy consumption: {device.TotalWh} Wh");
+            Console.Write("Do you want to reset energy consumption? (y/n): ");
             string? input = string.Empty;
 
             while (true)
@@ -307,24 +281,57 @@ namespace SmartHome.Application.Services
                 Console.WriteLine("Invalid input. Please enter 'y' or 'n'.");
             }
 
-           
             if (input?.ToLower() == "y")
             {
-                if (deviceToPowerToggle.IsOn)
+                device.ResetEnergy();
+                Console.WriteLine("Energy counter reset to 0 Wh.");
+            }
+            else
+            {
+                Console.WriteLine("No changes made to the energy counter.");
+            }
+        }
+
+        private void ManageTemperatureControlMenu(ITemperatureControl device)
+        {
+            Console.WriteLine($"Current target temperature: {device.TargetCelsius}°C");
+            Console.Write("Set target temperature in Celsius (10-30°C): ");
+            if (int.TryParse(Console.ReadLine(), out int temperature))
+            {
+                try
                 {
-                    deviceToPowerToggle.PowerOff();
+                    device.SetTarget(temperature);
                 }
-                else
+                catch (ArgumentOutOfRangeException ex)
                 {
-                    deviceToPowerToggle.PowerOn();
+                    Console.WriteLine(ex.Message);
                 }
             }
             else
             {
-                Console.WriteLine("No changes made to the device power state.");
+                Console.WriteLine("Invalid input. Please enter a valid temperature between 10-30°C.");
             }
-            
+        }
 
+        private void ManageDimmableMenu(IDimmable device)
+        {
+            Console.WriteLine($"Current brightness: {device.Brightness}%");
+            Console.Write("Set brightness (0-100): ");
+            if (int.TryParse(Console.ReadLine(), out int brightness))
+            {
+                try
+                {
+                    device.SetBrightness(brightness);
+                }
+                catch (ArgumentOutOfRangeException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Invalid input. Please enter a number between 0 and 100.");
+            }
         }
 
         private int GetValidMainMenuOption()
@@ -370,23 +377,12 @@ namespace SmartHome.Application.Services
             return string.IsNullOrWhiteSpace(input) ? "Unknown" : input;
         }
 
-        private void DisplayDeviceAddedMessage(SmartDevice newDevice)
+        private void PressKeyToContinue()
         {
-            switch (newDevice)
-            {
-                case LightBulb lightBulb:
-                    Console.WriteLine($"Device {lightBulb.Name} ({lightBulb.GetDeviceType()}) is added: " +
-                        $"Power - {lightBulb.GetStatus}, Brightness - {lightBulb.Brightness}");
-                    break;
-                case Thermostat thermostat:
-                    Console.WriteLine($"Device {thermostat.Name} ({thermostat.GetDeviceType()}) is added: " +
-                        $"Power - {thermostat.GetStatus}, Target temperature - {thermostat.TargetCelsius}");
-                    break;
-                case SmartPlug smartPlug:
-                    Console.WriteLine($"Device {smartPlug.Name} ({smartPlug.GetDeviceType()}) is added: " +
-                        $"Power - {smartPlug.GetStatus}, Total Wh - {smartPlug.TotalWh}");
-                    break;
-            }
+            Console.WriteLine();
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadKey();
+            Console.Clear();
         }
     }
 }
