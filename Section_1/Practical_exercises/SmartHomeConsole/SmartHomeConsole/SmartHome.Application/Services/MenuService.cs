@@ -118,41 +118,34 @@ namespace SmartHome.Application.Services
             Console.Write("Choose device to remove. ");
 
             int deviceId = GetValidDeviceId();
-            SmartDevice deviceToRemove = _deviceRegistry.GetById(deviceId);
+            SmartDevice device = _deviceRegistry.GetById(deviceId);
 
-            _deviceRegistry.Remove(deviceToRemove);
+            _deviceRegistry.Remove(device);
         }
 
         private void ManageTogglePower()
         {
             ManageListingDevices();
 
-            if (_deviceRegistry.Devices.Count == 0)
-            {
-                return;
-            }
+            if (_deviceRegistry.Devices.Count == 0) return;
 
             Console.WriteLine();
             Console.Write("Choose device to toggle power state. ");
 
             int deviceId = GetValidDeviceId();
-            SmartDevice deviceToPowerToggle = _deviceRegistry.GetById(deviceId);
+            SmartDevice device = _deviceRegistry.GetById(deviceId);
 
-            Console.WriteLine($"Device {deviceToPowerToggle.Name} (Id: {deviceToPowerToggle.Id}) is {deviceToPowerToggle.GetStatus}.");
-            Console.Write($"Do you want to turn it {(deviceToPowerToggle.IsOn ? "off" : "on")}? ");
+            Console.WriteLine($"Device {device.Name} (Id: {device.Id}) is {device.GetStatus}.");
+            Console.Write($"Do you want to turn it {(device.IsOn ? "off" : "on")}? ");
 
             string? input = GetValidBinaryChoice();
 
             if (input == "y")
             {
-                if (deviceToPowerToggle.IsOn)
-                {
-                    deviceToPowerToggle.PowerOff();
-                }
+                if (device.IsOn)
+                    device.PowerOff();
                 else
-                {
-                    deviceToPowerToggle.PowerOn();
-                }
+                    device.PowerOn();
             }
             else
             {
@@ -163,11 +156,9 @@ namespace SmartHome.Application.Services
         private void ManageDeviceActions()
         {
             ManageListingDevices();
-            if (_deviceRegistry.Devices.Count == 0)
-            {
-                return;
-            }
-
+            
+            if (_deviceRegistry.Devices.Count == 0) return;
+            
             Console.WriteLine();
             Console.WriteLine("Choose a device to perform actions. ");
 
@@ -188,10 +179,16 @@ namespace SmartHome.Application.Services
             {
                 ManageMeasurableLoadMenu(measurableLoad);
             }
+
+            if (device is IColorControl colorControl)
+            {
+                ManageColorControlMenu(colorControl);
+            }
         }
 
         private void ManageMeasurableLoadMenu(IMeasurableLoad device)
         {
+            Console.WriteLine();
             Console.WriteLine($"Total energy consumption: {device.TotalWh} Wh");
             Console.Write("Do you want to reset energy consumption? (y/n): ");
             string? input = GetValidBinaryChoice();
@@ -206,8 +203,20 @@ namespace SmartHome.Application.Services
             }
         }
 
+        private void ManageColorControlMenu(IColorControl colorControl)
+        {
+            Console.WriteLine();
+            Console.WriteLine($"Current color: {colorControl.Color}");
+
+            string input = GetValidColor();
+
+            colorControl.SetColor(input);
+
+        }
+
         private void ManageTemperatureControlMenu(ITemperatureControl device)
         {
+            Console.WriteLine();
             Console.WriteLine($"Current target temperature: {device.TargetCelsius}°C");
 
             int temperature = GetValidTemperature();
@@ -217,6 +226,7 @@ namespace SmartHome.Application.Services
 
         private void ManageDimmableMenu(IDimmable device)
         {
+            Console.WriteLine();
             Console.WriteLine($"Current brightness: {device.Brightness}%");
             
             int brightness = GetValidBrightness();
@@ -267,6 +277,23 @@ namespace SmartHome.Application.Services
             return Convert.ToInt32(validInput);
         }
 
+        private string GetValidColor()
+        {
+            string userPrompt = "Set color between white, green, red and blue: ";
+            string errorMessage = "Invalid input. Please enter white, green, red or blue.";
+
+            Func<string, bool> condition = IsValidColor;
+
+            return GetValidInput(condition, userPrompt, errorMessage);
+
+            bool IsValidColor(string input)
+            {
+                string[] colors = ["white", "red", "green", "blue"];
+                return  colors.Contains(input);
+            }
+        }
+
+
         private string? GetValidBinaryChoice()
         {
             string userPrompt = "Choose Y (yes) or N (no): ";
@@ -298,8 +325,8 @@ namespace SmartHome.Application.Services
 
         private string GetValidDeviceType()
         {
-            string userPrompt = "Choose device type (Light bulb/Thermostat/Smart plug): ";
-            Func<string, bool> condition = (input) => input == "light bulb" || input == "thermostat" || input == "smart plug";
+            string userPrompt = "Choose device type (Light bulb/Color bulb/Thermostat/Smart plug): ";
+            Func<string, bool> condition = (input) => input == "light bulb" || input == "thermostat" || input == "smart plug" || input == "color bulb";
             
             return GetValidInput(condition, userPrompt);
         }

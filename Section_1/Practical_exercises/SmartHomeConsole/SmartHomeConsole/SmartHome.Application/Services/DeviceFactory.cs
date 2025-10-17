@@ -12,6 +12,7 @@ namespace SmartHome.Application.Services
                 "light bulb" => new LightBulb { Name = name },
                 "thermostat" => new Thermostat { Name = name },
                 "smart plug" => new SmartPlug { Name = name },
+                "color bulb" => new ColorBulb { Name = name },
                 _ => throw new ArgumentException("Invalid device type")
             };
 

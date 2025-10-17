@@ -1,6 +1,7 @@
 ﻿using SmartHome.Application.Models;
 using SmartHome.Application.Models.Interfaces;
 using SmartHome.Application.Services.Interfaces;
+using System.Reflection.Metadata.Ecma335;
 
 namespace SmartHome.Application.Services
 {
@@ -33,6 +34,10 @@ namespace SmartHome.Application.Services
                     Console.WriteLine($"Device {smartPlug.Name} ({smartPlug.DeviceType}) is added: " +
                         $"Power - {smartPlug.GetStatus}, Total Wh - {smartPlug.TotalWh}");
                     break;
+                case ColorBulb colorBulb:
+                    Console.WriteLine($"Device {colorBulb.Name} ({colorBulb.DeviceType}) is added: " +
+                        $"Power - {colorBulb.GetStatus}, Brightness - {colorBulb.Brightness}, Color - {colorBulb.Color}");
+                    break;
             }
         }
 
@@ -61,13 +66,23 @@ namespace SmartHome.Application.Services
 
                 string GetParticularAttribute()
                 {
-                    return device switch
-                    {
-                        IDimmable lightBulb => $"Brightness: {lightBulb.Brightness}%",
-                        ITemperatureControl thermostat => $"Target Temperature: {thermostat.TargetCelsius}°C",
-                        IMeasurableLoad smartPlug => $"Total Wh: {smartPlug.TotalWh}",
-                        _ => "Unknown device type"
-                    };
+                    List<string> attributes = [];
+
+                    if (device is IDimmable dimmable) 
+                        attributes.Add($"Brightness: {dimmable.Brightness}%");
+                    
+
+                    if (device is ITemperatureControl tempControl)
+                        attributes.Add($"Target Temperature: {tempControl.TargetCelsius}°C");
+                    
+
+                    if (device is IMeasurableLoad measurableLoad)
+                        attributes.Add($"Total Wh: {measurableLoad.TotalWh}");
+
+                    if (device is IColorControl colorControl)
+                        attributes.Add($"Color: {colorControl.Color}");
+
+                    return string.Join(", ", attributes);
                 }
             }
 
