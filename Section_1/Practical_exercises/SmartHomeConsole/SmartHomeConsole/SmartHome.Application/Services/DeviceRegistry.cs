@@ -27,25 +27,24 @@ namespace SmartHome.Application.Services
             switch (device)
             {
                 case LightBulb lightBulb:
-                    Console.WriteLine($"Device {lightBulb.Name} ({lightBulb.GetDeviceType()}) is added: " +
+                    Console.WriteLine($"Device {lightBulb.Name} ({lightBulb.DeviceType}) is added: " +
                         $"Power - {lightBulb.GetStatus}, Brightness - {lightBulb.Brightness}");
                     break;
                 case Thermostat thermostat:
-                    Console.WriteLine($"Device {thermostat.Name} ({thermostat.GetDeviceType()}) is added: " +
+                    Console.WriteLine($"Device {thermostat.Name} ({thermostat.DeviceType}) is added: " +
                         $"Power - {thermostat.GetStatus}, Target temperature - {thermostat.TargetCelsius}");
                     break;
                 case SmartPlug smartPlug:
-                    Console.WriteLine($"Device {smartPlug.Name} ({smartPlug.GetDeviceType()}) is added: " +
+                    Console.WriteLine($"Device {smartPlug.Name} ({smartPlug.DeviceType}) is added: " +
                         $"Power - {smartPlug.GetStatus}, Total Wh - {smartPlug.TotalWh}");
                     break;
             }
         }
 
-        // do the method void
-        public bool Remove(SmartDevice device)
+        public void Remove(SmartDevice device)
         {
             Console.WriteLine($"Device removed from registry.");
-            return devices.Remove(device);
+            devices.Remove(device);
         }
 
         public List<string> ListAll()
@@ -59,9 +58,9 @@ namespace SmartHome.Application.Services
 
             foreach (var device in devices)
             {
-                deviceDetails.Add($"- {device.Name} (" +
+                deviceDetails.Add($"* {device.Name} (" +
                     $"ID: {device.Id}, " +
-                    $"Type: {device.GetDeviceType()}, " +
+                    $"Type: {device.DeviceType}, " +
                     $"Power: {device.GetStatus}, " +
                     $"{GetParticularAttribute()})");
 
@@ -83,6 +82,11 @@ namespace SmartHome.Application.Services
         public SmartDevice? GetById(int id)
         {
             return devices.FirstOrDefault(device => device.Id == id);
+        }
+
+        public bool IsValidId(int id)
+        {
+            return devices.Any(device => device.Id == id);
         }
     }
 }

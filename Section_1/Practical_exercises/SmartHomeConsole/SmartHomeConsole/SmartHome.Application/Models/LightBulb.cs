@@ -4,11 +4,7 @@ namespace SmartHome.Application.Models
 {
     public class LightBulb : SmartDevice, IDimmable
     {
-        public override bool SelfTest()
-        {
-            Console.WriteLine($"Performing self-test for {Name} light bulb (id: {Id})...");
-            return true;
-        }
+        public override string DeviceType => "light bulb";
 
         public int Brightness { get; private set; }
 
@@ -23,9 +19,11 @@ namespace SmartHome.Application.Models
             Console.WriteLine($"Brightness set to: {Brightness}%.");
         }
 
-        public override string GetDeviceType()
+        public override bool SelfTest()
         {
-            return "Light bulb";
+            Console.WriteLine($"Performing self-test for {Name} light bulb (id: {Id})...");
+            return true;
         }
+
     }
 }

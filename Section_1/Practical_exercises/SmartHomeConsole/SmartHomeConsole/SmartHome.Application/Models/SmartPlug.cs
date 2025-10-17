@@ -4,12 +4,7 @@ namespace SmartHome.Application.Models
 {
     public class SmartPlug : SmartDevice, IMeasurableLoad
     {
-        public override bool SelfTest()
-        {
-            Console.WriteLine($"Performing self-test for {Name} smart plug (id: {Id})...");
-            return true;
-        }
-
+        public override string  DeviceType => "smart plug";
         public double CurrentWatts { get; private set; }
         public double TotalWh { get; private set; } = 0;
         public void ResetEnergy()
@@ -18,9 +13,10 @@ namespace SmartHome.Application.Models
             Console.WriteLine("Total energy consumption reset.");
         }
 
-        public override string GetDeviceType()
+        public override bool SelfTest()
         {
-            return "Smart plug";
+            Console.WriteLine($"Performing self-test for {Name} smart plug (id: {Id})...");
+            return true;
         }
     }
 }

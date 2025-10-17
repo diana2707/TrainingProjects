@@ -15,6 +15,8 @@ namespace SmartHome.Application.Models
         
         public bool IsOn { get; set; }
 
+        public abstract string DeviceType { get; }
+
         public string GetStatus {  get; set; } = "Off";
 
         public SmartDevice()
@@ -37,7 +39,5 @@ namespace SmartHome.Application.Models
         }
 
         public abstract bool SelfTest();
-
-        public abstract string GetDeviceType();
     }
 }

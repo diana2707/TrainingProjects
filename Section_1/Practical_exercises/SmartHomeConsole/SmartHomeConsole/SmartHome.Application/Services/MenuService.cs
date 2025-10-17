@@ -60,6 +60,7 @@ namespace SmartHome.Application.Services
                         PressKeyToContinue();
                         break;
                     case 7:
+                        ManageExit();
                         break;
                     default:
                         break;
@@ -116,12 +117,8 @@ namespace SmartHome.Application.Services
             Console.WriteLine();
             Console.Write("Choose device to remove. ");
 
-            SmartDevice? deviceToRemove = GetValidDevice();
-
-            if (deviceToRemove == null)
-            {
-                return;
-            }
+            int deviceId = GetValidDeviceId();
+            SmartDevice deviceToRemove = _deviceRegistry.GetById(deviceId);
 
             _deviceRegistry.Remove(deviceToRemove);
         }
@@ -138,19 +135,15 @@ namespace SmartHome.Application.Services
             Console.WriteLine();
             Console.Write("Choose device to toggle power state. ");
 
-            SmartDevice? deviceToPowerToggle = GetValidDevice();
-
-            if (deviceToPowerToggle == null)
-            {
-                return;
-            }
+            int deviceId = GetValidDeviceId();
+            SmartDevice deviceToPowerToggle = _deviceRegistry.GetById(deviceId);
 
             Console.WriteLine($"Device {deviceToPowerToggle.Name} (Id: {deviceToPowerToggle.Id}) is {deviceToPowerToggle.GetStatus}.");
-            Console.Write($"Do you want to turn it {(deviceToPowerToggle.IsOn ? "off" : "on")}? (y/n): ");
+            Console.Write($"Do you want to turn it {(deviceToPowerToggle.IsOn ? "off" : "on")}? ");
 
-            string? input = GetYesNoChoice();
+            string? input = GetValidBinaryChoice();
 
-            if (input?.ToLower() == "y")
+            if (input == "y")
             {
                 if (deviceToPowerToggle.IsOn)
                 {
@@ -167,62 +160,6 @@ namespace SmartHome.Application.Services
             }
         }
 
-        private string? GetYesNoChoice()
-        {
-            string? input = string.Empty;
-            while (true)
-            {
-                input = Console.ReadLine();
-
-                if (input?.ToLower() == "y" || input?.ToLower() == "n")
-                {
-                    return input;
-                }
-
-                Console.WriteLine("Invalid input. Please enter 'y' or 'n'.");
-            }
-        }
-
-        private SmartDevice? GetValidDevice()
-        {
-            int deviceId = 0;
-            SmartDevice smartDevice = null;
-
-            while (true)
-            {
-                Console.Write("Select device by id: ");
-                string? input = Console.ReadLine();
-                Console.WriteLine();
-
-                if (int.TryParse(input, out int value))
-                {
-                    deviceId = value;
-                    break;
-                }
-
-                Console.WriteLine("Invalid input.");
-                Console.WriteLine();
-            }
-
-            smartDevice = _deviceRegistry.GetById(deviceId);
-            if (smartDevice == null)
-            {
-                Console.WriteLine("Device not found in the registry.");
-            }
-
-            return smartDevice;
-        }
-
-        private void ManageSelfTestAll()
-        {
-            Console.WriteLine("Running self-tests on all devices:");
-            foreach (var device in _deviceRegistry.Devices)
-            {
-                bool result = device.SelfTest();
-                Console.WriteLine($"Device {device.Name} (Id: {device.Id}) self-test result: {(result ? "Passed" : "Failed")}");
-            }
-        }
-
         private void ManageDeviceActions()
         {
             ManageListingDevices();
@@ -234,12 +171,8 @@ namespace SmartHome.Application.Services
             Console.WriteLine();
             Console.WriteLine("Choose a device to perform actions. ");
 
-            SmartDevice? device = GetValidDevice();
-
-            if (device == null)
-            {
-                return;
-            }
+            int deviceId = GetValidDeviceId();
+            SmartDevice device = _deviceRegistry.GetById(deviceId);
 
             if (device is IDimmable dimmable)
             {
@@ -261,19 +194,7 @@ namespace SmartHome.Application.Services
         {
             Console.WriteLine($"Total energy consumption: {device.TotalWh} Wh");
             Console.Write("Do you want to reset energy consumption? (y/n): ");
-            string? input = string.Empty;
-
-            while (true)
-            {
-                input = Console.ReadLine();
-
-                if (input?.ToLower() == "y" || input?.ToLower() == "n")
-                {
-                    break;
-                }
-
-                Console.WriteLine("Invalid input. Please enter 'y' or 'n'.");
-            }
+            string? input = GetValidBinaryChoice();
 
             if (input?.ToLower() == "y")
             {
@@ -286,6 +207,8 @@ namespace SmartHome.Application.Services
             }
         }
 
+
+        // use input validation for temperature and brightness
         private void ManageTemperatureControlMenu(ITemperatureControl device)
         {
             Console.WriteLine($"Current target temperature: {device.TargetCelsius}°C");
@@ -328,38 +251,76 @@ namespace SmartHome.Application.Services
             }
         }
 
+        private void ManageSelfTestAll()
+        {
+            ManageListingDevices();
+            if (_deviceRegistry.Devices.Count == 0)
+            {
+                return;
+            }
+
+            Console.WriteLine("Running self-tests on all devices:");
+            foreach (var device in _deviceRegistry.Devices)
+            {
+                if (device is ISelfTest)
+                {
+                    bool result = device.SelfTest();
+                    Console.WriteLine($"Device {device.Name} (Id: {device.Id}) self-test result: {(result ? "Passed" : "Failed")}");
+                }
+            }
+        }
+
+        private string? GetValidBinaryChoice()
+        {
+            string userPrompt = "Choose Y (yes) or N (no): ";
+            Func<string, bool> condition = (input) => input?.ToLower() == "y" || input?.ToLower() == "n";
+
+            return GetValidInput(condition, userPrompt);
+        }
+
+        private int GetValidDeviceId()
+        {
+            string userPrompt = "Select device by id : ";
+            string errorMessage = "Invalid input. Device id not found in the registry.";
+            Func<string, bool> condition = (input) => int.TryParse(input, out int value) && _deviceRegistry.IsValidId(value);
+
+            string validInput = GetValidInput(condition, userPrompt, errorMessage);
+
+            return Convert.ToInt32(validInput);
+        }
+
         private int GetValidMainMenuOption()
         {
-            while (true)
-            {
-                Console.Write("Select an option: ");
-                string? input = Console.ReadLine();
-                Console.WriteLine();
+            string userPrompt = "Select an option: ";
+            Func<string, bool> condition = (input) => int.TryParse(input, out int value) && value >= 1 && value <= 7;
 
-                if (int.TryParse(input, out int value) && value >= 1 && value <= 7)
-                {
-                    return value;
-                }
+            string validInput = GetValidInput(condition, userPrompt);
 
-                Console.WriteLine("Invalid input. Please select a number between 1 and 7.");
-                Console.WriteLine();
-            }
+            return Convert.ToInt32(validInput);
         }
 
         private string GetValidDeviceType()
         {
+            string userPrompt = "Choose device type (Light bulb/Thermostat/Smart plug): ";
+            Func<string, bool> condition = (input) => input == "light bulb" || input == "thermostat" || input == "smart plug";
+            
+            return GetValidInput(condition, userPrompt);
+        }
+
+        private string GetValidInput(Func<string, bool> condition, string userPrompt, string errorMessage = "Invalid input.")
+        {
             while (true)
             {
-                Console.Write("Choose device type (Light bulb/Thermostat/Smart plug): ");
+                Console.Write(userPrompt);
                 string input = Console.ReadLine()?.ToLower();
                 Console.WriteLine();
 
-                if (input == "light bulb" || input == "thermostat" || input == "smart plug")
+                if (condition(input))
                 {
                     return input;
                 }
 
-                Console.WriteLine("Invalid input.");
+                Console.WriteLine(errorMessage);
                 Console.WriteLine();
             }
         }
@@ -374,9 +335,15 @@ namespace SmartHome.Application.Services
         private void PressKeyToContinue()
         {
             Console.WriteLine();
-            Console.WriteLine("Press any key to continue...");
+            Console.WriteLine("Press any key to choose another menu option...");
             Console.ReadKey();
             Console.Clear();
         }
+
+        private void ManageExit()
+        {
+            Console.WriteLine("Exiting the application. Goodbye!");
+        }
+
     }
 }

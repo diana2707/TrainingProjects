@@ -9,6 +9,7 @@ namespace SmartHome.Application.Models
 {
     public class Thermostat : SmartDevice, ITemperatureControl
     {
+        public override string DeviceType => "thermostat";
         public double TargetCelsius { get; private set; } = 20;
 
         public void SetTarget(double celsius)
@@ -26,12 +27,6 @@ namespace SmartHome.Application.Models
         {
             Console.WriteLine($"Performing self-test for {Name} thermostat (id: {Id})...");
             return true;
-        }
-
-        public override string GetDeviceType()
-        {
-            return "Thermostat";
-
         }
     }
 }
