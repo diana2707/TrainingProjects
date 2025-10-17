@@ -11,6 +11,7 @@ public class Program
         IDeviceRegistry deviceRegistry = new DeviceRegistry();
         IDeviceFactory deviceFactory = new DeviceFactory();
         MenuService menuService = new MenuService(deviceFactory, deviceRegistry);
+        
         menuService.Run();
     }
 }

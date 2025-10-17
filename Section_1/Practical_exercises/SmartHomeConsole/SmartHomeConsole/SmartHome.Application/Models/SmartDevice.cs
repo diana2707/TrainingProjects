@@ -1,16 +1,11 @@
 ﻿using SmartHome.Application.Models.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SmartHome.Application.Models
 {
     public abstract class SmartDevice : IPowerSwitch, ISelfTest
     {
         private static int deviceCount = 0;
-        public int Id { get; private set; }
+        public int Id { get; init; }
         public string Name { get; set; }
         
         public bool IsOn { get; set; }
