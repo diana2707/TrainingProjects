@@ -199,7 +199,6 @@ namespace SmartHome.Application.Services
             if (input?.ToLower() == "y")
             {
                 device.ResetEnergy();
-                Console.WriteLine("Energy counter reset to 0 Wh.");
             }
             else
             {
@@ -207,48 +206,22 @@ namespace SmartHome.Application.Services
             }
         }
 
-
-        // use input validation for temperature and brightness
         private void ManageTemperatureControlMenu(ITemperatureControl device)
         {
             Console.WriteLine($"Current target temperature: {device.TargetCelsius}°C");
-            Console.Write("Set target temperature in Celsius (10-30°C): ");
-            if (int.TryParse(Console.ReadLine(), out int temperature))
-            {
-                try
-                {
-                    device.SetTarget(temperature);
-                }
-                catch (ArgumentOutOfRangeException ex)
-                {
-                    Console.WriteLine(ex.Message.Split('(')[0].Trim());
-                }
-            }
-            else
-            {
-                Console.WriteLine("Invalid input. Please enter a valid temperature between 10-30°C.");
-            }
+
+            int temperature = GetValidTemperature();
+
+            device.SetTarget(temperature);
         }
 
         private void ManageDimmableMenu(IDimmable device)
         {
             Console.WriteLine($"Current brightness: {device.Brightness}%");
-            Console.Write("Set brightness (0-100): ");
-            if (int.TryParse(Console.ReadLine(), out int brightness))
-            {
-                try
-                {
-                    device.SetBrightness(brightness);
-                }
-                catch (ArgumentOutOfRangeException ex)
-                {
-                    Console.WriteLine(ex.Message.Split('(')[0].Trim());
-                }
-            }
-            else
-            {
-                Console.WriteLine("Invalid input. Please enter a number between 0 and 100.");
-            }
+            
+            int brightness = GetValidBrightness();
+
+            device.SetBrightness(brightness);
         }
 
         private void ManageSelfTestAll()
@@ -259,7 +232,9 @@ namespace SmartHome.Application.Services
                 return;
             }
 
+            Console.WriteLine();
             Console.WriteLine("Running self-tests on all devices:");
+            
             foreach (var device in _deviceRegistry.Devices)
             {
                 if (device is ISelfTest)
@@ -268,6 +243,28 @@ namespace SmartHome.Application.Services
                     Console.WriteLine($"Device {device.Name} (Id: {device.Id}) self-test result: {(result ? "Passed" : "Failed")}");
                 }
             }
+        }
+
+        private int GetValidBrightness()
+        {
+            string userPrompt = "Set brightness (0-100): ";
+            string errorMessage = "Invalid input. Please enter a valid brightness between 0-100.";
+            Func<string, bool> condition = (input) => int.TryParse(input, out int value) && value >= 0 && value <= 100;
+            
+            string validInput = GetValidInput(condition, userPrompt, errorMessage);
+            
+            return Convert.ToInt32(validInput);
+        }
+
+        private int GetValidTemperature()
+        {
+            string userPrompt = "Set target temperature in Celsius (10-30°C): ";
+            string errorMessage = "Invalid input. Please enter a valid temperature between 10-30°C.";
+            Func<string, bool> condition = (input) => int.TryParse(input, out int value) && value >= 10 && value <= 30;
+            
+            string validInput = GetValidInput(condition, userPrompt, errorMessage);
+            
+            return Convert.ToInt32(validInput);
         }
 
         private string? GetValidBinaryChoice()
@@ -283,7 +280,7 @@ namespace SmartHome.Application.Services
             string userPrompt = "Select device by id : ";
             string errorMessage = "Invalid input. Device id not found in the registry.";
             Func<string, bool> condition = (input) => int.TryParse(input, out int value) && _deviceRegistry.IsValidId(value);
-
+            
             string validInput = GetValidInput(condition, userPrompt, errorMessage);
 
             return Convert.ToInt32(validInput);

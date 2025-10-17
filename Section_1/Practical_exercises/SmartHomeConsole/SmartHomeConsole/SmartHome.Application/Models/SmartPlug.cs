@@ -10,7 +10,7 @@ namespace SmartHome.Application.Models
         public void ResetEnergy()
         {
             TotalWh = 0;
-            Console.WriteLine("Total energy consumption reset.");
+            Console.WriteLine("Total energy consumption reset to 0 Wh.");
         }
 
         public override bool SelfTest()
