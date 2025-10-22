@@ -1,4 +1,5 @@
 ﻿using SmartHome.Application.Models.Interfaces;
+using SmartHome.Application.Enums;
 
 namespace SmartHome.Application.Models
 {
@@ -9,7 +10,7 @@ namespace SmartHome.Application.Models
         public string Name { get; set; }
         public bool IsOn { get; set; }
         public abstract string DeviceType { get; }
-        public string GetStatus {  get; set; } = "Off";
+        public ToggleState GetStatus {  get; set; } = ToggleState.Off;
 
 
         public SmartDevice()
@@ -19,14 +20,14 @@ namespace SmartHome.Application.Models
 
         public void PowerOn()
         {
-            GetStatus = "On";
+            GetStatus = ToggleState.On;
             IsOn = true;
             Console.WriteLine("Device is powered on.");
         }
 
         public void PowerOff()
         {
-            GetStatus = "Off";
+            GetStatus = ToggleState.Off;
             IsOn = false;
             Console.WriteLine("Device is powered off.");
         }
