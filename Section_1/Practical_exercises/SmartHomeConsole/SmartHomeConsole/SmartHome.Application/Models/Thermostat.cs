@@ -1,4 +1,5 @@
-﻿using SmartHome.Application.Models.Interfaces;
+﻿using SmartHome.Application.Enums;
+using SmartHome.Application.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace SmartHome.Application.Models
 {
     public class Thermostat : SmartDevice, ITemperatureControl
     {
-        public override string DeviceType => "thermostat";
+        public override DeviceType DeviceType => DeviceType.Thermostat;
         public double TargetCelsius { get; private set; } = 20;
 
         public void SetTarget(double celsius)

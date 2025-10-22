@@ -9,7 +9,7 @@ namespace SmartHome.Application.Models
         public int Id { get; init; }
         public string Name { get; set; }
         public bool IsOn { get; set; }
-        public abstract string DeviceType { get; }
+        public abstract DeviceType DeviceType { get; }
         public ToggleState GetStatus {  get; set; } = ToggleState.Off;
 
 

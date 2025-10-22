@@ -1,10 +1,11 @@
-﻿using SmartHome.Application.Models.Interfaces;
+﻿using SmartHome.Application.Enums;
+using SmartHome.Application.Models.Interfaces;
 
 namespace SmartHome.Application.Models
 {
     public class LightBulb : SmartDevice, IDimmable
     {
-        public override string DeviceType => "light bulb";
+        public override DeviceType DeviceType => DeviceType.LightBulb;
         public int Brightness { get; private set; }
 
         public void SetBrightness(int value)
@@ -20,7 +21,7 @@ namespace SmartHome.Application.Models
 
         public override bool SelfTest()
         {
-            Console.WriteLine($"Performing self-test for {Name} light bulb (id: {Id})...");
+            Console.WriteLine($"Performing self-test for {Name} Light bulb (id: {Id})...");
             return true;
         }
 
