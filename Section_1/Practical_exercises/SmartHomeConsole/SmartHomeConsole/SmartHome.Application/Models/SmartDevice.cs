@@ -7,12 +7,10 @@ namespace SmartHome.Application.Models
         private static int deviceCount = 0;
         public int Id { get; init; }
         public string Name { get; set; }
-        
         public bool IsOn { get; set; }
-
         public abstract string DeviceType { get; }
-
         public string GetStatus {  get; set; } = "Off";
+
 
         public SmartDevice()
         {

@@ -368,6 +368,5 @@ namespace SmartHome.Application.Services
         {
             Console.WriteLine("Exiting the application. Goodbye!");
         }
-
     }
 }

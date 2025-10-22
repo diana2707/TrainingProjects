@@ -7,6 +7,7 @@ namespace SmartHome.Application.Models
         public override string  DeviceType => "smart plug";
         public double CurrentWatts { get; private set; }
         public double TotalWh { get; private set; } = 0;
+        
         public void ResetEnergy()
         {
             TotalWh = 0;

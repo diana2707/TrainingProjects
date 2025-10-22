@@ -5,7 +5,6 @@ namespace SmartHome.Application.Models
     public class LightBulb : SmartDevice, IDimmable
     {
         public override string DeviceType => "light bulb";
-
         public int Brightness { get; private set; }
 
         public void SetBrightness(int value)

@@ -8,7 +8,6 @@ namespace SmartHome.Application.Services
     public class DeviceRegistry : IDeviceRegistry
     {
         List<SmartDevice> devices = [];
-
         public IReadOnlyList<SmartDevice> Devices => devices;
 
         public void Add(SmartDevice device)
