@@ -62,28 +62,7 @@ namespace SmartHome.Application.Services
                     $"ID: {device.Id}, " +
                     $"Type: {device.DeviceType}, " +
                     $"Power: {device.GetStatus}, " +
-                    $"{GetParticularAttribute()})");
-
-                string GetParticularAttribute()
-                {
-                    List<string> attributes = [];
-
-                    if (device is IDimmable dimmable) 
-                        attributes.Add($"Brightness: {dimmable.Brightness}%");
-                    
-
-                    if (device is ITemperatureControl tempControl)
-                        attributes.Add($"Target Temperature: {tempControl.TargetCelsius}°C");
-                    
-
-                    if (device is IMeasurableLoad measurableLoad)
-                        attributes.Add($"Total Wh: {measurableLoad.TotalWh}");
-
-                    if (device is IColorControl colorControl)
-                        attributes.Add($"Color: {colorControl.Color}");
-
-                    return string.Join(", ", attributes);
-                }
+                    $"{GetParticularAttribute(device)})");
             }
 
             return deviceDetails;
@@ -97,6 +76,27 @@ namespace SmartHome.Application.Services
         public bool IsValidId(int id)
         {
             return devices.Any(device => device.Id == id);
+        }
+
+        private string GetParticularAttribute(SmartDevice device)
+        {
+            List<string> attributes = [];
+
+            if (device is IDimmable dimmable)
+                attributes.Add($"Brightness: {dimmable.Brightness}%");
+
+
+            if (device is ITemperatureControl tempControl)
+                attributes.Add($"Target Temperature: {tempControl.TargetCelsius}°C");
+
+
+            if (device is IMeasurableLoad measurableLoad)
+                attributes.Add($"Total Wh: {measurableLoad.TotalWh}");
+
+            if (device is IColorControl colorControl)
+                attributes.Add($"Color: {colorControl.Color}");
+
+            return string.Join(", ", attributes);
         }
     }
 }
