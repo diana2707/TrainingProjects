@@ -42,8 +42,14 @@ namespace SmartHome.Application.Services
 
         public void Remove(SmartDevice device)
         {
-            Console.WriteLine($"Device removed from registry.");
+            if (!devices.Contains(device))
+            {
+                throw new InvalidOperationException($"Device {device.Name} is not in the registry.");
+            }  
+
             devices.Remove(device);
+
+            Console.WriteLine($"Device removed from registry.");
         }
 
         public List<string> ListAll()

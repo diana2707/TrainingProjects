@@ -121,7 +121,15 @@ namespace SmartHome.Application.Services
             int deviceId = GetValidDeviceId();
             SmartDevice device = _deviceRegistry.GetById(deviceId);
 
-            _deviceRegistry.Remove(device);
+            try
+            {
+                _deviceRegistry.Remove(device);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return;
+            }
         }
 
         private void ManageTogglePower()
@@ -324,12 +332,12 @@ namespace SmartHome.Application.Services
             return Convert.ToInt32(validInput);
         }
 
-        private string GetValidDeviceType()
+        private DeviceType GetValidDeviceType()
         {
             string userPrompt = $"Choose device type ({DeviceType.LightBulb}/{DeviceType.ColorBulb}/{DeviceType.Thermostat}/{DeviceType.SmartPlug}): ";
             Func<string, bool> condition = (input) => Enum.TryParse<DeviceType>(input, true, out DeviceType result) && Enum.IsDefined(typeof(DeviceType), result);
             
-            return GetValidInput(condition, userPrompt);
+            return Enum.Parse<DeviceType>(GetValidInput(condition, userPrompt), true);
         }
 
         private string GetValidInput(Func<string, bool> condition, string userPrompt, string errorMessage = "Invalid input.")
