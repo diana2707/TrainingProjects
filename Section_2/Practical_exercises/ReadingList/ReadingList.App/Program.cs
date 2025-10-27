@@ -1,2 +1,16 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿
+using ReadingList.App.Interfaces;
+
+namespace ReadingList.App
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            IDisplayer displayer = new Displayer();
+            AppController controller = new (displayer);
+
+            controller.Run();
+        }
+    }
+}
