@@ -1,5 +1,7 @@
 ﻿
+//using ReadingList.App.Commands;
 using ReadingList.App.Interfaces;
+//using ICommand = ReadingList.App.Commands.ICommand;
 
 namespace ReadingList.App
 {
@@ -7,8 +9,19 @@ namespace ReadingList.App
     {
         public static void Main(string[] args)
         {
+            //List<ICommand> commands = new()
+            //{
+            //    new ImportBooksCommand(),
+            //    // new ListAndQueryCommand(),
+            //    // new UpdateCommand(),
+            //    // new ExportCommand(),
+            //    // new HelpAndExitCommand()
+            //};
+
             IDisplayer displayer = new Displayer();
-            AppController controller = new (displayer);
+            IInputValidator validator = new InputValidator();
+
+            AppController controller = new (displayer, validator);
 
             controller.Run();
         }
