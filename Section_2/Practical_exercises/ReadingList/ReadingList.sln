@@ -16,6 +16,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingList.Tests", "ReadingList.Tests\ReadingList.Tests.csproj", "{F0CAE07A-9DC7-4677-8CAB-294B81248869}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "data", "data", "{78F3D75E-0FD2-4C5B-A8D0-84DBEFD63E6D}"
+	ProjectSection(SolutionItems) = preProject
+		CorrectSample1.csv = CorrectSample1.csv
+		CorrectSample2.csv = CorrectSample2.csv
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

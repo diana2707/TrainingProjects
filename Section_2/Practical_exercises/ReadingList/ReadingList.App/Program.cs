@@ -1,6 +1,8 @@
 ﻿
 //using ReadingList.App.Commands;
 using ReadingList.App.Interfaces;
+using ReadingList.Infrastructure.Interfaces;
+using ReadingList.Infrastructure;
 //using ICommand = ReadingList.App.Commands.ICommand;
 
 namespace ReadingList.App
@@ -20,8 +22,9 @@ namespace ReadingList.App
 
             IDisplayer displayer = new Displayer();
             IInputValidator validator = new InputValidator();
+            IRepository repository = new Repository();
 
-            AppController controller = new (displayer, validator);
+            AppController controller = new (displayer, validator, repository);
 
             controller.Run();
         }

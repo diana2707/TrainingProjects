@@ -1,5 +1,8 @@
 ﻿//using ReadingList.App.Commands;
 using ReadingList.App.Interfaces;
+using ReadingList.Domain;
+using ReadingList.Domain.Enums;
+using ReadingList.Infrastructure.Interfaces;
 using System;
 
 namespace ReadingList.App
@@ -9,24 +12,25 @@ namespace ReadingList.App
         //private List<ICommand> _commands = [];
         private IDisplayer _displayer;
         private IInputValidator _validator;
+        private IRepository _repository;
 
-        public AppController(/*List<ICommand> commands,*/ IDisplayer displayer, IInputValidator validator)
+        public AppController(/*List<ICommand> commands,*/ IDisplayer displayer, IInputValidator validator, IRepository repository)
         {
             //_commands = commands;
             _displayer = displayer;
             _validator = validator;
+            _repository = repository;
         }
 
         public void Run()
         {
+            _displayer.Clear(); // should i clear the display at start?
+            _displayer.PrintAppTitle();
+
             while (true)
             {
                 string input = string.Empty;
-                int option = 0;
-
-                _displayer.Clear();
-                _displayer.PrintAppTitle();
-                _displayer.PrintMainMenu();
+                Result<CommandType> command = null;
 
                 //for (int i = 0; i < _commands.Count; i++)
                 //{ 
@@ -38,40 +42,35 @@ namespace ReadingList.App
                 // try implementing a separate menu service that gets a displayer and validator and is the one the manages writing + validating
 
 
-                input = _displayer.GetUserInput("Select your option (1-5): ");
+                input = _displayer.GetUserInput("> ");
 
                 try
                 {
-                    option = _validator.ValidateMenuOption(input, 1, 5);
+                    command = _validator.ValidateCommand(input);
                 }
                 catch (ArgumentException ex)
                 {
                     _displayer.PrintErrorMessage(ex.Message);
-                    _displayer.PressKeyToContinue();
                     continue;
                 }
 
-                switch (option)
+                switch (command.Value)
                 {
-                    case 1:
+                    case CommandType.Import:
                         _displayer.PrintMessage("To be implemented");
                         break;
-                    case 2:
-                        _displayer.PrintMessage("To be implemented");
-                        break;
-                    case 3:
-                        _displayer.PrintMessage("To be implemented");
-                        break;
-                    case 4:
-                        _displayer.PrintMessage("To be implemented");
-                        break;
-                    case 5:
-                        _displayer.PrintMessage("To be implemented");
+                    default:
+                        _displayer.PrintErrorMessage("Invalid command. Type 'help' to list valid commands.");
                         break;
                 }
 
-                _displayer.PressKeyToContinue();
             }
+        }
+
+        private void ManageImport(string[] filePaths)
+        {
+            _repository.Import(filePaths);
+            
         }
             
     }

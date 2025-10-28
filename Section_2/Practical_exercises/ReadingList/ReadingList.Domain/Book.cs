@@ -3,7 +3,7 @@
     public class Book
     {
         private readonly Guid _id;
-        private int _rating;
+        private float _rating;
 
         // how should i treat the null casses for string properties?
         public Book()
@@ -18,7 +18,7 @@
         public int Pages { get; set; }
         public string Genre { get; set; }
         public bool Finished { get; set; }
-        public int Rating
+        public float Rating
         {
             get
             {

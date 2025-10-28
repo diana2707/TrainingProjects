@@ -13,4 +13,9 @@
     <None Remove="Commands\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ReadingList.Domain\ReadingList.Domain.csproj" />
+    <ProjectReference Include="..\ReadingList.Infrastructure\ReadingList.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

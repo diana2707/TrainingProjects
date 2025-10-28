@@ -1,17 +1,37 @@
 ﻿using ReadingList.App.Interfaces;
+using ReadingList.Domain.Enums;
+using ReadingList.Domain;
+
 
 namespace ReadingList.App
 {
     public class InputValidator : IInputValidator
     {
-        public int ValidateMenuOption(string input, int minOption, int maxOption)
+        public Result<CommandType> ValidateCommand(string input)
         {
-            if (int.TryParse(input, out int option) && option >= minOption && option <= maxOption)
+            string[] inputComponents = input.Split(' ');
+            CommandType command = CommandType.Invalid;
+
+            if (!Enum.TryParse<CommandType>(inputComponents[0], ignoreCase: true, out command) || !Enum.IsDefined(typeof(CommandType), command))
             {
-               return option;
+                
+               return Result<CommandType>.Failure("Invalid command. Type 'help' to list valid commands.");
             }
 
-            throw new ArgumentException($"Invalid menu option. Please enter a number between {minOption} and {maxOption}.");
+            if (inputComponents.Length == 1)
+            {
+                return Result<CommandType>.Failure("No arguments provided. At least one .csv file should be provided for import.");
+            }
+
+            for(int i = 1; i < inputComponents.Length; i++)
+            {
+                if (!inputComponents[i].EndsWith(".csv"))
+                {
+                    return Result<CommandType>.Failure("Invalid argument. Only .csv files are supported for import.");
+                }
+            }
+
+            return Result<CommandType>.Success(command, [.. inputComponents[1..]]);
         }
     }
 }

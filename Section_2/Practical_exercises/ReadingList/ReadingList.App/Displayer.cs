@@ -6,24 +6,10 @@ namespace ReadingList.App
 {
     public class Displayer : IDisplayer
     {
+        // add color for comands
         public void PrintAppTitle()
         {
-            Console.WriteLine();
-            Console.WriteLine("******************************************");
-            Console.WriteLine("********** READING LIST & STATS **********");
-            Console.WriteLine("******************************************");
-            Console.WriteLine();
-        }
-
-        public void PrintMainMenu()
-        {
-            Console.WriteLine();
-            Console.WriteLine("1. Import Books");
-            Console.WriteLine("2. List & Querry");
-            Console.WriteLine("3. Update");
-            Console.WriteLine("4. Export");
-            Console.WriteLine("5. Help & Exit");
-            Console.WriteLine();
+            Console.WriteLine("Reading List & Stats - type 'help' for available commands");
         }
 
         public string GetUserInput(string prompt)
