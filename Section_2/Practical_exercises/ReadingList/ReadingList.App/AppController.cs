@@ -51,6 +51,25 @@ namespace ReadingList.App
                     continue;
                 }
 
+                switch (option)
+                {
+                    case 1:
+                        _displayer.PrintMessage("To be implemented");
+                        break;
+                    case 2:
+                        _displayer.PrintMessage("To be implemented");
+                        break;
+                    case 3:
+                        _displayer.PrintMessage("To be implemented");
+                        break;
+                    case 4:
+                        _displayer.PrintMessage("To be implemented");
+                        break;
+                    case 5:
+                        _displayer.PrintMessage("To be implemented");
+                        break;
+                }
+
                 _displayer.PressKeyToContinue();
             }
         }

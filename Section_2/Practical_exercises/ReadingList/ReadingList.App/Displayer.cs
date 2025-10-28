@@ -51,6 +51,13 @@ namespace ReadingList.App
             Console.WriteLine();
         }
 
+        public void PrintMessage(string message)
+        {
+            Console.WriteLine();
+            Console.WriteLine($"{message}");
+            Console.WriteLine();
+        }
+
         public void Clear()
         {
             Console.Clear();

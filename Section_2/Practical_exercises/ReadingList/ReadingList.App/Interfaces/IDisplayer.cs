@@ -8,7 +8,9 @@ namespace ReadingList.App.Interfaces
         public void PrintMainMenu();
 
         public string GetUserInput(string prompt);
-       // public void PrintCommandOption(int commandNumber, Commands.ICommand command);
+        // public void PrintCommandOption(int commandNumber, Commands.ICommand command);
+
+        public void PrintMessage(string message);
 
         public void PrintErrorMessage(string message);
 
