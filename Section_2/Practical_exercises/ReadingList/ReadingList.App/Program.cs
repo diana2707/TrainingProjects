@@ -3,6 +3,7 @@
 using ReadingList.App.Interfaces;
 using ReadingList.Infrastructure.Interfaces;
 using ReadingList.Infrastructure;
+using ReadingList.Domain;
 //using ICommand = ReadingList.App.Commands.ICommand;
 
 namespace ReadingList.App
@@ -22,9 +23,11 @@ namespace ReadingList.App
 
             IDisplayer displayer = new Displayer();
             IInputValidator validator = new InputValidator();
-            IRepository repository = new Repository();
+            IRepository<Book> repository = new Repository<Book, Guid>(book => book.Id);
+            ICsvFileService csvFileService = new CsvFileService(repository);
 
-            AppController controller = new (displayer, validator, repository);
+
+            AppController controller = new (displayer, validator, csvFileService);
 
             controller.Run();
         }

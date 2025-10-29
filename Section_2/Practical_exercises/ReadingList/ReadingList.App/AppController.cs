@@ -12,14 +12,14 @@ namespace ReadingList.App
         //private List<ICommand> _commands = [];
         private IDisplayer _displayer;
         private IInputValidator _validator;
-        private IRepository _repository;
+        private ICsvFileService _csvFileService;
 
-        public AppController(/*List<ICommand> commands,*/ IDisplayer displayer, IInputValidator validator, IRepository repository)
+        public AppController(/*List<ICommand> commands,*/ IDisplayer displayer, IInputValidator validator, ICsvFileService csvFileService)
         {
             //_commands = commands;
             _displayer = displayer;
             _validator = validator;
-            _repository = repository;
+            _csvFileService = csvFileService;
         }
 
         public void Run()
@@ -69,7 +69,7 @@ namespace ReadingList.App
 
         private void ManageImport(string[] filePaths)
         {
-            _repository.Import(filePaths);
+            _csvFileService.Import(filePaths);
             
         }
             
