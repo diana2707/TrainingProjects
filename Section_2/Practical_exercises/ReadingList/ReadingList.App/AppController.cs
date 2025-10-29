@@ -44,6 +44,7 @@ namespace ReadingList.App
 
                 input = _displayer.GetUserInput("> ");
 
+                // use Result<T> so no exception in thrown anymore
                 try
                 {
                     command = _validator.ValidateCommand(input);

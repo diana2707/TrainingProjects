@@ -23,8 +23,9 @@ namespace ReadingList.App
 
             IDisplayer displayer = new Displayer();
             IInputValidator validator = new InputValidator();
-            IRepository<Book> repository = new Repository<Book, Guid>(book => book.Id);
-            ICsvFileService csvFileService = new CsvFileService(repository);
+            IRepository<Book> repository = new Repository<Book, int>(book => book.Id);
+            ICsvToBookMapper csvToBookMapper = new CsvToBookMapper();
+            ICsvFileService csvFileService = new CsvFileService(repository, csvToBookMapper);
 
 
             AppController controller = new (displayer, validator, csvFileService);

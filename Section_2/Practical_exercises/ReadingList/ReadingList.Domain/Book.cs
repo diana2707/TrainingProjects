@@ -6,8 +6,12 @@
         private float _rating;
 
         // how should i treat the null casses for string properties?
+        public Book(int id)
+        {
+            _id = id;
+        }
 
-        public int Id { get; set; }
+        public int Id => _id;
         public string Title { get; set; }
         public string Author { get; set; }
         public int Year { get; set; }

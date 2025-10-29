@@ -23,6 +23,10 @@ namespace ReadingList.Domain
 
         public string[] Arguments => _arguments;
 
+        public bool IsSuccess => _isSuccess;
+
+        public bool IsFailure => _isFailure;
+
         public static Result<T> Success(T value, string[] arguments = null)
         {
             return new Result<T>(value, arguments, true, null);

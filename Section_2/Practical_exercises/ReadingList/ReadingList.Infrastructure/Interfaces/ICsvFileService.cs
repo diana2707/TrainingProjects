@@ -8,6 +8,6 @@ namespace ReadingList.Infrastructure.Interfaces
 {
     public interface ICsvFileService
     {
-       // public void Import(string[] filePaths);
+       public Task Import(string[] filePaths);
     }
 }
