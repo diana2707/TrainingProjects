@@ -8,6 +8,7 @@ namespace ReadingList.Infrastructure.Interfaces
 {
     public interface ICsvFileService
     {
-       public Task Import(string[] filePaths);
+        public event EventHandler<string> LineMalformed;
+        public Task Import(string[] filePaths);
     }
 }

@@ -1,4 +1,5 @@
 ﻿//using ReadingList.App.Commands;
+using Microsoft.Extensions.Logging;
 using ReadingList.App.Interfaces;
 using ReadingList.Domain;
 using ReadingList.Domain.Enums;
@@ -13,18 +14,26 @@ namespace ReadingList.App
         private IDisplayer _displayer;
         private IInputValidator _validator;
         private ICsvFileService _csvFileService;
+        private ILogger<AppController> _logger;
 
         // create the logging flow
-        public AppController(/*List<ICommand> commands,*/ IDisplayer displayer, IInputValidator validator, ICsvFileService csvFileService)
+        public AppController(/*List<ICommand> commands,*/ 
+            IDisplayer displayer,
+            IInputValidator validator,
+            ICsvFileService csvFileService,
+            ILogger<AppController> logger)
         {
             //_commands = commands;
             _displayer = displayer;
             _validator = validator;
             _csvFileService = csvFileService;
+            _logger = logger;
         }
 
         public void Run()
         {
+            _csvFileService.LineMalformed += OnLineMalformed;
+
             _displayer.Clear(); // should i clear the display at start?
             _displayer.PrintAppTitle();
 
@@ -62,12 +71,16 @@ namespace ReadingList.App
             }
         }
 
+        private void OnLineMalformed(object? sender, string message)
+        {
+            _logger.LogWarning($"Malformed line from {sender}: {message}");
+        }
+
         private void ManageImport(string[] filePaths)
         {
             _displayer.PrintMessage("Importing books...");
             _csvFileService.Import(filePaths);
             _displayer.PrintMessage("Import completed.");
-        }
-            
+        } 
     }
 }

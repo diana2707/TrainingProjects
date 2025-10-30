@@ -18,24 +18,31 @@ namespace ReadingList.App
                return Result<CommandType>.Failure("Invalid command. Type 'help' to list valid commands.");
             }
 
+            return command switch
+            {
+                CommandType.Import => ValidateImportCommand(inputComponents, command),
+                _ => Result<CommandType>.Success(command, [.. inputComponents[1..]]),
+            };
+        }
+
+        private Result<CommandType> ValidateImportCommand(string[] inputComponents, CommandType command)
+        {
             if (inputComponents.Length == 1)
             {
                 return Result<CommandType>.Failure("No arguments provided. At least one .csv file should be provided for import.");
             }
 
-            for(int i = 1; i < inputComponents.Length; i++)
+            for (int i = 1; i < inputComponents.Length; i++)
             {
                 if (!inputComponents[i].EndsWith(".csv"))
                 {
                     return Result<CommandType>.Failure("Invalid argument. Only .csv files are supported for import.");
                 }
-
                 if (!File.Exists(inputComponents[i]))
                 {
                     return Result<CommandType>.Failure($"File not found: {inputComponents[i]}");
                 }
             }
-
             return Result<CommandType>.Success(command, [.. inputComponents[1..]]);
         }
     }

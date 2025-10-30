@@ -31,25 +31,27 @@ namespace ReadingList.Infrastructure
 
         private async Task ProcessFileAsync(string filePath)
         {
-            if (!File.Exists(filePath))
-            {
-                // log error
-            }
-
             string[] lines = await File.ReadAllLinesAsync(filePath);
-            foreach (string line in lines)
-            {
-                Result<Book> book = _csvToBookMapper.Map(line);
+
+            // Skip the header line
+            for (int i = 1; i < lines.Length; i++)
+            {   
+                Result<Book> book = _csvToBookMapper.Map(lines[i]);
                 if (book.IsSuccess)
                 {
                     _repository.Add(book.Value);
                 }
                 else
                 {
-                    // log malformed line
-                    LineMalformed?.Invoke(this, book.ErrorMessage);
+                    OnLineMalformed(book.ErrorMessage);
+                    
                 }
             }
+        }
+
+        private void OnLineMalformed(string message)
+        {
+            LineMalformed?.Invoke(this, message);
         }
     }
 }

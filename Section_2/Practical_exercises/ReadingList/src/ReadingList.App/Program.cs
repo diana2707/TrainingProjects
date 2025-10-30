@@ -4,6 +4,7 @@ using ReadingList.App.Interfaces;
 using ReadingList.Infrastructure.Interfaces;
 using ReadingList.Infrastructure;
 using ReadingList.Domain;
+using Microsoft.Extensions.Logging;
 //using ICommand = ReadingList.App.Commands.ICommand;
 
 namespace ReadingList.App
@@ -26,9 +27,11 @@ namespace ReadingList.App
             IRepository<Book> repository = new Repository<Book, int>(book => book.Id);
             ICsvToBookMapper csvToBookMapper = new CsvToBookMapper();
             ICsvFileService csvFileService = new CsvFileService(repository, csvToBookMapper);
+            ILogger<AppController> logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<AppController>();
 
 
-            AppController controller = new (displayer, validator, csvFileService);
+
+            AppController controller = new (displayer, validator, csvFileService, logger);
 
             controller.Run();
         }
