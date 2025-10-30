@@ -29,6 +29,11 @@ namespace ReadingList.App
                 {
                     return Result<CommandType>.Failure("Invalid argument. Only .csv files are supported for import.");
                 }
+
+                if (!File.Exists(inputComponents[i]))
+                {
+                    return Result<CommandType>.Failure($"File not found: {inputComponents[i]}");
+                }
             }
 
             return Result<CommandType>.Success(command, [.. inputComponents[1..]]);

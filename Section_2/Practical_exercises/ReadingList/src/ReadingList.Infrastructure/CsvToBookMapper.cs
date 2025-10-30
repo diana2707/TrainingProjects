@@ -55,6 +55,7 @@ namespace ReadingList.Infrastructure
                 Pages = validatedPages.Value,
                 Genre = parts[5],
                 Finished = validatedFinished.Value,
+                Rating = validatedRating.Value,
             };
 
             return Result<Book>.Success(newBook);

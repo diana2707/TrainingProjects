@@ -27,6 +27,8 @@ namespace ReadingList.Domain
 
         public bool IsFailure => _isFailure;
 
+        public string ErrorMessage => _errorMessage;
+
         public static Result<T> Success(T value, string[] arguments = null)
         {
             return new Result<T>(value, arguments, true, null);

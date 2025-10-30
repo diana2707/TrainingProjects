@@ -14,6 +14,7 @@ namespace ReadingList.App
         private IInputValidator _validator;
         private ICsvFileService _csvFileService;
 
+        // create the logging flow
         public AppController(/*List<ICommand> commands,*/ IDisplayer displayer, IInputValidator validator, ICsvFileService csvFileService)
         {
             //_commands = commands;
@@ -38,27 +39,20 @@ namespace ReadingList.App
                 //    _displayer.PrintCommandOption(commandNumber, _commands[i]);
                 //}
 
-
-                // try implementing a separate menu service that gets a displayer and validator and is the one the manages writing + validating
-
-
                 input = _displayer.GetUserInput("> ");
 
-                // use Result<T> so no exception in thrown anymore
-                try
+                command = _validator.ValidateCommand(input);
+
+                if (command.IsFailure)
                 {
-                    command = _validator.ValidateCommand(input);
-                }
-                catch (ArgumentException ex)
-                {
-                    _displayer.PrintErrorMessage(ex.Message);
+                    _displayer.PrintErrorMessage(command.ErrorMessage);
                     continue;
                 }
-
+                  
                 switch (command.Value)
                 {
                     case CommandType.Import:
-                        _displayer.PrintMessage("To be implemented");
+                        ManageImport(command.Arguments);
                         break;
                     default:
                         _displayer.PrintErrorMessage("Invalid command. Type 'help' to list valid commands.");
@@ -70,8 +64,9 @@ namespace ReadingList.App
 
         private void ManageImport(string[] filePaths)
         {
+            _displayer.PrintMessage("Importing books...");
             _csvFileService.Import(filePaths);
-            
+            _displayer.PrintMessage("Import completed.");
         }
             
     }

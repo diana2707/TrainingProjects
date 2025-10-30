@@ -1,11 +1,12 @@
 ﻿using ReadingList.Domain;
 using ReadingList.Infrastructure.Interfaces;
+using System.Collections.Concurrent;
 
 namespace ReadingList.Infrastructure
 {
     public class Repository<T, TKey> : IRepository<T>
     {
-        private Dictionary<TKey, T> _items = [];
+        private ConcurrentDictionary<TKey, T> _items = [];
         private Func<T, TKey> _keySelector;
 
         public Repository(Func<T, TKey> keySelector)
@@ -13,18 +14,19 @@ namespace ReadingList.Infrastructure
             _keySelector = keySelector;
         }
 
-        public Result<T> Add(T value)
+        public Result<T> Add(T item)
         {
-            TKey key = _keySelector(value);
+            if (item == null)
+                return Result<T>.Failure("Value cannot be null.");
 
-            if (_items.ContainsKey(key))
+            TKey key = _keySelector(item);
+
+            if (!_items.TryAdd(key, item))
             {
                 return Result<T>.Failure("An item with the same key already exists.");
             }
-            
-            _items[key] = value;
-            return Result<T>.Success(value);
-        }
 
+            return Result<T>.Success(item);
+        }
     }
 }
