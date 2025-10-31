@@ -97,6 +97,9 @@ namespace ReadingList.App
                     case CommandType.Help:
                         ManageHelp();
                         break;
+                    case CommandType.Exit:
+                        _displayer.PrintMessage("Exiting application. Goodbye!");
+                        return;
                     default:
                         _displayer.PrintErrorMessage("Invalid command. Type 'help' to list valid commands.");
                         break;

@@ -20,7 +20,8 @@ namespace ReadingList.App
                 { "stats", CommandType.Stats},
                 { "mark finished", CommandType.MarkFinished },
                 { "rate", CommandType.Rate },
-                { "help", CommandType.Help }
+                { "help", CommandType.Help },
+                { "exit", CommandType.Exit }
             };
 
             CommandType command = CommandType.Invalid;
@@ -53,6 +54,7 @@ namespace ReadingList.App
                 CommandType.MarkFinished => ValidateMarkFinishedCommand(command, arguments),
                 CommandType.Rate => ValidateRateCommand(command, arguments),
                 CommandType.Help => ValidateHelpCommand(command, arguments),
+                CommandType.Exit => ValidateExitCommand(command, arguments),
                 _ => Result<CommandType>.Success(command, arguments),
             };
         }
@@ -176,5 +178,14 @@ namespace ReadingList.App
             return Result<CommandType>.Success(command);
         }
 
+        private Result<CommandType> ValidateExitCommand(CommandType command, string[] arguments)
+        {
+            if (arguments.Length > 0)
+            {
+                return Result<CommandType>.Failure("The 'exit' command does not accept any arguments.");
+            }
+
+            return Result<CommandType>.Success(command);
+        }
     }
 }
