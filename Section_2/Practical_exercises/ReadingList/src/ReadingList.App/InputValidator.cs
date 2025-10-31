@@ -17,6 +17,7 @@ namespace ReadingList.App
                 { "filter finished", CommandType.FilterFinished },
                 { "top rated", CommandType.TopRated },
                 { "by author", CommandType.ByAuthor },
+                { "stats", CommandType.Stats}
             };
 
             CommandType command = CommandType.Invalid;
@@ -26,7 +27,7 @@ namespace ReadingList.App
 
             foreach (var commandKey in commands.Keys)
             {
-                if (input.StartsWith(commandKey, StringComparison.InvariantCultureIgnoreCase) && commandKey.Length > commandInput.Length)
+                if (input.StartsWith(commandKey) && commandKey.Length > commandInput.Length)
                 {
                     commandInput = commandKey;
                     arguments = input.Substring(commandKey.Length).Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
@@ -45,6 +46,7 @@ namespace ReadingList.App
                 CommandType.FilterFinished => ValidateFilterFinishedCommand(command, arguments),
                 CommandType.TopRated => ValidateTopRatedCommand(command, arguments),
                 CommandType.ByAuthor => ValidateByAuthorCommand(command, arguments),
+                CommandType.Stats => ValidateStatsCommand(command, arguments),
                 _ => Result<CommandType>.Success(command, arguments),
             };
         }
@@ -113,5 +115,14 @@ namespace ReadingList.App
             return Result<CommandType>.Success(command, arguments);
         }
 
+        private Result<CommandType> ValidateStatsCommand(CommandType command, string[] arguments)
+        {
+            if (arguments.Length > 0)
+            {
+                return Result<CommandType>.Failure("The 'stats' command does not accept any arguments.");
+            }
+
+            return Result<CommandType>.Success(command);
+        }
     }
 }

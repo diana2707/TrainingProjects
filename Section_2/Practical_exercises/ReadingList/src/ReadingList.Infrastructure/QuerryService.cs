@@ -1,6 +1,8 @@
 ﻿using ReadingList.Domain;
+using ReadingList.Infrastructure.DTOs;
 using ReadingList.Infrastructure.Extensions;
 using ReadingList.Infrastructure.Interfaces;
+using System.Text.RegularExpressions;
 
 namespace ReadingList.Infrastructure
 {
@@ -79,6 +81,41 @@ namespace ReadingList.Infrastructure
             }
 
             return Result<IReadOnlyList<Book>>.Success(filteredList.ToList().AsReadOnly());
+        }
+
+        public Result<BookStatsDto> GetStatistics()
+        {
+            IEnumerable<Book> bookList = _repository.GetAll();
+
+            if (!bookList.Any())
+            {
+                return Result<BookStatsDto>.Failure("No books found in the reading list.");
+            }
+
+            int bookCount = bookList.Count();
+            int finishedCount = bookList.Count(book => book.Finished);
+            float averageRating = bookList.AverageRating();
+
+            Dictionary<string, int> pagesByGenre = bookList.GroupBy(book => book.Genre).
+                                                            ToDictionary(group => group.Key,
+                                                                         group => group.Sum(book => book.Pages));
+
+            Dictionary<string, int> top3AuthorsByBookCount = bookList.GroupBy(book => book.Author)
+                                                    .OrderByDescending(group => group.Count())
+                                                    .Take(3)
+                                                    .ToDictionary(group => group.Key,
+                                                                  group => group.Count());
+
+            BookStatsDto stats = new()
+            {
+                BookCount = bookCount,
+                FinishedCount = finishedCount,
+                AverageRating = averageRating,
+                PagesByGenre = pagesByGenre,
+                Top3AuthorsByBookCount = top3AuthorsByBookCount,
+            };
+
+            return Result<BookStatsDto>.Success(stats);
         }
     }
 }

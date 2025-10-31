@@ -1,4 +1,5 @@
 ﻿using ReadingList.Domain;
+using ReadingList.Infrastructure.DTOs;
 using System;
 
 namespace ReadingList.App.Interfaces
@@ -15,6 +16,8 @@ namespace ReadingList.App.Interfaces
         public void PrintErrorMessage(string message);
 
         public void PrintBookList(IReadOnlyList<Book> list);
+
+        public void PrintStatistics(BookStatsDto stats);
 
         public void Clear();
 

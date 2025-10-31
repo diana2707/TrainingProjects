@@ -10,5 +10,6 @@ namespace ReadingList.Domain.Enums
         FilterFinished,
         TopRated,
         ByAuthor,
+        Stats
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using ReadingList.App.Interfaces;
 using ReadingList.Domain;
 using ReadingList.Domain.Enums;
+using ReadingList.Infrastructure.DTOs;
 using ReadingList.Infrastructure.Interfaces;
 using System;
 
@@ -44,6 +45,7 @@ namespace ReadingList.App
 
             while (true)
             {
+                // should await everything before next iteration so > does not apear too soon
                 string input = string.Empty;
                 Result<CommandType> command = null;
 
@@ -79,6 +81,9 @@ namespace ReadingList.App
                         break;
                     case CommandType.ByAuthor:
                         ManageByAuthor(command.Arguments);
+                        break;
+                    case CommandType.Stats:
+                        ManageStats();
                         break;
                     default:
                         _displayer.PrintErrorMessage("Invalid command. Type 'help' to list valid commands.");
@@ -160,5 +165,12 @@ namespace ReadingList.App
 
             _displayer.PrintBookList(list.Value);
         }
+
+        private void ManageStats()
+        {
+            Result<BookStatsDto> stats = _querryService.GetStatistics();
+            _displayer.PrintStatistics(stats.Value);
+        }
+
     }
 }

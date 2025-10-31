@@ -1,4 +1,5 @@
 ﻿using ReadingList.Domain;
+using ReadingList.Infrastructure.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +14,6 @@ namespace ReadingList.Infrastructure.Interfaces
         public Result<IReadOnlyList<Book>> FilterFinished();
         public Result<IReadOnlyList<Book>> FilterTopRated(int topNumber);
         public Result<IReadOnlyList<Book>> FilterByAuthor(string authorName);
+        public Result<BookStatsDto> GetStatistics();
     }
 }

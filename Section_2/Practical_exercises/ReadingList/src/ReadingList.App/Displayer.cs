@@ -1,6 +1,7 @@
 ﻿//using ReadingList.App.Commands;
 using ReadingList.App.Interfaces;
 using ReadingList.Domain;
+using ReadingList.Infrastructure.DTOs;
 using System;
 
 namespace ReadingList.App
@@ -40,6 +41,29 @@ namespace ReadingList.App
                     $"Finished: {book.Finished}, " +
                     $"Rating: {book.Rating}");
             }
+        }
+
+        // display in table format
+        public void PrintStatistics(BookStatsDto stats)
+        {
+            Console.WriteLine();
+            Console.WriteLine("Reading List Statistics:");
+            Console.WriteLine("------------------------");
+            Console.WriteLine($"Total Books: {stats.BookCount}");
+
+            Console.WriteLine($"Finished Books: {stats.FinishedCount}");
+            Console.WriteLine($"Average Rating: {stats.AverageRating:F2}");
+            Console.WriteLine("Pages by Genre:");
+            foreach (var genre in stats.PagesByGenre)
+            {
+                Console.WriteLine($"     {genre.Key}: {genre.Value} pages");
+            }
+            Console.WriteLine("Top 3 Authors by Book Count:");
+            foreach (var author in stats.Top3AuthorsByBookCount)
+            {
+                Console.WriteLine($"     {author.Key}: {author.Value} books");
+            }
+            Console.WriteLine();
         }
 
         public void PrintErrorMessage(string message)
