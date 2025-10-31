@@ -24,15 +24,16 @@ namespace ReadingList.App
 
             IDisplayer displayer = new Displayer();
             IInputValidator validator = new InputValidator();
-            IRepository<Book> repository = new Repository<Book, int>(book => book.Id);
+            IRepository<Book, int> repository = new Repository<Book, int>(book => book.Id);
             ICsvToBookMapper csvToBookMapper = new CsvToBookMapper();
             ICsvFileService csvFileService = new CsvFileService(repository, csvToBookMapper);
             IQuerryService querryService = new QuerryService(repository);
+            IUpdateService updateService = new UpdateService(repository);
             ILogger<AppController> logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<AppController>();
 
 
 
-            AppController controller = new (displayer, validator, csvFileService, querryService, logger);
+            AppController controller = new (displayer, validator, csvFileService, querryService, updateService, logger);
 
             controller.Run();
         }

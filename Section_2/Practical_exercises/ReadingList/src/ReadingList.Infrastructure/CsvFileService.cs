@@ -10,10 +10,10 @@ namespace ReadingList.Infrastructure
 {
     public class CsvFileService : ICsvFileService
     {
-        private IRepository<Book> _repository;
+        private IRepository<Book, int> _repository;
         private ICsvToBookMapper _csvToBookMapper;
 
-        public CsvFileService(IRepository<Book> repository, ICsvToBookMapper csvToBookMapper)
+        public CsvFileService(IRepository<Book, int> repository, ICsvToBookMapper csvToBookMapper)
         {
             _repository = repository;
             _csvToBookMapper = csvToBookMapper;

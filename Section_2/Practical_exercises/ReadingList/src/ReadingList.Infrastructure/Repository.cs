@@ -4,7 +4,7 @@ using System.Collections.Concurrent;
 
 namespace ReadingList.Infrastructure
 {
-    public class Repository<T, TKey> : IRepository<T>
+    public class Repository<T, TKey> : IRepository<T, TKey>
     {
         private ConcurrentDictionary<TKey, T> _items = [];
         private Func<T, TKey> _keySelector;
@@ -33,7 +33,24 @@ namespace ReadingList.Infrastructure
 
         public IEnumerable<T> GetAll()
         {
+            // make it return Result<IEnumerbale> and manage here the situation where no items exist
             return _items.Values;
+        }
+
+        public bool Contains(TKey key)
+        {
+            return _items.ContainsKey(key);
+        }
+
+        // if thies is kind of a collection should i return Result instead of throwing exception?
+        public Result<T> GetByKey(TKey key)
+        {
+            if (!_items.TryGetValue(key, out T value))
+            {
+                return Result<T>.Failure($"No item with key {key} found.");
+            } 
+
+            return Result<T>.Success(value);
         }
     }
 }

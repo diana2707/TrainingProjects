@@ -79,7 +79,8 @@ namespace ReadingList.Infrastructure
             {
                 return Result<int>.Failure("Invalid ID format. ID must be a positive integer.");
             }
-            if (id <= 0)
+
+            if (id < 0)
             {
                 return Result<int>.Failure("ID must be a positive integer.");
             }

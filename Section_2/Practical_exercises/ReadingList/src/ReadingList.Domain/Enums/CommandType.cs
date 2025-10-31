@@ -10,6 +10,7 @@ namespace ReadingList.Domain.Enums
         FilterFinished,
         TopRated,
         ByAuthor,
-        Stats
+        Stats,
+        MarkFinished
     }
 }

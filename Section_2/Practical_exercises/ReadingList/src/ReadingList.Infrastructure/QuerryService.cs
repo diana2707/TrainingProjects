@@ -8,9 +8,9 @@ namespace ReadingList.Infrastructure
 {
     public class QuerryService : IQuerryService
     {
-        private readonly IRepository<Book> _repository;
+        private readonly IRepository<Book, int> _repository;
 
-        public QuerryService(IRepository<Book> repository)
+        public QuerryService(IRepository<Book, int> repository)
         {
             _repository = repository;
         }

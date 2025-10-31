@@ -16,6 +16,7 @@ namespace ReadingList.App
         private IInputValidator _validator;
         private ICsvFileService _csvFileService;
         private IQuerryService _querryService;
+        private IUpdateService _updateService;
         private ILogger<AppController> _logger;
 
         // create the logging flow
@@ -24,6 +25,7 @@ namespace ReadingList.App
             IInputValidator validator,
             ICsvFileService csvFileService,
             IQuerryService querryService,
+            IUpdateService updateService,
             ILogger<AppController> logger)
         {
             //_commands = commands;
@@ -31,6 +33,7 @@ namespace ReadingList.App
             _validator = validator;
             _csvFileService = csvFileService;
             _querryService = querryService;
+            _updateService = updateService;
             _logger = logger;
         }
 
@@ -84,6 +87,9 @@ namespace ReadingList.App
                         break;
                     case CommandType.Stats:
                         ManageStats();
+                        break;
+                    case CommandType.MarkFinished:
+                        ManageMarkFinished(command.Arguments);
                         break;
                     default:
                         _displayer.PrintErrorMessage("Invalid command. Type 'help' to list valid commands.");
@@ -140,6 +146,7 @@ namespace ReadingList.App
 
         private void ManageTopRated(string[] arguments)
         {
+            // should not parse here, find a way to pass arguments properly
             int topNumber = int.Parse(arguments[0]);
             Result<IReadOnlyList<Book>> list = _querryService.FilterTopRated(topNumber);
 
@@ -154,6 +161,10 @@ namespace ReadingList.App
 
         private void ManageByAuthor(string[] arguments)
         {
+            // should not do this here
+            // need dtos for passing info around
+            // modify to request quotes for names with spaces
+            // modify the extension method to handle names correctly
             string authorName = string.Join(' ', arguments);
             Result<IReadOnlyList<Book>> list = _querryService.FilterByAuthor(authorName);
 
@@ -170,6 +181,20 @@ namespace ReadingList.App
         {
             Result<BookStatsDto> stats = _querryService.GetStatistics();
             _displayer.PrintStatistics(stats.Value);
+        }
+        private void ManageMarkFinished(string[] arguments)
+        {
+            // should not parse here
+            int id = int.Parse(arguments[0]);
+            Result<Book> markedFininshed = _updateService.MarkBookAsFinished(id);
+
+            if (markedFininshed.IsFailure)
+            {
+                _displayer.PrintErrorMessage(markedFininshed.ErrorMessage);
+                return;
+            }
+
+            _displayer.PrintMessage($"Book '{markedFininshed.Value.Title}' is marked as finished.");
         }
 
     }
