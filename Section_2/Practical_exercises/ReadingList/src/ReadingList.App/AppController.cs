@@ -91,6 +91,9 @@ namespace ReadingList.App
                     case CommandType.MarkFinished:
                         ManageMarkFinished(command.Arguments);
                         break;
+                    case CommandType.Rate:
+                        ManageRate(command.Arguments);
+                        break;
                     default:
                         _displayer.PrintErrorMessage("Invalid command. Type 'help' to list valid commands.");
                         break;
@@ -197,5 +200,19 @@ namespace ReadingList.App
             _displayer.PrintMessage($"Book '{markedFininshed.Value.Title}' is marked as finished.");
         }
 
+        private void ManageRate(string[] arguments)
+        {
+            // should not parse here
+            int id = int.Parse(arguments[0]);
+            float rating = float.Parse(arguments[1]);
+
+            Result<Book> ratedBook = _updateService.RateBook(id, rating);
+            if (ratedBook.IsFailure)
+            {
+                _displayer.PrintErrorMessage(ratedBook.ErrorMessage);
+                return;
+            }
+            _displayer.PrintMessage($"Book '{ratedBook.Value.Title}' is rated {ratedBook.Value.Rating}.");
+        }
     }
 }

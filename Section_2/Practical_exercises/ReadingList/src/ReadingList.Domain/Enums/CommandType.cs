@@ -11,6 +11,7 @@ namespace ReadingList.Domain.Enums
         TopRated,
         ByAuthor,
         Stats,
-        MarkFinished
+        MarkFinished,
+        Rate,
     }
 }

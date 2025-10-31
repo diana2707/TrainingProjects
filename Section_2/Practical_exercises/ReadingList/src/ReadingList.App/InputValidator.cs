@@ -18,7 +18,8 @@ namespace ReadingList.App
                 { "top rated", CommandType.TopRated },
                 { "by author", CommandType.ByAuthor },
                 { "stats", CommandType.Stats},
-                { "mark finished", CommandType.MarkFinished   }
+                { "mark finished", CommandType.MarkFinished },
+                { "rate", CommandType.Rate },
             };
 
             CommandType command = CommandType.Invalid;
@@ -49,8 +50,29 @@ namespace ReadingList.App
                 CommandType.ByAuthor => ValidateByAuthorCommand(command, arguments),
                 CommandType.Stats => ValidateStatsCommand(command, arguments),
                 CommandType.MarkFinished => ValidateMarkFinishedCommand(command, arguments),
+                CommandType.Rate => ValidateRateCommand(command, arguments),
                 _ => Result<CommandType>.Success(command, arguments),
             };
+        }
+
+        private Result<CommandType> ValidateRateCommand(CommandType command, string[] arguments)
+        {
+            if (arguments.Length != 2)
+            {
+                return Result<CommandType>.Failure("The 'rate' command requires exactly two arguments: the book ID and the rating(0-5).");
+            }
+
+            if (!int.TryParse(arguments[0], out int id) || id < 0)
+            {
+                return Result<CommandType>.Failure("Invalid argument. The book ID must be a positive integer.");
+            }
+
+            if (!float.TryParse(arguments[1], out float rating) || rating < 0 || rating > 5)
+            {
+                return Result<CommandType>.Failure("Invalid argument. The rating must be an integer between 0 and 5.");
+            }
+
+            return Result<CommandType>.Success(command, arguments);
         }
 
         private Result<CommandType> ValidateMarkFinishedCommand(CommandType command, string[] arguments)

@@ -34,5 +34,24 @@ namespace ReadingList.Infrastructure
 
             return Result<Book>.Success(book.Value);
         } 
+
+        public Result<Book> RateBook(int id, float rating)
+        {
+            if (!_repository.Contains(id))
+            {
+                return Result<Book>.Failure($"No book with ID {id} found in the reading list.");
+            }
+
+            Result<Book> book = _repository.GetByKey(id);
+
+            if (book.IsFailure)
+            {
+                return Result<Book>.Failure(book.ErrorMessage);
+            }
+
+            book.Value.Rating = rating;
+
+            return Result<Book>.Success(book.Value);
+        }
     }
 }
