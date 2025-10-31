@@ -5,6 +5,7 @@ namespace ReadingList.Domain.Enums
     public enum CommandType
     {
         Invalid,
-        Import
+        Import,
+        ListAll
     }
 }

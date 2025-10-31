@@ -1,6 +1,7 @@
 ﻿using ReadingList.App.Interfaces;
-using ReadingList.Domain.Enums;
 using ReadingList.Domain;
+using ReadingList.Domain.Enums;
+using System.Globalization;
 
 
 namespace ReadingList.App
@@ -9,41 +10,67 @@ namespace ReadingList.App
     {
         public Result<CommandType> ValidateCommand(string input)
         {
-            string[] inputComponents = input.Split(' ');
-            CommandType command = CommandType.Invalid;
-
-            if (!Enum.TryParse<CommandType>(inputComponents[0], ignoreCase: true, out command) || !Enum.IsDefined(typeof(CommandType), command))
+            Dictionary<string, CommandType> commands = new()
             {
-                
-               return Result<CommandType>.Failure("Invalid command. Type 'help' to list valid commands.");
+                { "import", CommandType.Import },
+                { "list all", CommandType.ListAll },
+            };
+
+            CommandType command = CommandType.Invalid;
+            string tempCommand = string.Empty;
+            string[] arguments = [];
+
+
+            foreach (var cmd in commands.Keys)
+            {
+                if (input.StartsWith(cmd, StringComparison.InvariantCultureIgnoreCase) && cmd.Length > tempCommand.Length)
+                {
+                    tempCommand = cmd;
+                    arguments = input.Substring(cmd.Length).Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                }
+            }
+
+            if (string.IsNullOrEmpty(tempCommand) || !commands.TryGetValue(tempCommand, out command))
+            {
+                return Result<CommandType>.Failure("Invalid command. Type 'help' to list valid commands.");
             }
 
             return command switch
             {
-                CommandType.Import => ValidateImportCommand(inputComponents, command),
-                _ => Result<CommandType>.Success(command, [.. inputComponents[1..]]),
+                CommandType.Import => ValidateImportCommand(command, arguments),
+                CommandType.ListAll => ValidateListAllCommand(command, arguments),
+                _ => Result<CommandType>.Success(command, arguments),
             };
         }
 
-        private Result<CommandType> ValidateImportCommand(string[] inputComponents, CommandType command)
+        private Result<CommandType> ValidateImportCommand(CommandType command, string[] arguments)
         {
-            if (inputComponents.Length == 1)
+            if (arguments.Length == 0)
             {
                 return Result<CommandType>.Failure("No arguments provided. At least one .csv file should be provided for import.");
             }
 
-            for (int i = 1; i < inputComponents.Length; i++)
+            for (int i = 0; i < arguments.Length; i++)
             {
-                if (!inputComponents[i].EndsWith(".csv"))
+                if (!arguments[i].EndsWith(".csv"))
                 {
                     return Result<CommandType>.Failure("Invalid argument. Only .csv files are supported for import.");
                 }
-                if (!File.Exists(inputComponents[i]))
+                if (!File.Exists(arguments[i]))
                 {
-                    return Result<CommandType>.Failure($"File not found: {inputComponents[i]}");
+                    return Result<CommandType>.Failure($"File not found: {arguments[i]}");
                 }
             }
-            return Result<CommandType>.Success(command, [.. inputComponents[1..]]);
+            return Result<CommandType>.Success(command, [.. arguments[1..]]);
+        }
+
+        private Result<CommandType> ValidateListAllCommand(CommandType command, string[] arguments)
+        {
+            if (arguments.Length > 0)
+            {
+                return Result<CommandType>.Failure("The 'list all' command does not accept any arguments.");
+            }
+            return Result<CommandType>.Success(command);
         }
     }
 }

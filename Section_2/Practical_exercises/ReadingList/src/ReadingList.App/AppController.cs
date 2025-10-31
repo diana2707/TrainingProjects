@@ -30,6 +30,7 @@ namespace ReadingList.App
             _logger = logger;
         }
 
+        // remember to log errors
         public void Run()
         {
             _csvFileService.LineMalformed += OnLineMalformed;
@@ -64,6 +65,10 @@ namespace ReadingList.App
                     case CommandType.Import:
                         ManageImport(command.Arguments);
                         break;
+                    case CommandType.ListAll:
+                        //ManageListAll();
+                        Console.WriteLine("List all command selected - not yet implemented.");
+                        break;
                     default:
                         _displayer.PrintErrorMessage("Invalid command. Type 'help' to list valid commands.");
                         break;
@@ -84,6 +89,7 @@ namespace ReadingList.App
 
         private void ManageImport(string[] filePaths)
         {
+            // should also report count?
             _displayer.PrintMessage("Importing books...");
             _csvFileService.Import(filePaths);
             _displayer.PrintMessage("Import completed.");
