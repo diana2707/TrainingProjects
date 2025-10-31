@@ -20,6 +20,7 @@ namespace ReadingList.App
                 { "stats", CommandType.Stats},
                 { "mark finished", CommandType.MarkFinished },
                 { "rate", CommandType.Rate },
+                { "help", CommandType.Help }
             };
 
             CommandType command = CommandType.Invalid;
@@ -51,6 +52,7 @@ namespace ReadingList.App
                 CommandType.Stats => ValidateStatsCommand(command, arguments),
                 CommandType.MarkFinished => ValidateMarkFinishedCommand(command, arguments),
                 CommandType.Rate => ValidateRateCommand(command, arguments),
+                CommandType.Help => ValidateHelpCommand(command, arguments),
                 _ => Result<CommandType>.Success(command, arguments),
             };
         }
@@ -163,5 +165,16 @@ namespace ReadingList.App
 
             return Result<CommandType>.Success(command);
         }
+
+        private Result<CommandType> ValidateHelpCommand(CommandType command, string[] arguments)
+        {
+            if (arguments.Length > 0)
+            {
+                return Result<CommandType>.Failure("The 'help' command does not accept any arguments.");
+            }
+
+            return Result<CommandType>.Success(command);
+        }
+
     }
 }

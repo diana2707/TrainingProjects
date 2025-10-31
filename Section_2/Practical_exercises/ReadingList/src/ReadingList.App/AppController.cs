@@ -94,6 +94,9 @@ namespace ReadingList.App
                     case CommandType.Rate:
                         ManageRate(command.Arguments);
                         break;
+                    case CommandType.Help:
+                        ManageHelp();
+                        break;
                     default:
                         _displayer.PrintErrorMessage("Invalid command. Type 'help' to list valid commands.");
                         break;
@@ -214,5 +217,12 @@ namespace ReadingList.App
             }
             _displayer.PrintMessage($"Book '{ratedBook.Value.Title}' is rated {ratedBook.Value.Rating}.");
         }
+
+        private void ManageHelp()
+        {
+            // should make a HelpService?
+            _displayer.PrintHelp();
+        }
+
     }
 }

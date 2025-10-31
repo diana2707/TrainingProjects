@@ -13,5 +13,9 @@ namespace ReadingList.Domain.Enums
         Stats,
         MarkFinished,
         Rate,
+        ExportJson,
+        ExportCsv,
+        Help,
+        Exit
     }
 }

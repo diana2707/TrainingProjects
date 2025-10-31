@@ -19,8 +19,10 @@ namespace ReadingList.App.Interfaces
 
         public void PrintStatistics(BookStatsDto stats);
 
+        public void PrintHelp();
+
         public void Clear();
 
-        public void PressKeyToContinue();
+        //public void PressKeyToContinue();
     }
 }
