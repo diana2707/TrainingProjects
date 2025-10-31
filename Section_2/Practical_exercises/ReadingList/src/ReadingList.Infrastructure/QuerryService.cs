@@ -28,12 +28,26 @@ namespace ReadingList.Infrastructure
         {
             IEnumerable<Book> list = _repository.GetAll().Where(book => book.Finished);
 
-            if (list.Count() == 0)
+            if (!list.Any())
             {
                 return Result<IReadOnlyList<Book>>.Failure("No finished books found in the reading list.");
             }
 
             return Result<IReadOnlyList<Book>>.Success(list.ToList().AsReadOnly());
+        }
+
+        public Result<IReadOnlyList<Book>> FilterTopRated(int topNumber)
+        {
+            IEnumerable<Book> list = _repository.GetAll();
+
+            if (!list.Any())
+            {
+                return Result<IReadOnlyList<Book>>.Failure("No books found in the reading list.");
+            }
+
+            IEnumerable<Book> topRated = list.OrderByDescending(book => book.Rating).Take(topNumber);
+
+            return Result<IReadOnlyList<Book>>.Success(topRated.ToList().AsReadOnly());
         }
     }
 }

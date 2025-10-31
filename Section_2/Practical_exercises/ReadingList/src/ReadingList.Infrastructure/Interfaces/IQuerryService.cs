@@ -11,5 +11,6 @@ namespace ReadingList.Infrastructure.Interfaces
     {
         public Result<IReadOnlyList<Book>> ListAll();
         public Result<IReadOnlyList<Book>> FilterFinished();
+        public Result<IReadOnlyList<Book>> FilterTopRated(int topNumber);
     }
 }

@@ -15,6 +15,7 @@ namespace ReadingList.App
                 { "import", CommandType.Import },
                 { "list all", CommandType.ListAll },
                 { "filter finished", CommandType.FilterFinished },
+                { "top rated", CommandType.TopRated },
             };
 
             CommandType command = CommandType.Invalid;
@@ -41,6 +42,7 @@ namespace ReadingList.App
                 CommandType.Import => ValidateImportCommand(command, arguments),
                 CommandType.ListAll => ValidateListAllCommand(command, arguments),
                 CommandType.FilterFinished => ValidateFilterFinished(command, arguments),
+                CommandType.TopRated => ValidateTopRated(command, arguments),
                 _ => Result<CommandType>.Success(command, arguments),
             };
         }
@@ -82,6 +84,21 @@ namespace ReadingList.App
                 return Result<CommandType>.Failure("The 'filter finished' command does not accept any arguments.");
             }
             return Result<CommandType>.Success(command);
+        }
+
+        private Result<CommandType> ValidateTopRated(CommandType command, string[] arguments)
+        {
+            if (arguments.Length != 1)
+            {
+                return Result<CommandType>.Failure("The 'top rated' command requires exactly one argument specifying the number of top-rated books to display.");
+            }
+
+            if (!int.TryParse(arguments[0], out int value) && value <= 0)
+            {
+                return Result<CommandType>.Failure("Invalid argument. The number of top-rated books must be a number larger then 0.");
+            }
+
+            return Result<CommandType>.Success(command, arguments);
         }
 
     }

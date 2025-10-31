@@ -38,7 +38,7 @@ namespace ReadingList.App
                     $"Pages: {book.Pages}, " +
                     $"Genre: {book.Genre}, " +
                     $"Finished: {book.Finished}, " +
-                    $"Rating: {book.Finished}");
+                    $"Rating: {book.Rating}");
             }
         }
 
