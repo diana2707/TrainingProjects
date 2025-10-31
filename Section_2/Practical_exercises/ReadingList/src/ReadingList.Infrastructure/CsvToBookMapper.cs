@@ -1,6 +1,6 @@
 ﻿using ReadingList.Domain;
 using ReadingList.Infrastructure.Interfaces;
-using System;
+using ReadingList.Infrastructure.Extensions;
 
 namespace ReadingList.Infrastructure
 {
@@ -9,48 +9,60 @@ namespace ReadingList.Infrastructure
         public Result<Book> Map(string csvLine)
         {
             var parts = csvLine.Split(',');
+            string idPart = parts[0];
+            string titlePart = parts[1];
+            string authorPart = parts[2];
+            string yearPart = parts[3];
+            string pagesPart = parts[4];
+            string genrePart = parts[5];
+            string finishedPart = parts[6];
+            string ratingPart = parts[7];
 
-            Result<int> validatedId = ValidateId(parts[0]);
+            string normalizedTitle = titlePart.ToTitleCaseSafe();
+            string normalizedAuthor = authorPart.ToTitleCaseSafe();
+
+
+            Result<int> validatedId = ValidateId(idPart);
 
             if (validatedId.IsFailure)
             {
                 return Result<Book>.Failure("Failed to map Book due to invalid ID.");
             }
 
-            Result<float> validatedRating = ValidateRating(parts[7]);
-
-            if (validatedRating.IsFailure)
-            {
-                return Result<Book>.Failure("Failed to map Book due to invalid Rating.");
-            }
-
-            Result<int> validatedYear = ValidateYear(parts[3]);
+            Result<int> validatedYear = ValidateYear(yearPart);
 
             if (validatedYear.IsFailure)
             {
                 return Result<Book>.Failure("Failed to map Book due to invalid Year.");
             }
 
-            Result<int> validatedPages = ValidatePages(parts[4]);
+            Result<int> validatedPages = ValidatePages(pagesPart);
 
             if (validatedPages.IsFailure)
             {
                 return Result<Book>.Failure("Failed to map Book due to invalid Pages.");
             }
 
-            Result<bool> validatedFinished = ValidateFinished(parts[6]);
+            Result<bool> validatedFinished = ValidateFinished(finishedPart);
 
             if (validatedFinished.IsFailure)
             {
                 return Result<Book>.Failure("Failed to map Book due to invalid Finished status.");
             }
 
-            // Validate Title, Author, Genre?
+            Result<float> validatedRating = ValidateRating(ratingPart);
+
+            if (validatedRating.IsFailure)
+            {
+                return Result<Book>.Failure("Failed to map Book due to invalid Rating.");
+            }
+
+            // Validate Genre? Use enum?
 
             Book newBook = new(validatedId.Value)
             {
-                Title = parts[1],
-                Author = parts[2],
+                Title = normalizedTitle,
+                Author = normalizedAuthor,
                 Year = validatedYear.Value,
                 Pages = validatedPages.Value,
                 Genre = parts[5],

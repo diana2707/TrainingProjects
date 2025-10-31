@@ -8,6 +8,7 @@ namespace ReadingList.Domain.Enums
         Import,
         ListAll,
         FilterFinished,
-        TopRated
+        TopRated,
+        ByAuthor,
     }
 }

@@ -16,6 +16,7 @@ namespace ReadingList.App
                 { "list all", CommandType.ListAll },
                 { "filter finished", CommandType.FilterFinished },
                 { "top rated", CommandType.TopRated },
+                { "by author", CommandType.ByAuthor },
             };
 
             CommandType command = CommandType.Invalid;
@@ -41,10 +42,21 @@ namespace ReadingList.App
             {
                 CommandType.Import => ValidateImportCommand(command, arguments),
                 CommandType.ListAll => ValidateListAllCommand(command, arguments),
-                CommandType.FilterFinished => ValidateFilterFinished(command, arguments),
-                CommandType.TopRated => ValidateTopRated(command, arguments),
+                CommandType.FilterFinished => ValidateFilterFinishedCommand(command, arguments),
+                CommandType.TopRated => ValidateTopRatedCommand(command, arguments),
+                CommandType.ByAuthor => ValidateByAuthorCommand(command, arguments),
                 _ => Result<CommandType>.Success(command, arguments),
             };
+        }
+
+        private Result<CommandType> ValidateByAuthorCommand(CommandType command, string[] arguments)
+        {
+            if (arguments.Length == 0)
+            {
+                return Result<CommandType>.Failure("No arguments provided. An author name should be provided for filtering.");
+            }
+
+            return Result<CommandType>.Success(command, arguments);
         }
 
         private Result<CommandType> ValidateImportCommand(CommandType command, string[] arguments)
@@ -77,7 +89,7 @@ namespace ReadingList.App
             return Result<CommandType>.Success(command);
         }
 
-        private Result<CommandType> ValidateFilterFinished(CommandType command, string[] arguments)
+        private Result<CommandType> ValidateFilterFinishedCommand(CommandType command, string[] arguments)
         {
             if (arguments.Length > 0)
             {
@@ -86,7 +98,7 @@ namespace ReadingList.App
             return Result<CommandType>.Success(command);
         }
 
-        private Result<CommandType> ValidateTopRated(CommandType command, string[] arguments)
+        private Result<CommandType> ValidateTopRatedCommand(CommandType command, string[] arguments)
         {
             if (arguments.Length != 1)
             {

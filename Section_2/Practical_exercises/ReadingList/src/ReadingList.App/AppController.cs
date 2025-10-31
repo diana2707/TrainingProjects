@@ -77,6 +77,9 @@ namespace ReadingList.App
                     case CommandType.TopRated:
                         ManageTopRated(command.Arguments);
                         break;
+                    case CommandType.ByAuthor:
+                        ManageByAuthor(command.Arguments);
+                        break;
                     default:
                         _displayer.PrintErrorMessage("Invalid command. Type 'help' to list valid commands.");
                         break;
@@ -134,6 +137,20 @@ namespace ReadingList.App
         {
             int topNumber = int.Parse(arguments[0]);
             Result<IReadOnlyList<Book>> list = _querryService.FilterTopRated(topNumber);
+
+            if (list.IsFailure)
+            {
+                _displayer.PrintErrorMessage(list.ErrorMessage);
+                return;
+            }
+
+            _displayer.PrintBookList(list.Value);
+        }
+
+        private void ManageByAuthor(string[] arguments)
+        {
+            string authorName = string.Join(' ', arguments);
+            Result<IReadOnlyList<Book>> list = _querryService.FilterByAuthor(authorName);
 
             if (list.IsFailure)
             {
