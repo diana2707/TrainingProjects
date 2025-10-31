@@ -6,6 +6,7 @@ namespace ReadingList.Domain.Enums
     {
         Invalid,
         Import,
-        ListAll
+        ListAll,
+        FilterFinished,
     }
 }

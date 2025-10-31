@@ -10,5 +10,6 @@ namespace ReadingList.Infrastructure.Interfaces
     public interface IQuerryService
     {
         public Result<IReadOnlyList<Book>> ListAll();
+        public Result<IReadOnlyList<Book>> FilterFinished();
     }
 }

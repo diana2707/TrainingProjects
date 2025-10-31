@@ -71,6 +71,9 @@ namespace ReadingList.App
                     case CommandType.ListAll:
                         ManageListAll();
                         break;
+                    case CommandType.FilterFinished:
+                        ManageFilterFinished();
+                        break;
                     default:
                         _displayer.PrintErrorMessage("Invalid command. Type 'help' to list valid commands.");
                         break;
@@ -110,5 +113,19 @@ namespace ReadingList.App
 
             _displayer.PrintBookList(list.Value);
         }
+
+        private void ManageFilterFinished()
+        {
+            Result<IReadOnlyList<Book>> list = _querryService.FilterFinished();
+
+            if (list.IsFailure)
+            {
+                _displayer.PrintErrorMessage(list.ErrorMessage);
+                return;
+            }
+
+            _displayer.PrintBookList(list.Value);
+        }
+
     }
 }

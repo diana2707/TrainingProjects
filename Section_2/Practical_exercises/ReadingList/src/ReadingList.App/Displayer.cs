@@ -24,6 +24,7 @@ namespace ReadingList.App
             return input;
         }
 
+        // display in table format fo readability
         public void PrintBookList(IReadOnlyList<Book> list)
         {
             for (int i = 0; i < list.Count; i++)

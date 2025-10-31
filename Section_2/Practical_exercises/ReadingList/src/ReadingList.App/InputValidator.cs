@@ -14,23 +14,24 @@ namespace ReadingList.App
             {
                 { "import", CommandType.Import },
                 { "list all", CommandType.ListAll },
+                { "filter finished", CommandType.FilterFinished },
             };
 
             CommandType command = CommandType.Invalid;
-            string tempCommand = string.Empty;
+            string commandInput = string.Empty;
             string[] arguments = [];
 
 
-            foreach (var cmd in commands.Keys)
+            foreach (var commandKey in commands.Keys)
             {
-                if (input.StartsWith(cmd, StringComparison.InvariantCultureIgnoreCase) && cmd.Length > tempCommand.Length)
+                if (input.StartsWith(commandKey, StringComparison.InvariantCultureIgnoreCase) && commandKey.Length > commandInput.Length)
                 {
-                    tempCommand = cmd;
-                    arguments = input.Substring(cmd.Length).Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    commandInput = commandKey;
+                    arguments = input.Substring(commandKey.Length).Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
                 }
             }
 
-            if (string.IsNullOrEmpty(tempCommand) || !commands.TryGetValue(tempCommand, out command))
+            if (string.IsNullOrEmpty(commandInput) || !commands.TryGetValue(commandInput, out command))
             {
                 return Result<CommandType>.Failure("Invalid command. Type 'help' to list valid commands.");
             }
@@ -39,6 +40,7 @@ namespace ReadingList.App
             {
                 CommandType.Import => ValidateImportCommand(command, arguments),
                 CommandType.ListAll => ValidateListAllCommand(command, arguments),
+                CommandType.FilterFinished => ValidateFilterFinished(command, arguments),
                 _ => Result<CommandType>.Success(command, arguments),
             };
         }
@@ -72,5 +74,15 @@ namespace ReadingList.App
             }
             return Result<CommandType>.Success(command);
         }
+
+        private Result<CommandType> ValidateFilterFinished(CommandType command, string[] arguments)
+        {
+            if (arguments.Length > 0)
+            {
+                return Result<CommandType>.Failure("The 'filter finished' command does not accept any arguments.");
+            }
+            return Result<CommandType>.Success(command);
+        }
+
     }
 }

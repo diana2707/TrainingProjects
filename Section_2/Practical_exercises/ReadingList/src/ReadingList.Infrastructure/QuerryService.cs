@@ -23,5 +23,17 @@ namespace ReadingList.Infrastructure
 
             return Result<IReadOnlyList<Book>>.Success(list.ToList().AsReadOnly());
         }
+
+        public Result<IReadOnlyList<Book>> FilterFinished()
+        {
+            IEnumerable<Book> list = _repository.GetAll().Where(book => book.Finished);
+
+            if (list.Count() == 0)
+            {
+                return Result<IReadOnlyList<Book>>.Failure("No finished books found in the reading list.");
+            }
+
+            return Result<IReadOnlyList<Book>>.Success(list.ToList().AsReadOnly());
+        }
     }
 }
