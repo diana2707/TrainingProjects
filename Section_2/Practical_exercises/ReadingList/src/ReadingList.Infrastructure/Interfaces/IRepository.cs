@@ -8,5 +8,6 @@ namespace ReadingList.Infrastructure.Interfaces
     {
         public int Count { get; }
         public Result<T> Add(T value);
+        public IEnumerable<T> GetAll();
     }
 }

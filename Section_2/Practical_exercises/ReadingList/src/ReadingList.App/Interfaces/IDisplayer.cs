@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReadingList.Domain;
+using System;
 
 namespace ReadingList.App.Interfaces
 {
@@ -12,6 +13,8 @@ namespace ReadingList.App.Interfaces
         public void PrintMessage(string message);
 
         public void PrintErrorMessage(string message);
+
+        public void PrintBookList(IReadOnlyList<Book> list);
 
         public void Clear();
 

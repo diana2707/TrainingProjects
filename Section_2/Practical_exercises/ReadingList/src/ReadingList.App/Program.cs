@@ -27,11 +27,12 @@ namespace ReadingList.App
             IRepository<Book> repository = new Repository<Book, int>(book => book.Id);
             ICsvToBookMapper csvToBookMapper = new CsvToBookMapper();
             ICsvFileService csvFileService = new CsvFileService(repository, csvToBookMapper);
+            IQuerryService querryService = new QuerryService(repository);
             ILogger<AppController> logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<AppController>();
 
 
 
-            AppController controller = new (displayer, validator, csvFileService, logger);
+            AppController controller = new (displayer, validator, csvFileService, querryService, logger);
 
             controller.Run();
         }

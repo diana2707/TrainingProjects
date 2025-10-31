@@ -14,6 +14,7 @@ namespace ReadingList.App
         private IDisplayer _displayer;
         private IInputValidator _validator;
         private ICsvFileService _csvFileService;
+        private IQuerryService _querryService;
         private ILogger<AppController> _logger;
 
         // create the logging flow
@@ -21,12 +22,14 @@ namespace ReadingList.App
             IDisplayer displayer,
             IInputValidator validator,
             ICsvFileService csvFileService,
+            IQuerryService querryService,
             ILogger<AppController> logger)
         {
             //_commands = commands;
             _displayer = displayer;
             _validator = validator;
             _csvFileService = csvFileService;
+            _querryService = querryService;
             _logger = logger;
         }
 
@@ -66,8 +69,7 @@ namespace ReadingList.App
                         ManageImport(command.Arguments);
                         break;
                     case CommandType.ListAll:
-                        //ManageListAll();
-                        Console.WriteLine("List all command selected - not yet implemented.");
+                        ManageListAll();
                         break;
                     default:
                         _displayer.PrintErrorMessage("Invalid command. Type 'help' to list valid commands.");
@@ -94,5 +96,19 @@ namespace ReadingList.App
             _csvFileService.Import(filePaths);
             _displayer.PrintMessage("Import completed.");
         } 
+
+        private void ManageListAll()
+        {
+            // make displayer generic so that it can display any type of list?
+            Result<IReadOnlyList<Book>> list = _querryService.ListAll();
+
+            if (list.IsFailure)
+            {
+                _displayer.PrintErrorMessage(list.ErrorMessage);
+                return;
+            }
+
+            _displayer.PrintBookList(list.Value);
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿//using ReadingList.App.Commands;
 using ReadingList.App.Interfaces;
+using ReadingList.Domain;
 using System;
 
 namespace ReadingList.App
@@ -23,10 +24,22 @@ namespace ReadingList.App
             return input;
         }
 
-        //public void PrintCommandOption(int commandNumber, ICommand command)
-        //{
-        //    Console.WriteLine($"{commandNumber}. {command.Name}");
-        //}
+        public void PrintBookList(IReadOnlyList<Book> list)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                var book = list[i];
+                Console.WriteLine($"{i + 1}. " +
+                    $"ID: {book.Id}, " +
+                    $"Title: {book.Title}, " +
+                    $"Author: {book.Author}, " +
+                    $"Year: {book.Year}, " +
+                    $"Pages: {book.Pages}, " +
+                    $"Genre: {book.Genre}, " +
+                    $"Finished: {book.Finished}, " +
+                    $"Rating: {book.Finished}");
+            }
+        }
 
         public void PrintErrorMessage(string message)
         {

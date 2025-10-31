@@ -30,5 +30,10 @@ namespace ReadingList.Infrastructure
 
             return Result<T>.Success(item);
         }
+
+        public IEnumerable<T> GetAll()
+        {
+            return _items.Values;
+        }
     }
 }

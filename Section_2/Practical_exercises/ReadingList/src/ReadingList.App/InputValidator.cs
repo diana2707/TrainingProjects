@@ -61,7 +61,7 @@ namespace ReadingList.App
                     return Result<CommandType>.Failure($"File not found: {arguments[i]}");
                 }
             }
-            return Result<CommandType>.Success(command, [.. arguments[1..]]);
+            return Result<CommandType>.Success(command, arguments);
         }
 
         private Result<CommandType> ValidateListAllCommand(CommandType command, string[] arguments)
