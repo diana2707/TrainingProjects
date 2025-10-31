@@ -14,6 +14,8 @@ namespace ReadingList.Infrastructure
             _keySelector = keySelector;
         }
 
+        public int Count => _items.Count;
+
         public Result<T> Add(T item)
         {
             if (item == null)
@@ -23,7 +25,7 @@ namespace ReadingList.Infrastructure
 
             if (!_items.TryAdd(key, item))
             {
-                return Result<T>.Failure("An item with the same key already exists.");
+                return Result<T>.Failure($"An item with the same ID already exists. ID {key} skipped.");
             }
 
             return Result<T>.Success(item);

@@ -33,6 +33,7 @@ namespace ReadingList.App
         public void Run()
         {
             _csvFileService.LineMalformed += OnLineMalformed;
+            _csvFileService.AddFailed += OnAddFailed;
 
             _displayer.Clear(); // should i clear the display at start?
             _displayer.PrintAppTitle();
@@ -69,6 +70,11 @@ namespace ReadingList.App
                 }
 
             }
+        }
+
+        private void OnAddFailed(object? sender, string message)
+        {
+            _logger.LogWarning($"Failed add from {sender}: {message}");
         }
 
         private void OnLineMalformed(object? sender, string message)

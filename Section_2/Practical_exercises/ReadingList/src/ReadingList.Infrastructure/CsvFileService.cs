@@ -19,6 +19,8 @@ namespace ReadingList.Infrastructure
             _csvToBookMapper = csvToBookMapper;
         }
 
+        public event EventHandler<string> AddFailed;
+
         public event EventHandler<string> LineMalformed;
 
         public async Task Import(string[] filePaths)
@@ -27,6 +29,8 @@ namespace ReadingList.Infrastructure
             {
                 await ProcessFileAsync(filePath);
             });
+
+            Console.WriteLine($"[debugg] {_repository.Count} files imported");
         }
 
         private async Task ProcessFileAsync(string filePath)
@@ -39,19 +43,29 @@ namespace ReadingList.Infrastructure
                 Result<Book> book = _csvToBookMapper.Map(lines[i]);
                 if (book.IsSuccess)
                 {
-                    _repository.Add(book.Value);
+                    Result<Book> addedBook = _repository.Add(book.Value);
+
+                    // use Event args and create a FailureType enum to pass the type of failure
+                    if (addedBook.IsFailure)
+                    {
+                        OnAddFailed(addedBook.ErrorMessage);
+                    }
                 }
                 else
                 {
                     OnLineMalformed(book.ErrorMessage);
-                    
                 }
             }
         }
 
-        private void OnLineMalformed(string message)
+        private void OnAddFailed(string errorMessage)
         {
-            LineMalformed?.Invoke(this, message);
+            AddFailed?.Invoke(this, errorMessage);
+        }
+
+        private void OnLineMalformed(string errorMessage)
+        {
+            LineMalformed?.Invoke(this, errorMessage);
         }
     }
 }
