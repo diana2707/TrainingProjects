@@ -23,17 +23,28 @@ namespace ReadingList.Infrastructure.Services
 
         public event EventHandler<string>? LineMalformed;
 
-        public async Task ImportAsync(string[] filePaths)
+        public event EventHandler<string>? ImportCanceled;
+
+        public async Task<Result<bool>> ImportAsync(string[] filePaths, CancellationToken cancelToken)
         {
-            await Parallel.ForEachAsync(filePaths, async (filePath, token) =>
+            try
             {
-                await ProcessFileAsync(filePath);
-            });
+                await Parallel.ForEachAsync(filePaths, cancelToken, async (filePath, token) =>
+                {
+                    await ProcessFileAsync(filePath, token);
+                });
+
+                return Result<bool>.Success(true);
+            }
+            catch (OperationCanceledException)
+            {
+                return Result<bool>.Failure("Import operation was canceled.");
+            }
         }
 
-        private async Task ProcessFileAsync(string filePath)
+        private async Task ProcessFileAsync(string filePath, CancellationToken cancelToken)
         {
-            string[] lines = await _fileReader.ReadFileAsync(filePath);
+            string[] lines = await _fileReader.ReadFileAsync(filePath, cancelToken);
 
             // Skip the header line
             for (int i = 1; i < lines.Length; i++)

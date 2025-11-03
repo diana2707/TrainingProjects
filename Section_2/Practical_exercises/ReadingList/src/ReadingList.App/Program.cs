@@ -36,15 +36,18 @@ namespace ReadingList.App
 
             //Set services
             IImportService importService = new ImportService(repository, fileReader, csvToBookMapper);
-            IExportService exportService = new ExportService(repository, exportStrategyFactory);
+            IExportService exportService = new ExportService(exportStrategyFactory);
             IQuerryService querryService = new QuerryService(repository);
             IUpdateService updateService = new UpdateService(repository);
+
+            //Set cancel service
+            ICancelService cancelService = new CancelService();
 
             //Set logger
             ILogger<AppController> logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<AppController>();
 
             //Set controller
-            AppController controller = new (displayer, validator, importService, exportService, querryService, updateService, logger);
+            AppController controller = new (displayer, validator, importService, exportService, querryService, updateService, cancelService, logger);
 
             await controller.Run();
         }

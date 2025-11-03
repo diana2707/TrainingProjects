@@ -35,7 +35,7 @@ namespace ReadingList.Tests
             Result<Book> bookResult = mapper.Map(csvLine);
 
             Assert.True(bookResult.IsFailure);
-            Assert.Equal("Failed to map Book due to invalid Year.", bookResult.ErrorMessage);
+            Assert.Equal("Year must be an integer between 1450 and the current year.", bookResult.ErrorMessage);
         }
     }
 }

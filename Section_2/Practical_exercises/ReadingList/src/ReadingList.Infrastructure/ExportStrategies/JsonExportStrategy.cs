@@ -7,13 +7,13 @@ namespace ReadingList.Infrastructure.ExportStrategies
 {
     public class JsonExportStrategy : IExportStrategy
     {
-        public async Task<Result<bool>> ExportAsync(IEnumerable<Book> items, string filePath)
+        public async Task<Result<bool>> ExportAsync(IEnumerable<Book> items, string filePath, CancellationToken cancelToken)
         {
             string serializedItems = JsonSerializer.Serialize(items);
 
             try
             {
-                await File.WriteAllTextAsync(filePath, serializedItems);
+                await File.WriteAllTextAsync(filePath, serializedItems, cancelToken);
                 return Result<bool>.Success(true);
             }
             catch (ArgumentException)
@@ -27,6 +27,10 @@ namespace ReadingList.Infrastructure.ExportStrategies
             catch (IOException ex)
             {
                 return Result<bool>.Failure($"I/O error while writing file: {ex.Message}");
+            }
+            catch (OperationCanceledException)
+            {
+                return Result<bool>.Failure("Export operation was canceled.");
             }
             catch (Exception ex)
             {

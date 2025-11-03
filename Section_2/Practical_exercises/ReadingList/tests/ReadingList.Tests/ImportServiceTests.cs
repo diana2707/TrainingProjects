@@ -17,13 +17,16 @@ namespace ReadingList.Tests
             IMapper<string, Result<Book>> mapper = new CsvToBookMapper();
             IFileReader fileReader = new FakeFileReader();
             ImportService importService = new (repository, fileReader, mapper);
+            ICancelService cancelService = new CancelService();
+
             string loggedMalformedLine = string.Empty;
             string failedAddMessage = string.Empty;
             string[] filePaths = ["file1.csv", "file2.csv"];
 
             importService.LineMalformed += (_, message) => loggedMalformedLine = message;
             importService.AddFailed += (_, message) => failedAddMessage = message;
-            await importService.ImportAsync(filePaths);
+            CancellationToken token = cancelService.GetCancellationToken();
+            await importService.ImportAsync(filePaths, token);
 
             // Duplicate Id and Malformed line should be skipped
             Assert.Equal(4, repository.Count);

@@ -4,7 +4,7 @@ namespace ReadingList.Tests.Fakes
 {
     public class FakeFileReader : IFileReader
     {
-        public Task<string[]> ReadFileAsync(string filePath)
+        public Task<string[]> ReadFileAsync(string filePath, CancellationToken token)
         {
             return filePath switch
             {

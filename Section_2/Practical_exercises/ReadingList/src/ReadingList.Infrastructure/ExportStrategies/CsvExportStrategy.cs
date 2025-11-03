@@ -14,7 +14,7 @@ namespace ReadingList.Infrastructure.ExportStrategies
             _bookToCsvMapper = bookToCsvMapper;
         }
 
-        public async Task<Result<bool>> ExportAsync(IEnumerable<Book> items, string filePath)
+        public async Task<Result<bool>> ExportAsync(IEnumerable<Book> items, string filePath, CancellationToken cancelToken)
         {
             Result<string> csvString = _bookToCsvMapper.Map(items);
 
@@ -25,7 +25,7 @@ namespace ReadingList.Infrastructure.ExportStrategies
 
             try
             {
-                await File.WriteAllTextAsync(filePath, csvString.Value);
+                await File.WriteAllTextAsync(filePath, csvString.Value, cancelToken);
                 return Result<bool>.Success(true);
             }
             catch (ArgumentException)
@@ -39,6 +39,10 @@ namespace ReadingList.Infrastructure.ExportStrategies
             catch (IOException ex)
             {
                 return Result<bool>.Failure($"I/O error while writing file: {ex.Message}");
+            }
+            catch (OperationCanceledException)
+            {
+                return Result<bool>.Failure("Export operation was canceled.");
             }
             catch (Exception ex)
             {

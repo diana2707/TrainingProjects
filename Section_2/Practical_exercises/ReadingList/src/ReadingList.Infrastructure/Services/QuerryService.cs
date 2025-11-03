@@ -3,7 +3,6 @@ using ReadingList.Domain.Shared;
 using ReadingList.Infrastructure.DTOs;
 using ReadingList.Infrastructure.Extensions;
 using ReadingList.Infrastructure.Interfaces;
-using System.Text.RegularExpressions;
 
 namespace ReadingList.Infrastructure.Services
 {
