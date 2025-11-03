@@ -5,7 +5,7 @@ using ReadingList.Domain.Shared;
 
 namespace ReadingList.Infrastructure.Mappers
 {
-    public class CsvToBookMapper : ICsvToBookMapper
+    public class CsvToBookMapper : IMapper <string, Result<Book>>
     {
         public Result<Book> Map(string csvLine)
         {

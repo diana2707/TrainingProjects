@@ -12,9 +12,9 @@ namespace ReadingList.Infrastructure.Services
     public class ImportService : IImportService
     {
         private IRepository<Book, int> _repository;
-        private ICsvToBookMapper _csvToBookMapper;
+        private IMapper<string, Result<Book>> _csvToBookMapper;
 
-        public ImportService(IRepository<Book, int> repository, ICsvToBookMapper csvToBookMapper)
+        public ImportService(IRepository<Book, int> repository, IMapper<string, Result<Book>> csvToBookMapper)
         {
             _repository = repository;
             _csvToBookMapper = csvToBookMapper;

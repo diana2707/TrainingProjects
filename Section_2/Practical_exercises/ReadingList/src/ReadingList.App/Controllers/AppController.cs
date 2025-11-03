@@ -98,10 +98,10 @@ namespace ReadingList.App.Controllers
                         ManageRate(command.Arguments);
                         break;
                     case CommandType.ExportJson:
-                        ManageExport(CommandType.ExportJson, command.Arguments);
+                        ManageExportJson(command.Arguments);
                         break;
                     case CommandType.ExportCsv:
-                        ManageExport(CommandType.ExportCsv, command.Arguments);
+                        ManageExportCsv(command.Arguments);
                         break;
                     case CommandType.Help:
                         ManageHelp();
@@ -231,20 +231,40 @@ namespace ReadingList.App.Controllers
             _displayer.PrintMessage($"Book '{ratedBook.Value.Title}' is rated {ratedBook.Value.Rating}.");
         }
 
-        private void ManageExport(CommandType exportCommand, string[] arguments)
+        private void ManageExportJson(string[] arguments)
         {
             _displayer.PrintMessage("Exporting books...");
             string path = arguments[0];
+
             // should leave it reading only list?
             IEnumerable<Book> items = _querryService.ListAll().Value;
-            Result<bool> exportResult = _exportService.Export(exportCommand, items, path).Result;
+
+            Result<bool> exportResult = _exportService.Export(ExportType.Json, items, path).Result;
             if (exportResult.IsFailure)
             {
                 _displayer.PrintErrorMessage(exportResult.ErrorMessage);
                 return;
             }
 
-            _displayer.PrintMessage("Export completed.");
+            _displayer.PrintMessage("Export in .json format completed.");
+        }
+
+        private void ManageExportCsv(string[] arguments)
+        {
+            _displayer.PrintMessage("Exporting books...");
+            string path = arguments[0];
+
+            // should leave it reading only list?
+            IEnumerable<Book> items = _querryService.ListAll().Value;
+
+            Result<bool> exportResult = _exportService.Export(ExportType.Csv, items, path).Result;
+            if (exportResult.IsFailure)
+            {
+                _displayer.PrintErrorMessage(exportResult.ErrorMessage);
+                return;
+            }
+
+            _displayer.PrintMessage("Export in .csv format completed.");
         }
 
         private void ManageHelp()

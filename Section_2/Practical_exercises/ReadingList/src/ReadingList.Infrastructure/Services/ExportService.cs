@@ -1,4 +1,5 @@
-﻿using ReadingList.Domain.Models;
+﻿using ReadingList.Domain.Enums;
+using ReadingList.Domain.Models;
 using ReadingList.Domain.Shared;
 using ReadingList.Infrastructure.Interfaces;
 using CommandType = ReadingList.Domain.Enums.CommandType;
@@ -7,11 +8,17 @@ namespace ReadingList.Infrastructure.Services
 {
     public class ExportService : IExportService
     {
-        Dictionary<CommandType, IExportStrategy> exportStrategies = new()
+        private IRepository<Book, int> _repository;
+        IExportStrategyFactory _exportStrategyFactory;
+        //private IMapper<IEnumerable<Book>, Result<string>> _bookToCsvMapper;
+
+        public ExportService(IRepository<Book, int> repository, IExportStrategyFactory exportStrategyFactory)
         {
-            { CommandType.ExportJson, new ExportStrategies.JsonExportStrategy() },
-            //{ CommandType.ExportCsv, new ExportStrategies.CsvExportStrategy() }
-        };
+            _repository = repository;
+            _exportStrategyFactory = exportStrategyFactory;
+        }
+
+       
 
         //public IExportStrategy? GetExportStrategy(CommandType command)
         //{
@@ -22,22 +29,21 @@ namespace ReadingList.Infrastructure.Services
         //    return null;
         //}
 
-        public async Task<Result<bool>> Export(CommandType exportCommand, IEnumerable<Book> items, string path)
+        public async Task<Result<bool>> Export(ExportType exportType, IEnumerable<Book> items, string path)
         {
             // should also try/catch here?
-            switch (exportCommand)
+            switch (exportType)
             {
-                case CommandType.ExportJson:
-                    var jsonStrategy = exportStrategies[CommandType.ExportJson];
+                case ExportType.Json:
+                    IExportStrategy jsonStrategy = _exportStrategyFactory.Create(ExportType.Json);
                     return await jsonStrategy.ExportAsync(items, path);
 
-                //case CommandType.ExportCsv:
-                //    var csvStrategy = exportStrategies[CommandType.ExportCsv];
-                //    var csvExportTask = csvStrategy.ExportAsync(items, path);
-                //    csvExportTask.Wait();
-                //    return csvExportTask.Result;
+                case ExportType.Csv:
+                    IExportStrategy csvStrategy = _exportStrategyFactory.Create(ExportType.Csv);
+                    return await csvStrategy.ExportAsync(items, path);
+
                 default:
-                    return Result<bool>.Failure("Unsupported export command.");
+                    return Result<bool>.Failure("Unsupported export type.");
             }
         }
     }

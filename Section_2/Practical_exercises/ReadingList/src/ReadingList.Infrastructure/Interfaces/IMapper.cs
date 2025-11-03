@@ -3,8 +3,8 @@ using ReadingList.Domain.Shared;
 
 namespace ReadingList.Infrastructure.Interfaces
 {
-    public interface ICsvToBookMapper
+    public interface IMapper <TInput, TOutput>
     {
-        public Result<Book> Map(string csvLine);
+        public TOutput Map(TInput input);
     }
 }

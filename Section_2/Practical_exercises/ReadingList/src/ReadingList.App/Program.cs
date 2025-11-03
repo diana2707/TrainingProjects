@@ -9,6 +9,8 @@ using ReadingList.App.UI;
 using ReadingList.Infrastructure.Data;
 using ReadingList.Infrastructure.Mappers;
 using ReadingList.Infrastructure.Services;
+using ReadingList.Domain.Shared;
+using ReadingList.Infrastructure.ExportStrategies;
 //using ICommand = ReadingList.App.Commands.ICommand;
 
 namespace ReadingList.App
@@ -28,12 +30,19 @@ namespace ReadingList.App
 
             IDisplayer displayer = new Displayer();
             IInputValidator validator = new InputValidator();
+
             IRepository<Book, int> repository = new Repository<Book, int>(book => book.Id);
-            ICsvToBookMapper csvToBookMapper = new CsvToBookMapper();
+
+            IMapper<string, Result<Book>> csvToBookMapper = new CsvToBookMapper();
+            IMapper<IEnumerable<Book>, Result<string>> bookToCsvMapper = new BookToCsvMapper();
+
+            IExportStrategyFactory exportStrategyFactory = new ExportStrategyFactory(bookToCsvMapper);
+
             IImportService importService = new ImportService(repository, csvToBookMapper);
-            IExportService exportService = new ExportService();
+            IExportService exportService = new ExportService(repository, exportStrategyFactory);
             IQuerryService querryService = new QuerryService(repository);
             IUpdateService updateService = new UpdateService(repository);
+
             ILogger<AppController> logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<AppController>();
 
 
