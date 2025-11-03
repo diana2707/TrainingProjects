@@ -1,22 +1,20 @@
 ﻿using ReadingList.Domain.Models;
 using ReadingList.Domain.Shared;
 using ReadingList.Infrastructure.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace ReadingList.Infrastructure.Services
 {
     public class ImportService : IImportService
     {
         private IRepository<Book, int> _repository;
+        private IFileReader _fileReader;
         private IMapper<string, Result<Book>> _csvToBookMapper;
 
-        public ImportService(IRepository<Book, int> repository, IMapper<string, Result<Book>> csvToBookMapper)
+        public ImportService(IRepository<Book, int> repository, IFileReader fileReader, IMapper<string, Result<Book>> csvToBookMapper)
         {
             _repository = repository;
+            _fileReader = fileReader;
             _csvToBookMapper = csvToBookMapper;
         }
 
@@ -37,7 +35,7 @@ namespace ReadingList.Infrastructure.Services
 
         private async Task ProcessFileAsync(string filePath)
         {
-            string[] lines = await File.ReadAllLinesAsync(filePath);
+            string[] lines = await _fileReader.ReadFileAsync(filePath);
 
             // Skip the header line
             for (int i = 1; i < lines.Length; i++)
@@ -45,13 +43,24 @@ namespace ReadingList.Infrastructure.Services
                 Result<Book> book = _csvToBookMapper.Map(lines[i]);
                 if (book.IsSuccess)
                 {
-                    Result<Book> addedBook = _repository.Add(book.Value);
+                    try
+                    {
+                        if (!_repository.Add(book.Value))
+                        {
+                            OnAddFailed($"An item with the same ID already exists. ID {book.Value.Id} skipped.");
+                            return;
+                        }
+                    }
+                    catch (ArgumentNullException ex)
+                    {
+                        OnLineMalformed($"Unexpected null value when adding book: {ex.Message}");
+                    }
 
                     // use Event args and create a FailureType enum to pass the type of failure
-                    if (addedBook.IsFailure)
-                    {
-                        OnAddFailed(addedBook.ErrorMessage);
-                    }
+                    //if (addedBook.IsFailure)
+                    //{
+                    //    OnAddFailed(addedBook.ErrorMessage);
+                    //}
                 }
                 else
                 {
@@ -59,6 +68,7 @@ namespace ReadingList.Infrastructure.Services
                 }
             }
         }
+        
 
         private void OnAddFailed(string errorMessage)
         {

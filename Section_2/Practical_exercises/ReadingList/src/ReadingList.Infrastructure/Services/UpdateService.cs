@@ -1,11 +1,6 @@
 ﻿using ReadingList.Domain.Models;
 using ReadingList.Domain.Shared;
 using ReadingList.Infrastructure.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ReadingList.Infrastructure.Services
 {
@@ -19,40 +14,48 @@ namespace ReadingList.Infrastructure.Services
 
         public Result<Book> MarkBookAsFinished(int id)
         {
+            Book book = null;
+
             if (!_repository.Contains(id))
             {
                 return Result<Book>.Failure($"No book with ID {id} found in the reading list.");
             }
 
-            Result<Book> book = _repository.GetByKey(id);
-
-            if (book.IsFailure)
+            try
             {
-                return Result<Book>.Failure(book.ErrorMessage);
+                book = _repository.GetByKey(id);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return Result<Book>.Failure(ex.Message);
             }
 
-            book.Value.Finished = true;
+            book.Finished = true;
 
-            return Result<Book>.Success(book.Value);
+            return Result<Book>.Success(book);
         } 
 
         public Result<Book> RateBook(int id, float rating)
         {
+            Book book = null;
+
             if (!_repository.Contains(id))
             {
                 return Result<Book>.Failure($"No book with ID {id} found in the reading list.");
             }
 
-            Result<Book> book = _repository.GetByKey(id);
-
-            if (book.IsFailure)
+            try
             {
-                return Result<Book>.Failure(book.ErrorMessage);
+                book = _repository.GetByKey(id);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return Result<Book>.Failure(ex.Message);
             }
 
-            book.Value.Rating = rating;
+            book.Rating = rating;
 
-            return Result<Book>.Success(book.Value);
+            return Result<Book>.Success(book);
         }
     }
 }

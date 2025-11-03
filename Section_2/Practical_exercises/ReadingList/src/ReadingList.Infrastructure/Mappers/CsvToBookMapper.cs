@@ -41,7 +41,8 @@ namespace ReadingList.Infrastructure.Mappers
 
             if (validatedPages.IsFailure)
             {
-                return Result<Book>.Failure("Failed to map Book due to invalid Pages.");
+                //return Result<Book>.Failure("Failed to map Book due to invalid Pages.");
+                return Result<Book>.Failure(validatedPages.ErrorMessage);
             }
 
             Result<bool> validatedFinished = ValidateFinished(finishedPart);
@@ -108,7 +109,7 @@ namespace ReadingList.Infrastructure.Mappers
         {
             if (!int.TryParse(pagesPart, out int pages))
             {
-                return Result<int>.Failure("Invalid pages format.Pages must be a positive integer.");
+                return Result<int>.Failure("Invalid pages format. Pages must be a positive integer.");
             }
 
             if (pages <= 0)

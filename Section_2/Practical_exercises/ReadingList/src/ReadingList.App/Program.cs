@@ -11,6 +11,7 @@ using ReadingList.Infrastructure.Mappers;
 using ReadingList.Infrastructure.Services;
 using ReadingList.Domain.Shared;
 using ReadingList.Infrastructure.ExportStrategies;
+using ReadingList.Infrastructure.IOHelpers;
 //using ICommand = ReadingList.App.Commands.ICommand;
 
 namespace ReadingList.App
@@ -36,9 +37,11 @@ namespace ReadingList.App
             IMapper<string, Result<Book>> csvToBookMapper = new CsvToBookMapper();
             IMapper<IEnumerable<Book>, Result<string>> bookToCsvMapper = new BookToCsvMapper();
 
+            IFileReader fileReader = new FileReader();
+
             IExportStrategyFactory exportStrategyFactory = new ExportStrategyFactory(bookToCsvMapper);
 
-            IImportService importService = new ImportService(repository, csvToBookMapper);
+            IImportService importService = new ImportService(repository, fileReader, csvToBookMapper);
             IExportService exportService = new ExportService(repository, exportStrategyFactory);
             IQuerryService querryService = new QuerryService(repository);
             IUpdateService updateService = new UpdateService(repository);

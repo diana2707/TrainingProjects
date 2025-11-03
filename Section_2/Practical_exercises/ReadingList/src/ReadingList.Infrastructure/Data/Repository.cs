@@ -16,24 +16,22 @@ namespace ReadingList.Infrastructure.Data
 
         public int Count => _items.Count;
 
-        public Result<T> Add(T item)
+        public bool Add(T item)
         {
-            if (item == null)
-                return Result<T>.Failure("Value cannot be null.");
+            ArgumentNullException.ThrowIfNull(item);
 
             TKey key = _keySelector(item);
 
             if (!_items.TryAdd(key, item))
             {
-                return Result<T>.Failure($"An item with the same ID already exists. ID {key} skipped.");
+                return false;
             }
 
-            return Result<T>.Success(item);
+            return true;
         }
 
         public IEnumerable<T> GetAll()
         {
-            // make it return Result<IEnumerbale> and manage here the situation where no items exist
             return _items.Values;
         }
 
@@ -42,15 +40,14 @@ namespace ReadingList.Infrastructure.Data
             return _items.ContainsKey(key);
         }
 
-        // if thies is kind of a collection should i return Result instead of throwing exception?
-        public Result<T> GetByKey(TKey key)
+        public T GetByKey(TKey key)
         {
             if (!_items.TryGetValue(key, out T value))
             {
-                return Result<T>.Failure($"No item with key {key} found.");
+                throw new KeyNotFoundException($"No item with key {key} found.");
             } 
 
-            return Result<T>.Success(value);
+            return value;
         }
     }
 }
