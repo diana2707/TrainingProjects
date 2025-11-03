@@ -18,13 +18,9 @@
         }
 
         public T Value => _value;
-
         public string[] Arguments => _arguments;
-
         public bool IsSuccess => _isSuccess;
-
         public bool IsFailure => _isFailure;
-
         public string ErrorMessage => _errorMessage;
 
         public static Result<T> Success(T value, string[] arguments = null)

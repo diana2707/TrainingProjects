@@ -6,8 +6,8 @@ namespace ReadingList.Infrastructure.Data
 {
     public class Repository<T, TKey> : IRepository<T, TKey>
     {
-        private ConcurrentDictionary<TKey, T> _items = [];
-        private Func<T, TKey> _keySelector;
+        private readonly ConcurrentDictionary<TKey, T> _items = [];
+        private readonly Func<T, TKey> _keySelector;
 
         public Repository(Func<T, TKey> keySelector)
         {

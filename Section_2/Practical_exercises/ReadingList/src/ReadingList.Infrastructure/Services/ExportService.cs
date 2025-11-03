@@ -2,7 +2,6 @@
 using ReadingList.Domain.Models;
 using ReadingList.Domain.Shared;
 using ReadingList.Infrastructure.Interfaces;
-using CommandType = ReadingList.Domain.Enums.CommandType;
 
 namespace ReadingList.Infrastructure.Services
 {
@@ -10,7 +9,6 @@ namespace ReadingList.Infrastructure.Services
     {
         private IRepository<Book, int> _repository;
         IExportStrategyFactory _exportStrategyFactory;
-        //private IMapper<IEnumerable<Book>, Result<string>> _bookToCsvMapper;
 
         public ExportService(IRepository<Book, int> repository, IExportStrategyFactory exportStrategyFactory)
         {
@@ -18,29 +16,31 @@ namespace ReadingList.Infrastructure.Services
             _exportStrategyFactory = exportStrategyFactory;
         }
 
-       
-
-        //public IExportStrategy? GetExportStrategy(CommandType command)
-        //{
-        //    if (exportStrategies.TryGetValue(command, out IExportStrategy? strategy))
-        //    {
-        //        return strategy;
-        //    }
-        //    return null;
-        //}
-
         public async Task<Result<bool>> Export(ExportType exportType, IEnumerable<Book> items, string path)
         {
-            // should also try/catch here?
             switch (exportType)
             {
                 case ExportType.Json:
                     IExportStrategy jsonStrategy = _exportStrategyFactory.Create(ExportType.Json);
-                    return await jsonStrategy.ExportAsync(items, path);
+                    Result<bool> jsonExportResult = await jsonStrategy.ExportAsync(items, path);
+
+                    if (jsonExportResult.IsFailure)
+                    {
+                        return Result<bool>.Failure(jsonExportResult.ErrorMessage);
+                    }
+
+                    return Result<bool>.Success(true);
 
                 case ExportType.Csv:
                     IExportStrategy csvStrategy = _exportStrategyFactory.Create(ExportType.Csv);
-                    return await csvStrategy.ExportAsync(items, path);
+                    Result<bool> csvExportResult = await csvStrategy.ExportAsync(items, path);
+
+                    if (csvExportResult.IsFailure)
+                    {
+                        return Result<bool>.Failure(csvExportResult.ErrorMessage);
+                    }
+
+                    return Result<bool>.Success(true);
 
                 default:
                     return Result<bool>.Failure("Unsupported export type.");

@@ -2,7 +2,6 @@
 using ReadingList.Domain.Shared;
 using ReadingList.Infrastructure.Interfaces;
 using ReadingList.Domain.Enums;
-using ReadingList.Infrastructure.Mappers;
 
 namespace ReadingList.Infrastructure.ExportStrategies
 {

@@ -5,7 +5,6 @@
         private readonly int _id;
         private float _rating;
 
-        // how should i treat the null casses for string properties?
         public Book(int id)
         {
             _id = id;
@@ -31,6 +30,7 @@
                 {
                     throw new ArgumentOutOfRangeException("Rating must be between 0 and 5.");
                 }
+
                 _rating = value;
             }
         }

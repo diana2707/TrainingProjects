@@ -1,8 +1,6 @@
 ﻿using ReadingList.App.Interfaces;
 using ReadingList.Domain.Enums;
 using ReadingList.Domain.Shared;
-using System.Globalization;
-
 
 namespace ReadingList.App.UI
 {
@@ -10,6 +8,10 @@ namespace ReadingList.App.UI
     {
         public Result<CommandType> ValidateCommand(string input)
         {
+            CommandType command = CommandType.Invalid;
+            string commandInput = string.Empty;
+            string[] arguments = [];
+
             Dictionary<string, CommandType> commands = new()
             {
                 { "import", CommandType.Import },
@@ -25,11 +27,6 @@ namespace ReadingList.App.UI
                 { "help", CommandType.Help },
                 { "exit", CommandType.Exit }
             };
-
-            CommandType command = CommandType.Invalid;
-            string commandInput = string.Empty;
-            string[] arguments = [];
-
 
             foreach (var commandKey in commands.Keys)
             {
@@ -63,7 +60,28 @@ namespace ReadingList.App.UI
             };
         }
 
-       
+        private Result<CommandType> ValidateImportCommand(CommandType command, string[] arguments)
+        {
+            if (arguments.Length == 0)
+            {
+                return Result<CommandType>.Failure("No arguments provided. At least one .csv file should be provided for import.");
+            }
+
+            for (int i = 0; i < arguments.Length; i++)
+            {
+                if (!arguments[i].EndsWith(".csv"))
+                {
+                    return Result<CommandType>.Failure("Invalid argument. Only .csv files are supported for import.");
+                }
+                if (!File.Exists(arguments[i]))
+                {
+                    return Result<CommandType>.Failure($"File not found: {arguments[i]}");
+                }
+            }
+
+            return Result<CommandType>.Success(command, arguments);
+        }
+
         private Result<CommandType> ValidateRateCommand(CommandType command, string[] arguments)
         {
             if (arguments.Length != 2)
@@ -109,33 +127,14 @@ namespace ReadingList.App.UI
             return Result<CommandType>.Success(command, arguments);
         }
 
-        private Result<CommandType> ValidateImportCommand(CommandType command, string[] arguments)
-        {
-            if (arguments.Length == 0)
-            {
-                return Result<CommandType>.Failure("No arguments provided. At least one .csv file should be provided for import.");
-            }
-
-            for (int i = 0; i < arguments.Length; i++)
-            {
-                if (!arguments[i].EndsWith(".csv"))
-                {
-                    return Result<CommandType>.Failure("Invalid argument. Only .csv files are supported for import.");
-                }
-                if (!File.Exists(arguments[i]))
-                {
-                    return Result<CommandType>.Failure($"File not found: {arguments[i]}");
-                }
-            }
-            return Result<CommandType>.Success(command, arguments);
-        }
-
+        
         private Result<CommandType> ValidateListAllCommand(CommandType command, string[] arguments)
         {
             if (arguments.Length > 0)
             {
                 return Result<CommandType>.Failure("The 'list all' command does not accept any arguments.");
             }
+
             return Result<CommandType>.Success(command);
         }
 
@@ -145,6 +144,17 @@ namespace ReadingList.App.UI
             {
                 return Result<CommandType>.Failure("The 'filter finished' command does not accept any arguments.");
             }
+
+            return Result<CommandType>.Success(command);
+        }
+
+        private Result<CommandType> ValidateStatsCommand(CommandType command, string[] arguments)
+        {
+            if (arguments.Length > 0)
+            {
+                return Result<CommandType>.Failure("The 'stats' command does not accept any arguments.");
+            }
+
             return Result<CommandType>.Success(command);
         }
 
@@ -161,36 +171,6 @@ namespace ReadingList.App.UI
             }
 
             return Result<CommandType>.Success(command, arguments);
-        }
-
-        private Result<CommandType> ValidateStatsCommand(CommandType command, string[] arguments)
-        {
-            if (arguments.Length > 0)
-            {
-                return Result<CommandType>.Failure("The 'stats' command does not accept any arguments.");
-            }
-
-            return Result<CommandType>.Success(command);
-        }
-
-        private Result<CommandType> ValidateHelpCommand(CommandType command, string[] arguments)
-        {
-            if (arguments.Length > 0)
-            {
-                return Result<CommandType>.Failure("The 'help' command does not accept any arguments.");
-            }
-
-            return Result<CommandType>.Success(command);
-        }
-
-        private Result<CommandType> ValidateExitCommand(CommandType command, string[] arguments)
-        {
-            if (arguments.Length > 0)
-            {
-                return Result<CommandType>.Failure("The 'exit' command does not accept any arguments.");
-            }
-
-            return Result<CommandType>.Success(command);
         }
 
         private Result<CommandType> ValidateExportJson(CommandType command, string[] arguments)
@@ -237,6 +217,24 @@ namespace ReadingList.App.UI
             return Result<CommandType>.Success(command, arguments);
         }
 
-        
+        private Result<CommandType> ValidateHelpCommand(CommandType command, string[] arguments)
+        {
+            if (arguments.Length > 0)
+            {
+                return Result<CommandType>.Failure("The 'help' command does not accept any arguments.");
+            }
+
+            return Result<CommandType>.Success(command);
+        }
+
+        private Result<CommandType> ValidateExitCommand(CommandType command, string[] arguments)
+        {
+            if (arguments.Length > 0)
+            {
+                return Result<CommandType>.Failure("The 'exit' command does not accept any arguments.");
+            }
+
+            return Result<CommandType>.Success(command);
+        }
     }
 }

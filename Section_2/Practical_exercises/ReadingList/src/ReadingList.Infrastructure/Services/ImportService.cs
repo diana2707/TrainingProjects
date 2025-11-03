@@ -2,7 +2,6 @@
 using ReadingList.Domain.Shared;
 using ReadingList.Infrastructure.Interfaces;
 
-
 namespace ReadingList.Infrastructure.Services
 {
     public class ImportService : IImportService
@@ -11,26 +10,25 @@ namespace ReadingList.Infrastructure.Services
         private IFileReader _fileReader;
         private IMapper<string, Result<Book>> _csvToBookMapper;
 
-        public ImportService(IRepository<Book, int> repository, IFileReader fileReader, IMapper<string, Result<Book>> csvToBookMapper)
+        public ImportService(IRepository<Book, int> repository,
+            IFileReader fileReader,
+            IMapper<string,Result<Book>> csvToBookMapper)
         {
             _repository = repository;
             _fileReader = fileReader;
             _csvToBookMapper = csvToBookMapper;
         }
 
-        public event EventHandler<string> AddFailed;
+        public event EventHandler<string>? AddFailed;
 
-        public event EventHandler<string> LineMalformed;
+        public event EventHandler<string>? LineMalformed;
 
-        //change name to ImportAsync
-        public async Task Import(string[] filePaths)
+        public async Task ImportAsync(string[] filePaths)
         {
             await Parallel.ForEachAsync(filePaths, async (filePath, token) =>
             {
                 await ProcessFileAsync(filePath);
             });
-
-            Console.WriteLine($"[debugg] {_repository.Count} files imported");
         }
 
         private async Task ProcessFileAsync(string filePath)
@@ -55,12 +53,6 @@ namespace ReadingList.Infrastructure.Services
                     {
                         OnLineMalformed($"Unexpected null value when adding book: {ex.Message}");
                     }
-
-                    // use Event args and create a FailureType enum to pass the type of failure
-                    //if (addedBook.IsFailure)
-                    //{
-                    //    OnAddFailed(addedBook.ErrorMessage);
-                    //}
                 }
                 else
                 {
@@ -69,7 +61,6 @@ namespace ReadingList.Infrastructure.Services
             }
         }
         
-
         private void OnAddFailed(string errorMessage)
         {
             AddFailed?.Invoke(this, errorMessage);

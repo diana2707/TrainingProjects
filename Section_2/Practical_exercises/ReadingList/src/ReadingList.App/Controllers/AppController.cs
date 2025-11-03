@@ -1,5 +1,4 @@
-﻿//using ReadingList.App.Commands;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using ReadingList.App.Interfaces;
 using ReadingList.Domain.Enums;
 using ReadingList.Domain.Models;
@@ -11,7 +10,6 @@ namespace ReadingList.App.Controllers
 {
     public class AppController
     {
-        //private List<ICommand> _commands = [];
         private IDisplayer _displayer;
         private IInputValidator _validator;
         private IImportService _importService;
@@ -20,8 +18,7 @@ namespace ReadingList.App.Controllers
         private IUpdateService _updateService;
         private ILogger<AppController> _logger;
 
-        // create the logging flow
-        public AppController(/*List<ICommand> commands,*/ 
+        public AppController(
             IDisplayer displayer,
             IInputValidator validator,
             IImportService importService,
@@ -30,7 +27,6 @@ namespace ReadingList.App.Controllers
             IUpdateService updateService,
             ILogger<AppController> logger)
         {
-            //_commands = commands;
             _displayer = displayer;
             _validator = validator;
             _importService = importService;
@@ -40,29 +36,20 @@ namespace ReadingList.App.Controllers
             _logger = logger;
         }
 
-        // remember to log errors
-        public void Run()
+        public async Task Run()
         {
             _importService.LineMalformed += OnLineMalformed;
             _importService.AddFailed += OnAddFailed;
 
-            _displayer.Clear(); // should i clear the display at start?
+            _displayer.Clear();
             _displayer.PrintAppTitle();
 
             while (true)
             {
-                // should await everything before next iteration so > does not apear too soon
                 string input = string.Empty;
                 Result<CommandType> command = null;
 
-                //for (int i = 0; i < _commands.Count; i++)
-                //{ 
-                //    int commandNumber = i + 1;
-                //    _displayer.PrintCommandOption(commandNumber, _commands[i]);
-                //}
-
                 input = _displayer.GetUserInput("> ");
-
                 command = _validator.ValidateCommand(input);
 
                 if (command.IsFailure)
@@ -74,7 +61,7 @@ namespace ReadingList.App.Controllers
                 switch (command.Value)
                 {
                     case CommandType.Import:
-                        ManageImport(command.Arguments);
+                        await ManageImport(command.Arguments);
                         break;
                     case CommandType.ListAll:
                         ManageListAll();
@@ -127,18 +114,15 @@ namespace ReadingList.App.Controllers
             _logger.LogWarning($"Malformed line from {sender}: {message}");
         }
 
-        //await import, make async
-        private void ManageImport(string[] filePaths)
+        private async Task ManageImport(string[] filePaths)
         {
-            // should also report count?
             _displayer.PrintMessage("Importing books...");
-            _importService.Import(filePaths);
+            await _importService.ImportAsync(filePaths);
             _displayer.PrintMessage("Import completed.");
         } 
 
         private void ManageListAll()
         {
-            // make displayer generic so that it can display any type of list?
             Result<IReadOnlyList<Book>> list = _querryService.ListAll();
 
             if (list.IsFailure)
@@ -165,7 +149,6 @@ namespace ReadingList.App.Controllers
 
         private void ManageTopRated(string[] arguments)
         {
-            // should not parse here, find a way to pass arguments properly
             int topNumber = int.Parse(arguments[0]);
             Result<IReadOnlyList<Book>> list = _querryService.FilterTopRated(topNumber);
 
@@ -180,10 +163,6 @@ namespace ReadingList.App.Controllers
 
         private void ManageByAuthor(string[] arguments)
         {
-            // should not do this here
-            // need dtos for passing info around
-            // modify to request quotes for names with spaces
-            // modify the extension method to handle names correctly
             string authorName = string.Join(' ', arguments);
             Result<IReadOnlyList<Book>> list = _querryService.FilterByAuthor(authorName);
 
@@ -201,9 +180,9 @@ namespace ReadingList.App.Controllers
             Result<BookStatsDto> stats = _querryService.GetStatistics();
             _displayer.PrintStatistics(stats.Value);
         }
+
         private void ManageMarkFinished(string[] arguments)
         {
-            // should not parse here
             int id = int.Parse(arguments[0]);
             Result<Book> markedFininshed = _updateService.MarkBookAsFinished(id);
 
@@ -218,16 +197,17 @@ namespace ReadingList.App.Controllers
 
         private void ManageRate(string[] arguments)
         {
-            // should not parse here
             int id = int.Parse(arguments[0]);
             float rating = float.Parse(arguments[1]);
 
             Result<Book> ratedBook = _updateService.RateBook(id, rating);
+
             if (ratedBook.IsFailure)
             {
                 _displayer.PrintErrorMessage(ratedBook.ErrorMessage);
                 return;
             }
+
             _displayer.PrintMessage($"Book '{ratedBook.Value.Title}' is rated {ratedBook.Value.Rating}.");
         }
 
@@ -236,7 +216,6 @@ namespace ReadingList.App.Controllers
             _displayer.PrintMessage("Exporting books...");
             string path = arguments[0];
 
-            // should leave it reading only list?
             IEnumerable<Book> items = _querryService.ListAll().Value;
 
             Result<bool> exportResult = _exportService.Export(ExportType.Json, items, path).Result;
@@ -254,7 +233,6 @@ namespace ReadingList.App.Controllers
             _displayer.PrintMessage("Exporting books...");
             string path = arguments[0];
 
-            // should leave it reading only list?
             IEnumerable<Book> items = _querryService.ListAll().Value;
 
             Result<bool> exportResult = _exportService.Export(ExportType.Csv, items, path).Result;
@@ -269,9 +247,7 @@ namespace ReadingList.App.Controllers
 
         private void ManageHelp()
         {
-            // should make a HelpService?
             _displayer.PrintHelp();
         }
-
     }
 }

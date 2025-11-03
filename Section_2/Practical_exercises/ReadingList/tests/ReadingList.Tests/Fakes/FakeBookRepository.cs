@@ -19,11 +19,6 @@ namespace ReadingList.Tests.Fakes
 
         public int Count => _books.Count();
 
-        public IEnumerable<Book> GetAll()
-        {
-            return _books;
-        }
-
         public bool Add(Book book)
         {
 
@@ -34,6 +29,11 @@ namespace ReadingList.Tests.Fakes
 
             _books.Add(book);
             return true;
+        }
+
+        public IEnumerable<Book> GetAll()
+        {
+            return _books;
         }
 
         public bool Contains(int id)

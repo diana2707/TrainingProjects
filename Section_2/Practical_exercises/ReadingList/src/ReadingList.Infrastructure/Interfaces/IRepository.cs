@@ -1,5 +1,4 @@
-﻿using ReadingList.Domain.Shared;
-
+﻿
 namespace ReadingList.Infrastructure.Interfaces
 {
     public interface IRepository<T, TKey>

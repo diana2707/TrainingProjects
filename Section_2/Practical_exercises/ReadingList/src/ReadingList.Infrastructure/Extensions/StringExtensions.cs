@@ -36,7 +36,7 @@ namespace ReadingList.Infrastructure.Extensions
                 return processedPart;
             }
 
-            // Convert to Title Case
+            // Convert to title Case
             processedPart = processedPart.ToLower();
             processedPart = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(processedPart);
 

@@ -7,7 +7,7 @@ namespace ReadingList.Infrastructure.ExportStrategies
 {
     public class CsvExportStrategy : IExportStrategy
     {
-        private IMapper<IEnumerable<Book>, Result<string>> _bookToCsvMapper;
+        private readonly IMapper<IEnumerable<Book>, Result<string>> _bookToCsvMapper;
 
         public CsvExportStrategy(IMapper<IEnumerable<Book>, Result<string>> bookToCsvMapper)
         {

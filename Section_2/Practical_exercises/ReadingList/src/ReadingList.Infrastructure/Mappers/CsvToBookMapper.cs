@@ -10,6 +10,12 @@ namespace ReadingList.Infrastructure.Mappers
         public Result<Book> Map(string csvLine)
         {
             var parts = csvLine.Split(',');
+
+            if (parts.Length < 8)
+            {
+                return Result<Book>.Failure("Invalid CSV format: expected 8 columns");
+            } 
+
             string idPart = parts[0];
             string titlePart = parts[1];
             string authorPart = parts[2];
@@ -27,21 +33,20 @@ namespace ReadingList.Infrastructure.Mappers
 
             if (validatedId.IsFailure)
             {
-                return Result<Book>.Failure("Failed to map Book due to invalid ID.");
+                return Result<Book>.Failure(validatedId.ErrorMessage);
             }
 
             Result<int> validatedYear = ValidateYear(yearPart);
 
             if (validatedYear.IsFailure)
             {
-                return Result<Book>.Failure("Failed to map Book due to invalid Year.");
+                return Result<Book>.Failure(validatedYear.ErrorMessage);
             }
 
             Result<int> validatedPages = ValidatePages(pagesPart);
 
             if (validatedPages.IsFailure)
             {
-                //return Result<Book>.Failure("Failed to map Book due to invalid Pages.");
                 return Result<Book>.Failure(validatedPages.ErrorMessage);
             }
 
@@ -49,17 +54,15 @@ namespace ReadingList.Infrastructure.Mappers
 
             if (validatedFinished.IsFailure)
             {
-                return Result<Book>.Failure("Failed to map Book due to invalid Finished status.");
+                return Result<Book>.Failure(validatedFinished.ErrorMessage);
             }
 
             Result<float> validatedRating = ValidateRating(ratingPart);
 
             if (validatedRating.IsFailure)
             {
-                return Result<Book>.Failure("Failed to map Book due to invalid Rating.");
+                return Result<Book>.Failure(validatedRating.ErrorMessage);
             }
-
-            // Validate Genre? Use enum?
 
             Book newBook = new(validatedId.Value)
             {
@@ -122,9 +125,6 @@ namespace ReadingList.Infrastructure.Mappers
 
         private Result<bool> ValidateFinished(string finishedPart)
         {
-            // use enum?
-            // use both yes/no and y/n?
-
             string finished = finishedPart.ToLower();
 
             List<string> acceptedInputs = ["yes", "no"];

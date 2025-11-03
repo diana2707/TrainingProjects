@@ -23,7 +23,7 @@ namespace ReadingList.Tests
 
             importService.LineMalformed += (_, message) => loggedMalformedLine = message;
             importService.AddFailed += (_, message) => failedAddMessage = message;
-            await importService.Import(filePaths);
+            await importService.ImportAsync(filePaths);
 
             // Duplicate Id and Malformed line should be skipped
             Assert.Equal(4, repository.Count);
@@ -31,11 +31,6 @@ namespace ReadingList.Tests
             Assert.Equal(2, repository.GetByKey(2).Id);
             Assert.Equal(3, repository.GetByKey(3).Id);
             Assert.Equal(5, repository.GetByKey(5).Id);
-
-            //Assert.Equal("Pages must be a positive integer.", loggedMalformedLine);
-
-            //Assert.Equal("An item with the same ID already exists. ID 1 skipped.", failedAddMessage);
-            
         }
     }
 }

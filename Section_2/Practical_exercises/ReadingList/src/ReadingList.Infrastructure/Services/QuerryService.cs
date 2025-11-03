@@ -42,7 +42,6 @@ namespace ReadingList.Infrastructure.Services
 
         public Result<IReadOnlyList<Book>> FilterTopRated(int topNumber)
         {
-            // how manage the situation when more books requested than exist? failure or return all?
             IEnumerable<Book> list = _repository.GetAll();
 
             if (!list.Any())

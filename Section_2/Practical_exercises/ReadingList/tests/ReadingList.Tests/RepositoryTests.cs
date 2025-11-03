@@ -25,8 +25,8 @@ namespace ReadingList.Tests
         public void Add_DuplicateItem_ReturnsFalse()
         {
             Repository<Book, int> repository = new(book => book.Id);
-
             Book book = new(id: 1);
+
             repository.Add(book);
 
             Assert.False(repository.Add(book));

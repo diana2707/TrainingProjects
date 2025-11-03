@@ -2,10 +2,6 @@
 using ReadingList.Domain.Shared;
 using ReadingList.Infrastructure.Interfaces;
 using System.Text.Json;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ReadingList.Infrastructure.ExportStrategies
 {
