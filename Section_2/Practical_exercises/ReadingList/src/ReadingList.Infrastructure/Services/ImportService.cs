@@ -1,4 +1,5 @@
-﻿using ReadingList.Domain;
+﻿using ReadingList.Domain.Models;
+using ReadingList.Domain.Shared;
 using ReadingList.Infrastructure.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -6,14 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ReadingList.Infrastructure
+namespace ReadingList.Infrastructure.Services
 {
-    public class CsvFileService : ICsvFileService
+    public class ImportService : IImportService
     {
         private IRepository<Book, int> _repository;
         private ICsvToBookMapper _csvToBookMapper;
 
-        public CsvFileService(IRepository<Book, int> repository, ICsvToBookMapper csvToBookMapper)
+        public ImportService(IRepository<Book, int> repository, ICsvToBookMapper csvToBookMapper)
         {
             _repository = repository;
             _csvToBookMapper = csvToBookMapper;
@@ -23,6 +24,7 @@ namespace ReadingList.Infrastructure
 
         public event EventHandler<string> LineMalformed;
 
+        //change name to ImportAsync
         public async Task Import(string[] filePaths)
         {
             await Parallel.ForEachAsync(filePaths, async (filePath, token) =>

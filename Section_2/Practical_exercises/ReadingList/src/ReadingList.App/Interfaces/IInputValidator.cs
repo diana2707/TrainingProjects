@@ -4,7 +4,7 @@ using ReadingList.Domain.Enums;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ReadingList.Domain;
+using ReadingList.Domain.Shared;
 
 namespace ReadingList.App.Interfaces
 {

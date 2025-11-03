@@ -1,8 +1,8 @@
-﻿using ReadingList.Domain;
+﻿using ReadingList.Domain.Shared;
 using ReadingList.Infrastructure.Interfaces;
 using System.Collections.Concurrent;
 
-namespace ReadingList.Infrastructure
+namespace ReadingList.Infrastructure.Data
 {
     public class Repository<T, TKey> : IRepository<T, TKey>
     {

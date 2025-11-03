@@ -1,10 +1,10 @@
 ﻿//using ReadingList.App.Commands;
 using ReadingList.App.Interfaces;
-using ReadingList.Domain;
+using ReadingList.Domain.Models;
 using ReadingList.Infrastructure.DTOs;
 using System;
 
-namespace ReadingList.App
+namespace ReadingList.App.UI
 {
     public class Displayer : IDisplayer
     {

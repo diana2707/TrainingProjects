@@ -1,6 +1,4 @@
-﻿
-
-namespace ReadingList.Domain
+﻿namespace ReadingList.Domain.Shared
 {
     public class Result<T>
     {

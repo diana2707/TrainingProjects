@@ -1,4 +1,5 @@
-﻿using ReadingList.Domain;
+﻿using ReadingList.Domain.Models;
+using ReadingList.Domain.Shared;
 using ReadingList.Infrastructure.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ReadingList.Infrastructure
+namespace ReadingList.Infrastructure.Services
 {
     public class UpdateService : IUpdateService
     {

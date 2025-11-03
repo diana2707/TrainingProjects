@@ -1,8 +1,9 @@
-﻿using ReadingList.Domain;
-using ReadingList.Infrastructure.Interfaces;
+﻿using ReadingList.Infrastructure.Interfaces;
 using ReadingList.Infrastructure.Extensions;
+using ReadingList.Domain.Models;
+using ReadingList.Domain.Shared;
 
-namespace ReadingList.Infrastructure
+namespace ReadingList.Infrastructure.Mappers
 {
     public class CsvToBookMapper : ICsvToBookMapper
     {

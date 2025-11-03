@@ -1,4 +1,4 @@
-﻿using ReadingList.Domain;
+﻿using ReadingList.Domain.Models;
 using ReadingList.Infrastructure.DTOs;
 using System;
 

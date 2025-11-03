@@ -3,8 +3,8 @@ using ReadingList.Domain.Shared;
 
 namespace ReadingList.Infrastructure.Interfaces
 {
-    public interface ICsvToBookMapper
+    public interface IExportStrategy
     {
-        public Result<Book> Map(string csvLine);
+        public Task<Result<bool>> ExportAsync(IEnumerable<Book> items, string filePath);
     }
 }

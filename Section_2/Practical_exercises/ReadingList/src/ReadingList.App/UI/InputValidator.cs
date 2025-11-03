@@ -1,10 +1,10 @@
 ﻿using ReadingList.App.Interfaces;
-using ReadingList.Domain;
 using ReadingList.Domain.Enums;
+using ReadingList.Domain.Shared;
 using System.Globalization;
 
 
-namespace ReadingList.App
+namespace ReadingList.App.UI
 {
     public class InputValidator : IInputValidator
     {
@@ -20,6 +20,8 @@ namespace ReadingList.App
                 { "stats", CommandType.Stats},
                 { "mark finished", CommandType.MarkFinished },
                 { "rate", CommandType.Rate },
+                { "export json", CommandType.ExportJson },
+                { "export csv", CommandType.ExportCsv },
                 { "help", CommandType.Help },
                 { "exit", CommandType.Exit }
             };
@@ -53,12 +55,15 @@ namespace ReadingList.App
                 CommandType.Stats => ValidateStatsCommand(command, arguments),
                 CommandType.MarkFinished => ValidateMarkFinishedCommand(command, arguments),
                 CommandType.Rate => ValidateRateCommand(command, arguments),
+                CommandType.ExportJson => ValidateExportJson(command, arguments),
+                CommandType.ExportCsv => ValidateExportCsv(command, arguments),
                 CommandType.Help => ValidateHelpCommand(command, arguments),
                 CommandType.Exit => ValidateExitCommand(command, arguments),
                 _ => Result<CommandType>.Success(command, arguments),
             };
         }
 
+       
         private Result<CommandType> ValidateRateCommand(CommandType command, string[] arguments)
         {
             if (arguments.Length != 2)
@@ -187,5 +192,51 @@ namespace ReadingList.App
 
             return Result<CommandType>.Success(command);
         }
+
+        private Result<CommandType> ValidateExportJson(CommandType command, string[] arguments)
+        {
+            if (arguments.Length != 1)
+            {
+                return Result<CommandType>.Failure("The 'export json' command requires exactly one argument specifying the file path.");
+            }
+
+            string filePath = arguments[0];
+
+            if (!File.Exists(filePath))
+            {
+                return Result<CommandType>.Failure($"{filePath} does not exist");
+            }
+
+            if (!filePath.EndsWith(".json"))
+            {
+                return Result<CommandType>.Failure("Invalid argument. The export file must have a .json extension.");
+            }
+
+            return Result<CommandType>.Success(command, arguments);
+        }
+
+        private Result<CommandType> ValidateExportCsv(CommandType command, string[] arguments)
+        {
+            if (arguments.Length != 1)
+            {
+                return Result<CommandType>.Failure("The 'export csv' command requires exactly one argument specifying the file path.");
+            }
+
+            string filePath = arguments[0];
+
+            if (!File.Exists(filePath))
+            {
+                return Result<CommandType>.Failure($"{filePath} does not exist");
+            }
+
+            if (!filePath.EndsWith(".csv"))
+            {
+                return Result<CommandType>.Failure("Invalid argument. The export file must have a .csv extension.");
+            }
+
+            return Result<CommandType>.Success(command, arguments);
+        }
+
+        
     }
 }

@@ -1,20 +1,21 @@
 ﻿//using ReadingList.App.Commands;
 using Microsoft.Extensions.Logging;
 using ReadingList.App.Interfaces;
-using ReadingList.Domain;
 using ReadingList.Domain.Enums;
+using ReadingList.Domain.Models;
+using ReadingList.Domain.Shared;
 using ReadingList.Infrastructure.DTOs;
 using ReadingList.Infrastructure.Interfaces;
-using System;
 
-namespace ReadingList.App
+namespace ReadingList.App.Controllers
 {
     public class AppController
     {
         //private List<ICommand> _commands = [];
         private IDisplayer _displayer;
         private IInputValidator _validator;
-        private ICsvFileService _csvFileService;
+        private IImportService _importService;
+        private IExportService _exportService;
         private IQuerryService _querryService;
         private IUpdateService _updateService;
         private ILogger<AppController> _logger;
@@ -23,7 +24,8 @@ namespace ReadingList.App
         public AppController(/*List<ICommand> commands,*/ 
             IDisplayer displayer,
             IInputValidator validator,
-            ICsvFileService csvFileService,
+            IImportService importService,
+            IExportService exportService,
             IQuerryService querryService,
             IUpdateService updateService,
             ILogger<AppController> logger)
@@ -31,7 +33,8 @@ namespace ReadingList.App
             //_commands = commands;
             _displayer = displayer;
             _validator = validator;
-            _csvFileService = csvFileService;
+            _importService = importService;
+            _exportService = exportService;
             _querryService = querryService;
             _updateService = updateService;
             _logger = logger;
@@ -40,8 +43,8 @@ namespace ReadingList.App
         // remember to log errors
         public void Run()
         {
-            _csvFileService.LineMalformed += OnLineMalformed;
-            _csvFileService.AddFailed += OnAddFailed;
+            _importService.LineMalformed += OnLineMalformed;
+            _importService.AddFailed += OnAddFailed;
 
             _displayer.Clear(); // should i clear the display at start?
             _displayer.PrintAppTitle();
@@ -94,6 +97,12 @@ namespace ReadingList.App
                     case CommandType.Rate:
                         ManageRate(command.Arguments);
                         break;
+                    case CommandType.ExportJson:
+                        ManageExport(CommandType.ExportJson, command.Arguments);
+                        break;
+                    case CommandType.ExportCsv:
+                        ManageExport(CommandType.ExportCsv, command.Arguments);
+                        break;
                     case CommandType.Help:
                         ManageHelp();
                         break;
@@ -118,11 +127,12 @@ namespace ReadingList.App
             _logger.LogWarning($"Malformed line from {sender}: {message}");
         }
 
+        //await import, make async
         private void ManageImport(string[] filePaths)
         {
             // should also report count?
             _displayer.PrintMessage("Importing books...");
-            _csvFileService.Import(filePaths);
+            _importService.Import(filePaths);
             _displayer.PrintMessage("Import completed.");
         } 
 
@@ -219,6 +229,22 @@ namespace ReadingList.App
                 return;
             }
             _displayer.PrintMessage($"Book '{ratedBook.Value.Title}' is rated {ratedBook.Value.Rating}.");
+        }
+
+        private void ManageExport(CommandType exportCommand, string[] arguments)
+        {
+            _displayer.PrintMessage("Exporting books...");
+            string path = arguments[0];
+            // should leave it reading only list?
+            IEnumerable<Book> items = _querryService.ListAll().Value;
+            Result<bool> exportResult = _exportService.Export(exportCommand, items, path).Result;
+            if (exportResult.IsFailure)
+            {
+                _displayer.PrintErrorMessage(exportResult.ErrorMessage);
+                return;
+            }
+
+            _displayer.PrintMessage("Export completed.");
         }
 
         private void ManageHelp()

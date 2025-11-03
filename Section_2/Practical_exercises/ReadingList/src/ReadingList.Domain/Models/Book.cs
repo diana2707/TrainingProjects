@@ -1,4 +1,4 @@
-﻿namespace ReadingList.Domain
+﻿namespace ReadingList.Domain.Models
 {
     public class Book
     {

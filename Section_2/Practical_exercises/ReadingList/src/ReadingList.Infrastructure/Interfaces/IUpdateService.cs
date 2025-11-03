@@ -1,4 +1,5 @@
-﻿using ReadingList.Domain;
+﻿using ReadingList.Domain.Models;
+using ReadingList.Domain.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;

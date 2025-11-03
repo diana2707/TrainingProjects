@@ -2,9 +2,13 @@
 //using ReadingList.App.Commands;
 using ReadingList.App.Interfaces;
 using ReadingList.Infrastructure.Interfaces;
-using ReadingList.Infrastructure;
-using ReadingList.Domain;
 using Microsoft.Extensions.Logging;
+using ReadingList.Domain.Models;
+using ReadingList.App.Controllers;
+using ReadingList.App.UI;
+using ReadingList.Infrastructure.Data;
+using ReadingList.Infrastructure.Mappers;
+using ReadingList.Infrastructure.Services;
 //using ICommand = ReadingList.App.Commands.ICommand;
 
 namespace ReadingList.App
@@ -26,14 +30,15 @@ namespace ReadingList.App
             IInputValidator validator = new InputValidator();
             IRepository<Book, int> repository = new Repository<Book, int>(book => book.Id);
             ICsvToBookMapper csvToBookMapper = new CsvToBookMapper();
-            ICsvFileService csvFileService = new CsvFileService(repository, csvToBookMapper);
+            IImportService importService = new ImportService(repository, csvToBookMapper);
+            IExportService exportService = new ExportService();
             IQuerryService querryService = new QuerryService(repository);
             IUpdateService updateService = new UpdateService(repository);
             ILogger<AppController> logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<AppController>();
 
 
 
-            AppController controller = new (displayer, validator, csvFileService, querryService, updateService, logger);
+            AppController controller = new (displayer, validator, importService, exportService, querryService, updateService, logger);
 
             controller.Run();
         }

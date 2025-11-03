@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ReadingList.Infrastructure.Interfaces
 {
-    public interface ICsvFileService
+    public interface IImportService
     {
         public event EventHandler<string> AddFailed;
         public event EventHandler<string> LineMalformed;
