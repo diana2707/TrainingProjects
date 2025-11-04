@@ -1,7 +1,7 @@
 ﻿using ReadingList.Infrastructure.Interfaces;
-using ReadingList.Infrastructure.Extensions;
 using ReadingList.Domain.Models;
 using ReadingList.Domain.Shared;
+using ReadingList.Domain.Extensions;
 
 namespace ReadingList.Infrastructure.Mappers
 {

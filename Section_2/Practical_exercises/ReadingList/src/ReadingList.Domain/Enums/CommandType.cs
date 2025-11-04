@@ -1,6 +1,4 @@
-﻿
-
-namespace ReadingList.Domain.Enums
+﻿namespace ReadingList.Domain.Enums
 {
     public enum CommandType
     {

@@ -1,7 +1,7 @@
-﻿using ReadingList.Domain.Models;
+﻿using ReadingList.Domain.Extensions;
+using ReadingList.Domain.Models;
 using ReadingList.Domain.Shared;
 using ReadingList.Infrastructure.DTOs;
-using ReadingList.Infrastructure.Extensions;
 using ReadingList.Infrastructure.Interfaces;
 
 namespace ReadingList.Infrastructure.Services

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using ReadingList.Domain.Enums;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ReadingList.Domain.Shared;
+using ReadingList.Domain.Enums;
 
 namespace ReadingList.App.Interfaces
 {

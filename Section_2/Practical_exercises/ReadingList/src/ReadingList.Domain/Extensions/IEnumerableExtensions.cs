@@ -1,6 +1,6 @@
 ﻿using ReadingList.Domain.Models;
 
-namespace ReadingList.Infrastructure.Extensions
+namespace ReadingList.Domain.Extensions
 {
     public static class IEnumerableExtensions
     {

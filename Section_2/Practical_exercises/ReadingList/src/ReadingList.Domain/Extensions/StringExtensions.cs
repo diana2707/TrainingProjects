@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace ReadingList.Infrastructure.Extensions
+namespace ReadingList.Domain.Extensions
 {
     public static class StringExtensions
     {

@@ -1,5 +1,5 @@
-﻿using ReadingList.Domain.Models;
-using ReadingList.Infrastructure.Extensions;
+﻿using ReadingList.Domain.Extensions;
+using ReadingList.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
