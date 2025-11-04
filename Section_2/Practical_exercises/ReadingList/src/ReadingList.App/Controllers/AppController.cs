@@ -10,6 +10,7 @@ namespace ReadingList.App.Controllers
 {
     public class AppController
     {
+        // verify if still need logger
         private IDisplayer _displayer;
         private IInputValidator _validator;
         private IImportService _importService;
@@ -41,9 +42,6 @@ namespace ReadingList.App.Controllers
 
         public async Task Run()
         {
-            _importService.LineMalformed += OnLineMalformed;
-            _importService.AddFailed += OnAddFailed;
-
             _displayer.Clear();
             _displayer.PrintAppTitle();
 
@@ -105,16 +103,6 @@ namespace ReadingList.App.Controllers
                 }
 
             }
-        }
-
-        private void OnAddFailed(object? sender, string message)
-        {
-            _logger.LogWarning($"Failed add from {sender}: {message}");
-        }
-
-        private void OnLineMalformed(object? sender, string message)
-        {
-            _logger.LogWarning($"Malformed line from {sender}: {message}");
         }
 
         private async Task ManageImport(string[] filePaths)

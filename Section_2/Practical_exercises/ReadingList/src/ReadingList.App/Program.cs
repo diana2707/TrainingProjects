@@ -30,13 +30,14 @@ namespace ReadingList.App
 
             //Set IO helpers
             IFileReader fileReader = new FileReader();
+            ILoggerFactory loggerFactory = new LoggerFactoryProvider().GetLoggerFactory();
 
             //Set export strategy factory
             IExportStrategyFactory exportStrategyFactory = new ExportStrategyFactory(bookToCsvMapper);
 
             //Set services
-            IImportService importService = new ImportService(repository, fileReader, csvToBookMapper);
-            IExportService exportService = new ExportService(exportStrategyFactory);
+            IImportService importService = new ImportService(repository, fileReader, csvToBookMapper, loggerFactory.CreateLogger<ImportService>());
+            IExportService exportService = new ExportService(exportStrategyFactory, loggerFactory.CreateLogger<ExportService>());
             IQuerryService querryService = new QuerryService(repository);
             IUpdateService updateService = new UpdateService(repository);
 

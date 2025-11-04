@@ -1,4 +1,5 @@
-﻿using ReadingList.Domain.Extensions;
+﻿using Microsoft.Extensions.Logging;
+using ReadingList.Domain.Extensions;
 using ReadingList.Domain.Models;
 using ReadingList.Domain.Shared;
 using ReadingList.Infrastructure.DTOs;
@@ -15,6 +16,7 @@ namespace ReadingList.Infrastructure.Services
             _repository = repository;
         }
 
+        // log errors here if needed
         public Result<IReadOnlyList<Book>> ListAll()
         {
             IEnumerable<Book> list = _repository.GetAll();

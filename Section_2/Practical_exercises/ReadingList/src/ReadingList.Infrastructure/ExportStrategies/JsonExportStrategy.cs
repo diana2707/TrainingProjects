@@ -7,6 +7,7 @@ namespace ReadingList.Infrastructure.ExportStrategies
 {
     public class JsonExportStrategy : IExportStrategy
     {
+        // throw errors compose result higher   
         public async Task<Result<bool>> ExportAsync(IEnumerable<Book> items, string filePath, CancellationToken cancelToken)
         {
             string serializedItems = JsonSerializer.Serialize(items);

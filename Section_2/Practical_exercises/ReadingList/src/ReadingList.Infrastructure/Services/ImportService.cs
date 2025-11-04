@@ -1,4 +1,5 @@
-﻿using ReadingList.Domain.Models;
+﻿using Microsoft.Extensions.Logging;
+using ReadingList.Domain.Models;
 using ReadingList.Domain.Shared;
 using ReadingList.Infrastructure.Interfaces;
 
@@ -9,21 +10,18 @@ namespace ReadingList.Infrastructure.Services
         private IRepository<Book, int> _repository;
         private IFileReader _fileReader;
         private IMapper<string, Result<Book>> _csvToBookMapper;
+        private ILogger _logger;
 
         public ImportService(IRepository<Book, int> repository,
             IFileReader fileReader,
-            IMapper<string,Result<Book>> csvToBookMapper)
+            IMapper<string,Result<Book>> csvToBookMapper,
+            ILogger<ImportService> logger)
         {
             _repository = repository;
             _fileReader = fileReader;
             _csvToBookMapper = csvToBookMapper;
+            _logger = logger;
         }
-
-        public event EventHandler<string>? AddFailed;
-
-        public event EventHandler<string>? LineMalformed;
-
-        public event EventHandler<string>? ImportCanceled;
 
         public async Task<Result<bool>> ImportAsync(string[] filePaths, CancellationToken cancelToken)
         {
@@ -38,7 +36,9 @@ namespace ReadingList.Infrastructure.Services
             }
             catch (OperationCanceledException)
             {
-                return Result<bool>.Failure("Import operation was canceled.");
+                string cancelMessage = "Import operation was canceled by user.";
+                _logger.LogWarning(cancelMessage);
+                return Result<bool>.Failure(cancelMessage);
             }
         }
 
@@ -56,30 +56,20 @@ namespace ReadingList.Infrastructure.Services
                     {
                         if (!_repository.Add(book.Value))
                         {
-                            OnAddFailed($"An item with the same ID already exists. ID {book.Value.Id} skipped.");
+                            _logger.LogWarning($"File '{filePath}': Line {i}: An item with the same ID already exists. Duplicate ID {book.Value.Id} skipped.");
                             return;
                         }
                     }
                     catch (ArgumentNullException ex)
                     {
-                        OnLineMalformed($"Unexpected null value when adding book: {ex.Message}");
+                        _logger.LogError($"File '{filePath}': Line {i}: Unexpected null value: {ex.Message}");
                     }
                 }
                 else
                 {
-                    OnLineMalformed(book.ErrorMessage);
+                    _logger.LogWarning($"File '{filePath}': Line {i}: Malformed line skipped: {book.ErrorMessage}");
                 }
             }
-        }
-        
-        private void OnAddFailed(string errorMessage)
-        {
-            AddFailed?.Invoke(this, errorMessage);
-        }
-
-        private void OnLineMalformed(string errorMessage)
-        {
-            LineMalformed?.Invoke(this, errorMessage);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using ReadingList.Domain.Models;
+﻿using Microsoft.Extensions.Logging;
+using ReadingList.Domain.Models;
 using ReadingList.Domain.Shared;
 using ReadingList.Infrastructure.Interfaces;
 
@@ -7,6 +8,7 @@ namespace ReadingList.Infrastructure.Services
     public class UpdateService : IUpdateService
     {
         private readonly IRepository<Book, int> _repository;
+
         public UpdateService(IRepository<Book, int> repository)
         {
             _repository = repository;
