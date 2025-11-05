@@ -1,5 +1,4 @@
-﻿
-using ReadingList.App.Interfaces;
+﻿using ReadingList.App.Interfaces;
 using ReadingList.Domain.Shared;
 using ReadingList.Domain.Enums;
 
@@ -53,7 +52,7 @@ namespace ReadingList.App.Commands
         public void ExecuteHelpCommand()
         {
             Dictionary<string, string> commandsDetails = commands.Values.ToDictionary(command => command.Name,
-                                                                 command => command.Description);
+                                                                                     command => command.Description);
 
             commandsDetails.Add("help", "Display help message.");
             commandsDetails.Add("exit", "Exit the application.");
