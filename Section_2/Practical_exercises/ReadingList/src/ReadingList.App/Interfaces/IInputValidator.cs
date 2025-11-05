@@ -10,6 +10,10 @@ namespace ReadingList.App.Interfaces
 {
     public interface IInputValidator
     {
-        public Result<CommandType> ValidateCommand(string command);
+        public Result<CommandType> ValidateServiceCommand(string input);
+        public Result<string[]> ValidateImportArguments(string[] arguments);
+        public Result<string> ValidateJsonExportArguments(string[] arguments);
+        public Result<CommandType> ValidateHelpCommand(string input);
+        public Result<CommandType> ValidateExitCommand(string input);
     }
 }

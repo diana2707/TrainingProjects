@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 
 namespace ReadingList.Infrastructure.Data
 {
+    // since the dictionary i sthread safe the retriaval of data should be async?
     public class Repository<T, TKey> : IRepository<T, TKey>
     {
         private readonly ConcurrentDictionary<TKey, T> _items = [];

@@ -65,6 +65,14 @@ namespace ReadingList.App.UI
             Console.WriteLine();
         }
 
+        public void PrintSubtitle(string subtitle)
+        {
+            Console.WriteLine();
+            Console.WriteLine(subtitle);
+            Console.WriteLine(new string('-', subtitle.Length));
+            Console.WriteLine();
+        }
+
         public void PrintHelp()
         {
             Console.WriteLine();

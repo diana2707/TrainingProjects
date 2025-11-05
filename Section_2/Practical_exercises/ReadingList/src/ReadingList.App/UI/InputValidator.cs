@@ -6,7 +6,7 @@ namespace ReadingList.App.UI
 {
     public class InputValidator : IInputValidator
     {
-        public Result<CommandType> ValidateCommand(string input)
+        public Result<CommandType> ValidateServiceCommand(string input)
         {
             CommandType command = CommandType.Invalid;
             string commandInput = string.Empty;
@@ -25,7 +25,6 @@ namespace ReadingList.App.UI
                 { "export json", CommandType.ExportJson },
                 { "export csv", CommandType.ExportCsv },
                 { "help", CommandType.Help },
-                { "exit", CommandType.Exit }
             };
 
             foreach (var commandKey in commands.Keys)
@@ -42,44 +41,47 @@ namespace ReadingList.App.UI
                 return Result<CommandType>.Failure("Invalid command. Type 'help' to list valid commands.");
             }
 
-            return command switch
-            {
-                CommandType.Import => ValidateImportCommand(command, arguments),
-                CommandType.ListAll => ValidateListAllCommand(command, arguments),
-                CommandType.FilterFinished => ValidateFilterFinishedCommand(command, arguments),
-                CommandType.TopRated => ValidateTopRatedCommand(command, arguments),
-                CommandType.ByAuthor => ValidateByAuthorCommand(command, arguments),
-                CommandType.Stats => ValidateStatsCommand(command, arguments),
-                CommandType.MarkFinished => ValidateMarkFinishedCommand(command, arguments),
-                CommandType.Rate => ValidateRateCommand(command, arguments),
-                CommandType.ExportJson => ValidateExportJson(command, arguments),
-                CommandType.ExportCsv => ValidateExportCsv(command, arguments),
-                CommandType.Help => ValidateHelpCommand(command, arguments),
-                CommandType.Exit => ValidateExitCommand(command, arguments),
-                _ => Result<CommandType>.Success(command, arguments),
-            };
+            // can return tuple, no need for arguments in result
+            return Result<CommandType>.Success(command, arguments);
+
+            //return command switch
+            //{
+            //    CommandType.Import => ValidateImportCommand(command, arguments),
+            //    CommandType.ListAll => ValidateListAllCommand(command, arguments),
+            //    CommandType.FilterFinished => ValidateFilterFinishedCommand(command, arguments),
+            //    CommandType.TopRated => ValidateTopRatedCommand(command, arguments),
+            //    CommandType.ByAuthor => ValidateByAuthorCommand(command, arguments),
+            //    CommandType.Stats => ValidateStatsCommand(command, arguments),
+            //    CommandType.MarkFinished => ValidateMarkFinishedCommand(command, arguments),
+            //    CommandType.Rate => ValidateRateCommand(command, arguments),
+            //    CommandType.ExportJson => ValidateExportJson(command, arguments),
+            //    CommandType.ExportCsv => ValidateExportCsv(command, arguments),
+            //    CommandType.Help => ValidateHelpCommand(command, arguments),
+            //    CommandType.Exit => ValidateExitCommand(command, arguments),
+            //    _ => Result<CommandType>.Success(command, arguments),
+            //};
         }
 
-        private Result<CommandType> ValidateImportCommand(CommandType command, string[] arguments)
+        public Result<string[]> ValidateImportArguments(string[] arguments)
         {
             if (arguments.Length == 0)
             {
-                return Result<CommandType>.Failure("No arguments provided. At least one .csv file should be provided for import.");
+                return Result<string[]>.Failure("No arguments provided. At least one .csv file should be provided for import.");
             }
 
             for (int i = 0; i < arguments.Length; i++)
             {
                 if (!arguments[i].EndsWith(".csv"))
                 {
-                    return Result<CommandType>.Failure("Invalid argument. Only .csv files are supported for import.");
+                    return Result<string[]>.Failure("Invalid argument. Only .csv files are supported for import.");
                 }
                 if (!File.Exists(arguments[i]))
                 {
-                    return Result<CommandType>.Failure($"File not found: {arguments[i]}");
+                    return Result<string[]>.Failure($"File not found: {arguments[i]}");
                 }
             }
 
-            return Result<CommandType>.Success(command, arguments);
+            return Result<string[]>.Success(arguments);
         }
 
         private Result<CommandType> ValidateRateCommand(CommandType command, string[] arguments)
@@ -127,7 +129,7 @@ namespace ReadingList.App.UI
             return Result<CommandType>.Success(command, arguments);
         }
 
-        
+
         private Result<CommandType> ValidateListAllCommand(CommandType command, string[] arguments)
         {
             if (arguments.Length > 0)
@@ -173,26 +175,26 @@ namespace ReadingList.App.UI
             return Result<CommandType>.Success(command, arguments);
         }
 
-        private Result<CommandType> ValidateExportJson(CommandType command, string[] arguments)
+        public Result<string> ValidateJsonExportArguments(string[] arguments)
         {
             if (arguments.Length != 1)
             {
-                return Result<CommandType>.Failure("The 'export json' command requires exactly one argument specifying the file path.");
+                return Result<string>.Failure("The 'export json' command requires exactly one argument specifying the file path.");
             }
 
             string filePath = arguments[0];
 
             if (!File.Exists(filePath))
             {
-                return Result<CommandType>.Failure($"{filePath} does not exist");
+                return Result<string>.Failure($"{filePath} does not exist");
             }
 
             if (!filePath.EndsWith(".json"))
             {
-                return Result<CommandType>.Failure("Invalid argument. The export file must have a .json extension.");
+                return Result<string>.Failure("Invalid argument. The export file must have a .json extension.");
             }
 
-            return Result<CommandType>.Success(command, arguments);
+            return Result<string>.Success(filePath);
         }
 
         private Result<CommandType> ValidateExportCsv(CommandType command, string[] arguments)
@@ -235,6 +237,28 @@ namespace ReadingList.App.UI
             }
 
             return Result<CommandType>.Success(command);
+        }
+
+
+        // make extension method for cheking if multiple words andgive message arguments not accepted
+
+        public Result<CommandType> ValidateHelpCommand(string input)
+        {
+            if (!input.Trim().Equals("help", StringComparison.OrdinalIgnoreCase))
+            {
+                return Result<CommandType>.Failure("Not a help command.");
+            }
+            return Result<CommandType>.Success(CommandType.Help);
+        }
+
+        public Result<CommandType> ValidateExitCommand(string input)
+        {
+            if (!input.Trim().Equals("exit", StringComparison.OrdinalIgnoreCase))
+            {
+                return Result<CommandType>.Failure("Not an exit command.");
+            }
+
+            return Result<CommandType>.Success(CommandType.Exit);
         }
     }
 }

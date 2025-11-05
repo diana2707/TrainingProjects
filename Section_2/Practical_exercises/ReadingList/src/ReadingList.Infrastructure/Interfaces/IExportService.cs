@@ -6,6 +6,6 @@ namespace ReadingList.Infrastructure.Interfaces
 {
     public interface IExportService
     {
-        public Task<Result<bool>> Export(ExportType exportType, IEnumerable<Book> items, string path);
+        public Task<Result<bool>> ExportAsync(ExportType exportType, string filePaths);
     }
 }

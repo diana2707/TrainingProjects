@@ -8,28 +8,30 @@ namespace ReadingList.Infrastructure.Services
 {
     public class ExportService : IExportService
     {
+        IRepository<Book, int> _repository;
         IExportStrategyFactory _exportStrategyFactory;
         ILogger<ExportService> _logger;
         ICancelService _cancelService;
 
-        public ExportService( IExportStrategyFactory exportStrategyFactory, ILogger<ExportService> logger, ICancelService cancelService)
+        public ExportService(IRepository<Book, int> repository, IExportStrategyFactory exportStrategyFactory, ILogger<ExportService> logger, ICancelService cancelService)
         {
+            _repository = repository;
             _exportStrategyFactory = exportStrategyFactory;
             _logger = logger;
             _cancelService = cancelService;
         }
 
-
-        // log errors here
-        public async Task<Result<bool>> Export(ExportType exportType, IEnumerable<Book> items, string path)
+        public async Task<Result<bool>> ExportAsync(ExportType exportType, string filePath)
         {
             CancellationToken cancelToken = _cancelService.GetCancellationToken();
+
+            IEnumerable<Book> items = _repository.GetAll();
 
             switch (exportType)
             {
                 case ExportType.Json:
                     IExportStrategy jsonStrategy = _exportStrategyFactory.Create(ExportType.Json);
-                    Result<bool> jsonExportResult = await jsonStrategy.ExportAsync(items, path, cancelToken);
+                    Result<bool> jsonExportResult = await jsonStrategy.ExportAsync(items, filePath, cancelToken);
 
                     if (jsonExportResult.IsFailure)
                     {
@@ -41,7 +43,7 @@ namespace ReadingList.Infrastructure.Services
 
                 case ExportType.Csv:
                     IExportStrategy csvStrategy = _exportStrategyFactory.Create(ExportType.Csv);
-                    Result<bool> csvExportResult = await csvStrategy.ExportAsync(items, path, cancelToken);
+                    Result<bool> csvExportResult = await csvStrategy.ExportAsync(items, filePath, cancelToken);
 
                     if (csvExportResult.IsFailure)
                     {

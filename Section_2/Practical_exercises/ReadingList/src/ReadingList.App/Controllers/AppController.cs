@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using ReadingList.App.Commands;
 using ReadingList.App.Interfaces;
 using ReadingList.Domain.Enums;
 using ReadingList.Domain.Models;
@@ -10,6 +11,7 @@ namespace ReadingList.App.Controllers
 {
     public class AppController
     {
+        private ICommandManager _commandManager;
         private IDisplayer _displayer;
         private IInputValidator _validator;
         private IImportService _importService;
@@ -18,6 +20,7 @@ namespace ReadingList.App.Controllers
         private IUpdateService _updateService;
 
         public AppController(
+            ICommandManager commandManager,
             IDisplayer displayer,
             IInputValidator validator,
             IImportService importService,
@@ -25,6 +28,7 @@ namespace ReadingList.App.Controllers
             IQuerryService querryService,
             IUpdateService updateService)
         {
+            _commandManager = commandManager;
             _displayer = displayer;
             _validator = validator;
             _importService = importService;
@@ -40,60 +44,69 @@ namespace ReadingList.App.Controllers
 
             while (true)
             {
-                string input = string.Empty;
-                Result<CommandType> command = null;
+                //string input = string.Empty;
+                //Result<CommandType> command = null;
 
-                input = _displayer.GetUserInput("> ");
-                command = _validator.ValidateCommand(input);
+                string input = _displayer.GetUserInput("> ");
+                //command = _validator.ValidateCommand(input);
 
-                if (command.IsFailure)
+                Result<CommandType> exitCommand = _validator.ValidateExitCommand(input);
+
+                if ( exitCommand.IsSuccess)
                 {
-                    _displayer.PrintErrorMessage(command.ErrorMessage);
-                    continue;
+                    break;
                 }
-                  
-                switch (command.Value)
-                {
-                    case CommandType.Import:
-                        await ManageImport(command.Arguments);
-                        break;
-                    case CommandType.ListAll:
-                        ManageListAll();
-                        break;
-                    case CommandType.FilterFinished:
-                        ManageFilterFinished();
-                        break;
-                    case CommandType.TopRated:
-                        ManageTopRated(command.Arguments);
-                        break;
-                    case CommandType.ByAuthor:
-                        ManageByAuthor(command.Arguments);
-                        break;
-                    case CommandType.Stats:
-                        ManageStats();
-                        break;
-                    case CommandType.MarkFinished:
-                        ManageMarkFinished(command.Arguments);
-                        break;
-                    case CommandType.Rate:
-                        ManageRate(command.Arguments);
-                        break;
-                    case CommandType.ExportJson:
-                        ManageExportJson(command.Arguments);
-                        break;
-                    case CommandType.ExportCsv:
-                        ManageExportCsv(command.Arguments);
-                        break;
-                    case CommandType.Help:
-                        ManageHelp();
-                        break;
-                    case CommandType.Exit:
-                        _displayer.PrintMessage("Exiting application. Goodbye!");
-                        return;
-                    default:
-                        _displayer.PrintErrorMessage("Invalid command. Type 'help' to list valid commands.");
-                        break;
-                }
+
+                await _commandManager.ExecuteCommandAsync(input);
+
+                //if (command.IsFailure)
+                //{
+                //    _displayer.PrintErrorMessage(command.ErrorMessage);
+                //    continue;
+                //}
+
+                //switch (command.Value)
+                //{
+                //    case CommandType.Import:
+                //        await ManageImport(command.Arguments);
+                //        break;
+                //    case CommandType.ListAll:
+                //        ManageListAll();
+                //        break;
+                //    case CommandType.FilterFinished:
+                //        ManageFilterFinished();
+                //        break;
+                //    case CommandType.TopRated:
+                //        ManageTopRated(command.Arguments);
+                //        break;
+                //    case CommandType.ByAuthor:
+                //        ManageByAuthor(command.Arguments);
+                //        break;
+                //    case CommandType.Stats:
+                //        ManageStats();
+                //        break;
+                //    case CommandType.MarkFinished:
+                //        ManageMarkFinished(command.Arguments);
+                //        break;
+                //    case CommandType.Rate:
+                //        ManageRate(command.Arguments);
+                //        break;
+                //    case CommandType.ExportJson:
+                //        ManageExportJson(command.Arguments);
+                //        break;
+                //    case CommandType.ExportCsv:
+                //        ManageExportCsv(command.Arguments);
+                //        break;
+                //    case CommandType.Help:
+                //        ManageHelp();
+                //        break;
+                //    case CommandType.Exit:
+                //        _displayer.PrintMessage("Exiting application. Goodbye!");
+                //        return;
+                //    default:
+                //        _displayer.PrintErrorMessage("Invalid command. Type 'help' to list valid commands.");
+                //        break;
+                //}
 
             }
         }
@@ -208,7 +221,7 @@ namespace ReadingList.App.Controllers
             string path = arguments[0];
 
             _displayer.PrintMessage("Exporting books...");
-            Result<bool> exportResult = _exportService.Export(ExportType.Json, items, path).Result;
+            Result<bool> exportResult = _exportService.ExportAsync(ExportType.Json, path).Result;
 
             if (exportResult.IsFailure)
             {
@@ -225,7 +238,7 @@ namespace ReadingList.App.Controllers
             string path = arguments[0];
 
             _displayer.PrintMessage("Exporting books...");
-            Result<bool> exportResult = _exportService.Export(ExportType.Csv, items, path).Result;
+            Result<bool> exportResult = _exportService.ExportAsync(ExportType.Csv, path).Result;
 
             if (exportResult.IsFailure)
             {

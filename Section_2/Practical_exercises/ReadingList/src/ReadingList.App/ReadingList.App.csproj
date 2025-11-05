@@ -8,12 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Commands\**" />
-    <EmbeddedResource Remove="Commands\**" />
-    <None Remove="Commands\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\ReadingList.Domain\ReadingList.Domain.csproj" />
     <ProjectReference Include="..\ReadingList.Infrastructure\ReadingList.Infrastructure.csproj" />
   </ItemGroup>

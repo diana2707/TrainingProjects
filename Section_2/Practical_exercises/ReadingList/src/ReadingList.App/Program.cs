@@ -10,6 +10,7 @@ using ReadingList.Infrastructure.Services;
 using ReadingList.Domain.Shared;
 using ReadingList.Infrastructure.ExportStrategies;
 using ReadingList.Infrastructure.IOHelpers;
+using ReadingList.App.Commands;
 
 namespace ReadingList.App
 {
@@ -40,12 +41,18 @@ namespace ReadingList.App
 
             //Set services
             IImportService importService = new ImportService(repository, fileReader, csvToBookMapper, loggerFactory.CreateLogger<ImportService>(), cancelService);
-            IExportService exportService = new ExportService(exportStrategyFactory, loggerFactory.CreateLogger<ExportService>(), cancelService);
+            IExportService exportService = new ExportService(repository, exportStrategyFactory, loggerFactory.CreateLogger<ExportService>(), cancelService);
             IQuerryService querryService = new QuerryService(repository);
             IUpdateService updateService = new UpdateService(repository);
 
+
+            // Commend manager setup
+            ICommandManager commandManager = new CommandManager(displayer, validator);
+            commandManager.RegisterCommand(new ImportCommand(importService, displayer, validator));
+            commandManager.RegisterCommand(new ExportJsonCommand(exportService, displayer, validator));
+
             //Set controller
-            AppController controller = new (displayer, validator, importService, exportService, querryService, updateService);
+            AppController controller = new (commandManager, displayer, validator, importService, exportService, querryService, updateService);
 
             await controller.Run();
         }

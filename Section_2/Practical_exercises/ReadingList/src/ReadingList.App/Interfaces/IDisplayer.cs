@@ -7,6 +7,7 @@ namespace ReadingList.App.Interfaces
     public interface IDisplayer
     {
         public void PrintAppTitle();
+        public void PrintSubtitle(string subtitle);
         public string GetUserInput(string prompt);
         public void PrintMessage(string message);
         public void PrintErrorMessage(string message);
