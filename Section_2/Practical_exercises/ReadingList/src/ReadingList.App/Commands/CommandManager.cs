@@ -52,23 +52,13 @@ namespace ReadingList.App.Commands
 
         public void ExecuteHelpCommand()
         {
-            _displayer.PrintSubtitle("Available commands:");
+            Dictionary<string, string> commandsDetails = commands.Values.ToDictionary(command => command.Name,
+                                                                 command => command.Description);
 
-            foreach (var command in commands)
-            {
-                PrintHelpListItem(command.Value.Name, command.Value.Description);
-            }
+            commandsDetails.Add("help", "Display help message.");
+            commandsDetails.Add("exit", "Exit the application.");
 
-            PrintHelpListItem("help", "Display help message.");
-            PrintHelpListItem("exit", "Exit the application.");
-        }
-
-        private void PrintHelpListItem(string commandName, string description)
-        {
-            int maxCommandLength = commands.Values.Select(command => command.Name)
-                                                  .Max(c => c.ToString().Length);
-
-            _displayer.PrintLine($"  {commandName.PadRight(maxCommandLength)}  {description}");
+            _displayer.PrintHelp(commandsDetails);
         }
     }
 }

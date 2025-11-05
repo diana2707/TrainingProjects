@@ -72,29 +72,16 @@ namespace ReadingList.App.UI
             Console.WriteLine();
         }
 
-        public void PrintLine(string line)
+        public void PrintHelp(Dictionary<string, string> commandsDetails)
         {
-            Console.WriteLine(line);
-        }
+            PrintSubtitle("Available commands:");
 
-        public void PrintHelp()
-        {
-            Console.WriteLine();
-            Console.WriteLine("Available Commands:");
-            Console.WriteLine("-------------------");
-            Console.WriteLine("import <file1.csv> <file2.csv> ... - Import books from specified CSV files.");
-            Console.WriteLine("list all - List all books in the reading list.");
-            Console.WriteLine("filter finished - List all finished books.");
-            Console.WriteLine("top rated <N> - List top N rated books.");
-            Console.WriteLine("by author <author name> - List books by the specified author.");
-            Console.WriteLine("stats - Show statistics about the reading list.");
-            Console.WriteLine("mark finished <book ID> - Mark the book with the specified ID as finished.");
-            Console.WriteLine("rate <book ID> <rating (0-5)> - Rate the book with the specified ID.");
-            Console.WriteLine("export json <file.json> - Export the reading list to a JSON file.");
-            Console.WriteLine("export csv <file.csv> - Export the reading list to a CSV file.");
-            Console.WriteLine("help - Show this help message.");
-            Console.WriteLine("exit - Exit the application.");
-            Console.WriteLine();
+            int maxCommandLength = commandsDetails.Keys.Max(name => name.Length);
+
+            foreach (var command in commandsDetails)
+            {
+                Console.WriteLine($"  {command.Key.PadRight(maxCommandLength)}  {command.Value}");
+            }
         }
 
         public void PrintErrorMessage(string message)

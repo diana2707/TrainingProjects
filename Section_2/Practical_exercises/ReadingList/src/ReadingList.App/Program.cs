@@ -60,7 +60,7 @@ namespace ReadingList.App
             commandManager.RegisterCommand(new ExportCsvCommand(exportService, displayer, validator));
 
             //Set controller
-            AppController controller = new (commandManager, displayer, validator, importService, exportService, querryService, updateService);
+            AppController controller = new (commandManager, displayer, validator);
 
             await controller.Run();
         }
