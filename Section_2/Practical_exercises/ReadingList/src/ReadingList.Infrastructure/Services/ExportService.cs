@@ -10,17 +10,21 @@ namespace ReadingList.Infrastructure.Services
     {
         IExportStrategyFactory _exportStrategyFactory;
         ILogger<ExportService> _logger;
+        ICancelService _cancelService;
 
-        public ExportService( IExportStrategyFactory exportStrategyFactory, ILogger<ExportService> logger)
+        public ExportService( IExportStrategyFactory exportStrategyFactory, ILogger<ExportService> logger, ICancelService cancelService)
         {
             _exportStrategyFactory = exportStrategyFactory;
             _logger = logger;
+            _cancelService = cancelService;
         }
 
 
         // log errors here
-        public async Task<Result<bool>> Export(ExportType exportType, IEnumerable<Book> items, string path, CancellationToken cancelToken)
+        public async Task<Result<bool>> Export(ExportType exportType, IEnumerable<Book> items, string path)
         {
+            CancellationToken cancelToken = _cancelService.GetCancellationToken();
+
             switch (exportType)
             {
                 case ExportType.Json:

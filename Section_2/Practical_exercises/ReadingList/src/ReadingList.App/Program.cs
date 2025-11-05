@@ -35,20 +35,17 @@ namespace ReadingList.App
             //Set export strategy factory
             IExportStrategyFactory exportStrategyFactory = new ExportStrategyFactory(bookToCsvMapper);
 
-            //Set services
-            IImportService importService = new ImportService(repository, fileReader, csvToBookMapper, loggerFactory.CreateLogger<ImportService>());
-            IExportService exportService = new ExportService(exportStrategyFactory, loggerFactory.CreateLogger<ExportService>());
-            IQuerryService querryService = new QuerryService(repository);
-            IUpdateService updateService = new UpdateService(repository);
-
             //Set cancel service
             ICancelService cancelService = new CancelService();
 
-            //Set logger
-            ILogger<AppController> logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<AppController>();
+            //Set services
+            IImportService importService = new ImportService(repository, fileReader, csvToBookMapper, loggerFactory.CreateLogger<ImportService>(), cancelService);
+            IExportService exportService = new ExportService(exportStrategyFactory, loggerFactory.CreateLogger<ExportService>(), cancelService);
+            IQuerryService querryService = new QuerryService(repository);
+            IUpdateService updateService = new UpdateService(repository);
 
             //Set controller
-            AppController controller = new (displayer, validator, importService, exportService, querryService, updateService, cancelService, logger);
+            AppController controller = new (displayer, validator, importService, exportService, querryService, updateService);
 
             await controller.Run();
         }

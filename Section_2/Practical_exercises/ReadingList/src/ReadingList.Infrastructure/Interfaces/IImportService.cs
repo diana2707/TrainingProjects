@@ -5,6 +5,6 @@ namespace ReadingList.Infrastructure.Interfaces
 {
     public interface IImportService
     {
-        public Task<Result<bool>> ImportAsync(string[] filePaths, CancellationToken cancelToken);
+        public Task<Result<bool>> ImportAsync(string[] filePaths);
     }
 }

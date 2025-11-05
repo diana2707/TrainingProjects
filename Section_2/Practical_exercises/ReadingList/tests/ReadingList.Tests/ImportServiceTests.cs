@@ -10,6 +10,7 @@ namespace ReadingList.Tests
 {
     public class ImportServiceTests
     {
+        // implement a fake logger
         [Fact]
         public async Task Import_2CsvFiles_CombinesResults()
         {
@@ -23,8 +24,6 @@ namespace ReadingList.Tests
             string failedAddMessage = string.Empty;
             string[] filePaths = ["file1.csv", "file2.csv"];
 
-            importService.LineMalformed += (_, message) => loggedMalformedLine = message;
-            importService.AddFailed += (_, message) => failedAddMessage = message;
             CancellationToken token = cancelService.GetCancellationToken();
             await importService.ImportAsync(filePaths, token);
 

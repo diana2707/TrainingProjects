@@ -1,6 +1,6 @@
 ﻿using ReadingList.Infrastructure.Interfaces;
 
-namespace ReadingList.Infrastructure.Services
+namespace ReadingList.Infrastructure.IOHelpers
 {
     public class CancelService : ICancelService, IDisposable
     {

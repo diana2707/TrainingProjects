@@ -10,15 +10,12 @@ namespace ReadingList.App.Controllers
 {
     public class AppController
     {
-        // verify if still need logger
         private IDisplayer _displayer;
         private IInputValidator _validator;
         private IImportService _importService;
         private IExportService _exportService;
         private IQuerryService _querryService;
         private IUpdateService _updateService;
-        private ICancelService _cancelService;
-        private ILogger<AppController> _logger;
 
         public AppController(
             IDisplayer displayer,
@@ -26,9 +23,7 @@ namespace ReadingList.App.Controllers
             IImportService importService,
             IExportService exportService,
             IQuerryService querryService,
-            IUpdateService updateService,
-            ICancelService cancelService,
-            ILogger<AppController> logger)
+            IUpdateService updateService)
         {
             _displayer = displayer;
             _validator = validator;
@@ -36,8 +31,6 @@ namespace ReadingList.App.Controllers
             _exportService = exportService;
             _querryService = querryService;
             _updateService = updateService;
-            _cancelService = cancelService;
-            _logger = logger;
         }
 
         public async Task Run()
@@ -107,10 +100,8 @@ namespace ReadingList.App.Controllers
 
         private async Task ManageImport(string[] filePaths)
         {
-            CancellationToken cancelToken = _cancelService.GetCancellationToken();
-
             _displayer.PrintMessage("Importing books...");
-            Result<bool> importResult = await _importService.ImportAsync(filePaths, cancelToken);
+            Result<bool> importResult = await _importService.ImportAsync(filePaths);
 
             if (importResult.IsFailure)
             {
@@ -213,12 +204,11 @@ namespace ReadingList.App.Controllers
 
         private void ManageExportJson(string[] arguments)
         {
-            CancellationToken cancelToken = _cancelService.GetCancellationToken();
             IEnumerable<Book> items = _querryService.ListAll().Value;
             string path = arguments[0];
 
             _displayer.PrintMessage("Exporting books...");
-            Result<bool> exportResult = _exportService.Export(ExportType.Json, items, path, cancelToken).Result;
+            Result<bool> exportResult = _exportService.Export(ExportType.Json, items, path).Result;
 
             if (exportResult.IsFailure)
             {
@@ -231,12 +221,11 @@ namespace ReadingList.App.Controllers
 
         private void ManageExportCsv(string[] arguments)
         {
-            CancellationToken cancelToken = _cancelService.GetCancellationToken();
             IEnumerable<Book> items = _querryService.ListAll().Value;
             string path = arguments[0];
 
             _displayer.PrintMessage("Exporting books...");
-            Result<bool> exportResult = _exportService.Export(ExportType.Csv, items, path, cancelToken).Result;
+            Result<bool> exportResult = _exportService.Export(ExportType.Csv, items, path).Result;
 
             if (exportResult.IsFailure)
             {

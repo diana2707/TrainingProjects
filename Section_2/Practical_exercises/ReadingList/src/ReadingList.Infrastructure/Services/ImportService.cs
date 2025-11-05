@@ -11,20 +11,25 @@ namespace ReadingList.Infrastructure.Services
         private IFileReader _fileReader;
         private IMapper<string, Result<Book>> _csvToBookMapper;
         private ILogger _logger;
+        private ICancelService _cancelService;
 
         public ImportService(IRepository<Book, int> repository,
             IFileReader fileReader,
             IMapper<string,Result<Book>> csvToBookMapper,
-            ILogger<ImportService> logger)
+            ILogger<ImportService> logger,
+            ICancelService cancelService)
         {
             _repository = repository;
             _fileReader = fileReader;
             _csvToBookMapper = csvToBookMapper;
             _logger = logger;
+            _cancelService = cancelService;
         }
 
-        public async Task<Result<bool>> ImportAsync(string[] filePaths, CancellationToken cancelToken)
+        public async Task<Result<bool>> ImportAsync(string[] filePaths)
         {
+            CancellationToken cancelToken = _cancelService.GetCancellationToken();
+
             try
             {
                 await Parallel.ForEachAsync(filePaths, cancelToken, async (filePath, token) =>
