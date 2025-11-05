@@ -1,0 +1,54 @@
+﻿using ReadingList.App.Interfaces;
+using ReadingList.Domain.Enums;
+using ReadingList.Domain.Models;
+using ReadingList.Domain.Shared;
+using ReadingList.Infrastructure.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ReadingList.App.Commands
+{
+    public class FilterFinishedCommand : ICommand
+    {
+        private IQuerryService _querryService;
+        private IDisplayer _displayer;
+        private IInputValidator _validator;
+        public FilterFinishedCommand(IQuerryService querryService, IDisplayer displayer, IInputValidator validator)
+        {
+            _querryService = querryService;
+            _displayer = displayer;
+            _validator = validator;
+        }
+
+        public CommandType CommandType => CommandType.FilterFinished;
+        public string Name => "filter finished";
+        public string Description => "List all finished books in the reading list.";
+
+        public async Task ExecuteAsync(string[] arguments)
+        {
+            Result<bool> validatedArguments = _validator.ValidateFilterFinishedArguments(arguments);
+
+            if (validatedArguments.IsFailure)
+            {
+                _displayer.PrintErrorMessage(validatedArguments.ErrorMessage);
+                return;
+            }
+
+            Result<IReadOnlyList<Book>> booksResult = _querryService.FilterFinished();
+
+            if (booksResult.IsFailure)
+            {
+                _displayer.PrintErrorMessage(booksResult.ErrorMessage);
+                return;
+            }
+
+            IReadOnlyList<Book> books = booksResult.Value;
+
+            // consider making displayer more generic
+            _displayer.PrintBookList(books);
+        }
+    }
+}

@@ -24,7 +24,6 @@ namespace ReadingList.App.UI
                 { "rate", CommandType.Rate },
                 { "export json", CommandType.ExportJson },
                 { "export csv", CommandType.ExportCsv },
-                { "help", CommandType.Help },
             };
 
             foreach (var commandKey in commands.Keys)
@@ -43,23 +42,6 @@ namespace ReadingList.App.UI
 
             // can return tuple, no need for arguments in result
             return Result<CommandType>.Success(command, arguments);
-
-            //return command switch
-            //{
-            //    CommandType.Import => ValidateImportCommand(command, arguments),
-            //    CommandType.ListAll => ValidateListAllCommand(command, arguments),
-            //    CommandType.FilterFinished => ValidateFilterFinishedCommand(command, arguments),
-            //    CommandType.TopRated => ValidateTopRatedCommand(command, arguments),
-            //    CommandType.ByAuthor => ValidateByAuthorCommand(command, arguments),
-            //    CommandType.Stats => ValidateStatsCommand(command, arguments),
-            //    CommandType.MarkFinished => ValidateMarkFinishedCommand(command, arguments),
-            //    CommandType.Rate => ValidateRateCommand(command, arguments),
-            //    CommandType.ExportJson => ValidateExportJson(command, arguments),
-            //    CommandType.ExportCsv => ValidateExportCsv(command, arguments),
-            //    CommandType.Help => ValidateHelpCommand(command, arguments),
-            //    CommandType.Exit => ValidateExitCommand(command, arguments),
-            //    _ => Result<CommandType>.Success(command, arguments),
-            //};
         }
 
         public Result<string[]> ValidateImportArguments(string[] arguments)
@@ -84,98 +66,100 @@ namespace ReadingList.App.UI
             return Result<string[]>.Success(arguments);
         }
 
-        private Result<CommandType> ValidateRateCommand(CommandType command, string[] arguments)
+        public Result<(int, float)> ValidateRateArguments(string[] arguments)
         {
             if (arguments.Length != 2)
             {
-                return Result<CommandType>.Failure("The 'rate' command requires exactly two arguments: the book ID and the rating(0-5).");
+                return Result<(int, float)>.Failure("The 'rate' command requires exactly two arguments: the book ID and the rating(0-5).");
             }
 
             if (!int.TryParse(arguments[0], out int id) || id < 0)
             {
-                return Result<CommandType>.Failure("Invalid argument. The book ID must be a positive integer.");
+                return Result<(int, float)>.Failure("Invalid argument. The book ID must be a positive integer.");
             }
 
             if (!float.TryParse(arguments[1], out float rating) || rating < 0 || rating > 5)
             {
-                return Result<CommandType>.Failure("Invalid argument. The rating must be an integer between 0 and 5.");
+                return Result<(int, float)>.Failure("Invalid argument. The rating must be an integer between 0 and 5.");
             }
 
-            return Result<CommandType>.Success(command, arguments);
+            return Result<(int, float)>.Success((id, rating));
         }
 
-        private Result<CommandType> ValidateMarkFinishedCommand(CommandType command, string[] arguments)
+        public Result<int> ValidateMarkFinishedArguments(string[] arguments)
         {
             if (arguments.Length != 1)
             {
-                return Result<CommandType>.Failure("The 'mark finished' command requires exactly one argument specifying the book ID.");
+                return Result<int>.Failure("The 'mark finished' command requires exactly one argument specifying the book ID.");
             }
 
             if (!int.TryParse(arguments[0], out int id) || id < 0)
             {
-                return Result<CommandType>.Failure("Invalid argument. The book ID must be a positive integer.");
+                return Result<int>.Failure("Invalid argument. The book ID must be a positive integer.");
             }
 
-            return Result<CommandType>.Success(command, arguments);
+            return Result<int>.Success(id);
         }
 
-        private Result<CommandType> ValidateByAuthorCommand(CommandType command, string[] arguments)
+        public Result<string> ValidateByAuthorArguments(string[] arguments)
         {
             if (arguments.Length == 0)
             {
-                return Result<CommandType>.Failure("No arguments provided. An author name should be provided for filtering.");
+                return Result<string>.Failure("No arguments provided. An author name should be provided for filtering.");
             }
 
-            return Result<CommandType>.Success(command, arguments);
+            string authorName = string.Join(' ', arguments);
+
+            return Result<string>.Success(authorName);
         }
 
 
-        private Result<CommandType> ValidateListAllCommand(CommandType command, string[] arguments)
+        public Result<bool> ValidateListAllArguments(string[] arguments)
         {
             if (arguments.Length > 0)
             {
-                return Result<CommandType>.Failure("The 'list all' command does not accept any arguments.");
+                return Result<bool>.Failure("The 'list all' command does not accept any arguments.");
             }
 
-            return Result<CommandType>.Success(command);
+            return Result<bool>.Success(true);
         }
 
-        private Result<CommandType> ValidateFilterFinishedCommand(CommandType command, string[] arguments)
+        public Result<bool> ValidateFilterFinishedArguments(string[] arguments)
         {
             if (arguments.Length > 0)
             {
-                return Result<CommandType>.Failure("The 'filter finished' command does not accept any arguments.");
+                return Result<bool>.Failure("The 'filter finished' command does not accept any arguments.");
             }
 
-            return Result<CommandType>.Success(command);
+            return Result<bool>.Success(true);
         }
 
-        private Result<CommandType> ValidateStatsCommand(CommandType command, string[] arguments)
+        public Result<bool> ValidateStatsArguments(string[] arguments)
         {
             if (arguments.Length > 0)
             {
-                return Result<CommandType>.Failure("The 'stats' command does not accept any arguments.");
+                return Result<bool>.Failure("The 'stats' command does not accept any arguments.");
             }
 
-            return Result<CommandType>.Success(command);
+            return Result<bool>.Success(true);
         }
 
-        private Result<CommandType> ValidateTopRatedCommand(CommandType command, string[] arguments)
+        public Result<int> ValidateTopRatedArguments(string[] arguments)
         {
             if (arguments.Length != 1)
             {
-                return Result<CommandType>.Failure("The 'top rated' command requires exactly one argument specifying the number of top-rated books to display.");
+                return Result<int>.Failure("The 'top rated' command requires exactly one argument specifying the number of top-rated books to display.");
             }
 
             if (!int.TryParse(arguments[0], out int value) && value <= 0)
             {
-                return Result<CommandType>.Failure("Invalid argument. The number of top-rated books must be a number larger then 0.");
+                return Result<int>.Failure("Invalid argument. The number of top-rated books must be a number larger then 0.");
             }
 
-            return Result<CommandType>.Success(command, arguments);
+            return Result<int>.Success(value);
         }
 
-        public Result<string> ValidateJsonExportArguments(string[] arguments)
+        public Result<string> ValidateExportJsonArguments(string[] arguments)
         {
             if (arguments.Length != 1)
             {
@@ -197,48 +181,27 @@ namespace ReadingList.App.UI
             return Result<string>.Success(filePath);
         }
 
-        private Result<CommandType> ValidateExportCsv(CommandType command, string[] arguments)
+        public Result<string> ValidateExportCsvArguments(string[] arguments)
         {
             if (arguments.Length != 1)
             {
-                return Result<CommandType>.Failure("The 'export csv' command requires exactly one argument specifying the file path.");
+                return Result<string>.Failure("The 'export csv' command requires exactly one argument specifying the file path.");
             }
 
             string filePath = arguments[0];
 
             if (!File.Exists(filePath))
             {
-                return Result<CommandType>.Failure($"{filePath} does not exist");
+                return Result<string>.Failure($"{filePath} does not exist");
             }
 
             if (!filePath.EndsWith(".csv"))
             {
-                return Result<CommandType>.Failure("Invalid argument. The export file must have a .csv extension.");
+                return Result<string>.Failure("Invalid argument. The export file must have a .csv extension.");
             }
 
-            return Result<CommandType>.Success(command, arguments);
+            return Result<string>.Success(filePath);
         }
-
-        private Result<CommandType> ValidateHelpCommand(CommandType command, string[] arguments)
-        {
-            if (arguments.Length > 0)
-            {
-                return Result<CommandType>.Failure("The 'help' command does not accept any arguments.");
-            }
-
-            return Result<CommandType>.Success(command);
-        }
-
-        private Result<CommandType> ValidateExitCommand(CommandType command, string[] arguments)
-        {
-            if (arguments.Length > 0)
-            {
-                return Result<CommandType>.Failure("The 'exit' command does not accept any arguments.");
-            }
-
-            return Result<CommandType>.Success(command);
-        }
-
 
         // make extension method for cheking if multiple words andgive message arguments not accepted
 

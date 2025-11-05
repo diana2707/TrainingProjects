@@ -1,5 +1,4 @@
-﻿//using ReadingList.App.Commands;
-using ReadingList.App.Interfaces;
+﻿using ReadingList.App.Interfaces;
 using ReadingList.Domain.Models;
 using ReadingList.Infrastructure.DTOs;
 using System;
@@ -71,6 +70,11 @@ namespace ReadingList.App.UI
             Console.WriteLine(subtitle);
             Console.WriteLine(new string('-', subtitle.Length));
             Console.WriteLine();
+        }
+
+        public void PrintLine(string line)
+        {
+            Console.WriteLine(line);
         }
 
         public void PrintHelp()

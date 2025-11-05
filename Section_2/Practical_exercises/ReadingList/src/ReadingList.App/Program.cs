@@ -46,10 +46,18 @@ namespace ReadingList.App
             IUpdateService updateService = new UpdateService(repository);
 
 
-            // Commend manager setup
+            // Command manager setup
             ICommandManager commandManager = new CommandManager(displayer, validator);
             commandManager.RegisterCommand(new ImportCommand(importService, displayer, validator));
+            commandManager.RegisterCommand(new ListAllCommand(querryService, displayer, validator));
+            commandManager.RegisterCommand(new FilterFinishedCommand(querryService, displayer, validator));
+            commandManager.RegisterCommand(new ByAuthorCommand(querryService, displayer, validator));
+            commandManager.RegisterCommand(new TopRatedCommand(querryService, displayer, validator));
+            commandManager.RegisterCommand(new StatsCommand(querryService, displayer, validator));
+            commandManager.RegisterCommand(new MarkFinishedCommand(updateService, displayer, validator));
+            commandManager.RegisterCommand(new RateCommand(updateService, displayer, validator));
             commandManager.RegisterCommand(new ExportJsonCommand(exportService, displayer, validator));
+            commandManager.RegisterCommand(new ExportCsvCommand(exportService, displayer, validator));
 
             //Set controller
             AppController controller = new (commandManager, displayer, validator, importService, exportService, querryService, updateService);

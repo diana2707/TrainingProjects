@@ -10,27 +10,27 @@ using System.Threading.Tasks;
 
 namespace ReadingList.App.Commands
 {
-    public class ExportJsonCommand : ICommand
+    public class ExportCsvCommand : ICommand
     {
         private IExportService _exportService;
         private IDisplayer _displayer;
         private IInputValidator _validator;
 
-        public ExportJsonCommand(IExportService importService, IDisplayer displayer, IInputValidator validator)
+        public ExportCsvCommand(IExportService importService, IDisplayer displayer, IInputValidator validator)
         {
             _exportService = importService;
             _displayer = displayer;
             _validator = validator;
         }
 
-        public CommandType CommandType => CommandType.ExportJson;
-        public string Name => "export json <path>";
-        public string Description => "Export books to specified JSON files.";
+        public CommandType CommandType => CommandType.ExportCsv;
+        public string Name => "export csv <path>";
+        public string Description => "Export books to specified CSV files.";
 
         public async Task ExecuteAsync(string[] arguments)
         {
-            Result<string> validatedArguments = _validator.ValidateExportJsonArguments(arguments);
-            
+            Result<string> validatedArguments = _validator.ValidateExportCsvArguments(arguments);
+
             if (validatedArguments.IsFailure)
             {
                 _displayer.PrintErrorMessage(validatedArguments.ErrorMessage);
@@ -39,8 +39,8 @@ namespace ReadingList.App.Commands
 
             string filePath = validatedArguments.Value;
 
-            _displayer.PrintMessage("Exporting books to JSON...");
-            Result<bool> exportResult = await _exportService.ExportAsync(ExportType.Json, filePath);
+            _displayer.PrintMessage("Exporting books to CSV...");
+            Result<bool> exportResult = await _exportService.ExportAsync(ExportType.Csv, filePath);
 
             if (exportResult.IsFailure)
             {
@@ -48,7 +48,7 @@ namespace ReadingList.App.Commands
                 return;
             }
 
-            _displayer.PrintMessage("Export to JSON completed.");
+            _displayer.PrintMessage("Export to CSV completed.");
         }
     }
 }

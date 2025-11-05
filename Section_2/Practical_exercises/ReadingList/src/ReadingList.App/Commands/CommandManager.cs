@@ -7,7 +7,7 @@ namespace ReadingList.App.Commands
 {
     public class CommandManager : ICommandManager
     {
-        private Dictionary<CommandType, ICommand> commnads = [];
+        private Dictionary<CommandType, ICommand> commands = [];
         private IDisplayer _displayer;
         private IInputValidator _validator;
 
@@ -19,9 +19,9 @@ namespace ReadingList.App.Commands
 
         public void RegisterCommand(ICommand command)
         {
-            if (!commnads.ContainsKey(command.CommandType))
+            if (!commands.ContainsKey(command.CommandType))
             {
-                commnads.Add(command.CommandType, command);
+                commands.Add(command.CommandType, command);
             }
         }
 
@@ -31,7 +31,7 @@ namespace ReadingList.App.Commands
 
             if (helpCommand.IsSuccess)
             {
-                PrintHelp();
+                ExecuteHelpCommand();
                 return;
             }
 
@@ -43,23 +43,32 @@ namespace ReadingList.App.Commands
                 return;
             }
 
-            if (commnads.TryGetValue(commandResult.Value, out var command))
+            if (commands.TryGetValue(commandResult.Value, out var command))
             {
-                await commnads[commandResult.Value].ExecuteAsync(commandResult.Arguments);
+                await commands[commandResult.Value].ExecuteAsync(commandResult.Arguments);
                 return;
             }
         }
 
-        public void PrintHelp()
+        public void ExecuteHelpCommand()
         {
-            int maxCommandLength = commnads.Keys.Max(c => c.ToString().Length);
-
             _displayer.PrintSubtitle("Available commands:");
-            foreach (var command in commnads)
+
+            foreach (var command in commands)
             {
-                string commandString = command.Key.ToString().PadRight(maxCommandLength);
-                _displayer.PrintMessage($"  {commandString}: {command.Value.Description}");
+                PrintHelpListItem(command.Value.Name, command.Value.Description);
             }
+
+            PrintHelpListItem("help", "Display help message.");
+            PrintHelpListItem("exit", "Exit the application.");
+        }
+
+        private void PrintHelpListItem(string commandName, string description)
+        {
+            int maxCommandLength = commands.Values.Select(command => command.Name)
+                                                  .Max(c => c.ToString().Length);
+
+            _displayer.PrintLine($"  {commandName.PadRight(maxCommandLength)}  {description}");
         }
     }
 }

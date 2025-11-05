@@ -20,6 +20,7 @@ namespace ReadingList.App.Commands
         }
 
         public CommandType CommandType => CommandType.Import;
+        public string Name => "import <file1.csv> [file2.csv ...]";
         public string Description => "Import books from specified CSV files.";
 
         public async Task ExecuteAsync(string[] arguments)
