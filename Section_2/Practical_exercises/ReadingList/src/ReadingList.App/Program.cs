@@ -22,34 +22,34 @@ namespace ReadingList.App
             ServiceCollection services = new();
 
             // Command manager setup
-            services.AddScoped<ICommandManager, CommandManager>();
+            services.AddSingleton<ICommandManager, CommandManager>();
 
             // Register commands
-            services.AddScoped<ICommand, ImportCommand>();
-            services.AddScoped<ICommand, ListAllCommand>();
-            services.AddScoped<ICommand, FilterFinishedCommand>();
-            services.AddScoped<ICommand, ByAuthorCommand>();
-            services.AddScoped<ICommand, TopRatedCommand>();
-            services.AddScoped<ICommand, StatsCommand>();
-            services.AddScoped<ICommand, MarkFinishedCommand>();
-            services.AddScoped<ICommand, RateCommand>();
-            services.AddScoped<ICommand, ExportJsonCommand>();
-            services.AddScoped<ICommand, ExportCsvCommand>();
+            services.AddSingleton<ICommand, ImportCommand>();
+            services.AddSingleton<ICommand, ListAllCommand>();
+            services.AddSingleton<ICommand, FilterFinishedCommand>();
+            services.AddSingleton<ICommand, ByAuthorCommand>();
+            services.AddSingleton<ICommand, TopRatedCommand>();
+            services.AddSingleton<ICommand, StatsCommand>();
+            services.AddSingleton<ICommand, MarkFinishedCommand>();
+            services.AddSingleton<ICommand, RateCommand>();
+            services.AddSingleton<ICommand, ExportJsonCommand>();
+            services.AddSingleton<ICommand, ExportCsvCommand>();
 
             //Set UI dependencies
-            services.AddScoped<IDisplayer, Displayer>();
-            services.AddScoped<IInputValidator, InputValidator>();
+            services.AddSingleton<IDisplayer, Displayer>();
+            services.AddSingleton<IInputValidator, InputValidator>();
 
             //Set repository
-            services.AddScoped<IRepository<Book, int>, Repository<Book, int>>(provider =>
+            services.AddSingleton<IRepository<Book, int>, Repository<Book, int>>(provider =>
                 new Repository<Book, int>(book => book.Id));
 
             //Set mappers
-            services.AddScoped<IMapper<string, Result<Book>>, CsvToBookMapper>();
-            services.AddScoped<IMapper<IEnumerable<Book>, Result<string>>, BookToCsvMapper>();
+            services.AddSingleton<IMapper<string, Result<Book>>, CsvToBookMapper>();
+            services.AddSingleton<IMapper<IEnumerable<Book>, Result<string>>, BookToCsvMapper>();
 
             //Set IO helpers
-            services.AddScoped<IFileReader, FileReader>();
+            services.AddSingleton<IFileReader, FileReader>();
 
             //Set logging
             services.AddLogging(builder =>
@@ -59,22 +59,22 @@ namespace ReadingList.App
             });
 
             //Set export strategy factory
-            services.AddScoped<IExportStrategyFactory, ExportStrategyFactory>(
+            services.AddSingleton<IExportStrategyFactory, ExportStrategyFactory>(
                 provider =>
              new ExportStrategyFactory(provider.GetRequiredService<IMapper<IEnumerable<Book>, Result<string>>>())
              );
 
             //Set cancel service
-            services.AddScoped<ICancelService, CancelService>();
+            services.AddSingleton<ICancelService, CancelService>();
 
             //Set services
-            services.AddScoped<IImportService, ImportService>();
-            services.AddScoped<IExportService, ExportService>();
-            services.AddScoped<IQuerryService, QuerryService>();
-            services.AddScoped<IUpdateService, UpdateService>();
+            services.AddSingleton<IImportService, ImportService>();
+            services.AddSingleton<IExportService, ExportService>();
+            services.AddSingleton<IQuerryService, QuerryService>();
+            services.AddSingleton<IUpdateService, UpdateService>();
 
             //Set controller
-            services.AddScoped<AppController>();
+            services.AddSingleton<AppController>();
 
             //Run application
             await services.BuildServiceProvider()
