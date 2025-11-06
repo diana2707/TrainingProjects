@@ -90,10 +90,8 @@ namespace SmartHome.Application.Services
             if (device is IDimmable dimmable)
                 attributes.Add($"Brightness: {dimmable.Brightness}%");
 
-
             if (device is ITemperatureControl tempControl)
                 attributes.Add($"Target Temperature: {tempControl.TargetCelsius}°C");
-
 
             if (device is IMeasurableLoad measurableLoad)
                 attributes.Add($"Total Wh: {measurableLoad.TotalWh}");
