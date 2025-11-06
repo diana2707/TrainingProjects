@@ -1,4 +1,5 @@
-﻿using SmartHome.Application.Models;
+﻿using SmartHome.Application.Enums;
+using SmartHome.Application.Models;
 using SmartHome.Application.Models.Interfaces;
 using SmartHome.Application.Services.Interfaces;
 
@@ -88,7 +89,7 @@ namespace SmartHome.Application.Services
 
         private void ManageAddingDevice()
         {
-            string? deviceType = GetValidDeviceType();
+            DeviceType deviceType = GetValidDeviceType();
             string deviceName = GetDeviceName();
 
             SmartDevice newDevice;
@@ -120,7 +121,15 @@ namespace SmartHome.Application.Services
             int deviceId = GetValidDeviceId();
             SmartDevice device = _deviceRegistry.GetById(deviceId);
 
-            _deviceRegistry.Remove(device);
+            try
+            {
+                _deviceRegistry.Remove(device);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return;
+            }
         }
 
         private void ManageTogglePower()
@@ -136,7 +145,7 @@ namespace SmartHome.Application.Services
             SmartDevice device = _deviceRegistry.GetById(deviceId);
 
             Console.WriteLine($"Device {device.Name} (Id: {device.Id}) is {device.GetStatus}.");
-            Console.Write($"Do you want to turn it {(device.IsOn ? "off" : "on")}? ");
+            Console.Write($"Do you want to turn it {(device.IsOn ? ToggleState.Off : ToggleState.On)}? ");
 
             string? input = GetValidBinaryChoice();
 
@@ -323,12 +332,12 @@ namespace SmartHome.Application.Services
             return Convert.ToInt32(validInput);
         }
 
-        private string GetValidDeviceType()
+        private DeviceType GetValidDeviceType()
         {
-            string userPrompt = "Choose device type (Light bulb/Color bulb/Thermostat/Smart plug): ";
-            Func<string, bool> condition = (input) => input == "light bulb" || input == "thermostat" || input == "smart plug" || input == "color bulb";
+            string userPrompt = $"Choose device type ({DeviceType.LightBulb}/{DeviceType.ColorBulb}/{DeviceType.Thermostat}/{DeviceType.SmartPlug}): ";
+            Func<string, bool> condition = (input) => Enum.TryParse<DeviceType>(input, true, out DeviceType result) && Enum.IsDefined(typeof(DeviceType), result);
             
-            return GetValidInput(condition, userPrompt);
+            return Enum.Parse<DeviceType>(GetValidInput(condition, userPrompt), true);
         }
 
         private string GetValidInput(Func<string, bool> condition, string userPrompt, string errorMessage = "Invalid input.")
@@ -368,6 +377,5 @@ namespace SmartHome.Application.Services
         {
             Console.WriteLine("Exiting the application. Goodbye!");
         }
-
     }
 }

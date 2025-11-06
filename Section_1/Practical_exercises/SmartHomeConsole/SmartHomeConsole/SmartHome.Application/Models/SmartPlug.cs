@@ -1,12 +1,14 @@
-﻿using SmartHome.Application.Models.Interfaces;
+﻿using SmartHome.Application.Enums;
+using SmartHome.Application.Models.Interfaces;
 
 namespace SmartHome.Application.Models
 {
     public class SmartPlug : SmartDevice, IMeasurableLoad
     {
-        public override string  DeviceType => "smart plug";
+        public override DeviceType  DeviceType => DeviceType.SmartPlug;
         public double CurrentWatts { get; private set; }
         public double TotalWh { get; private set; } = 0;
+        
         public void ResetEnergy()
         {
             TotalWh = 0;

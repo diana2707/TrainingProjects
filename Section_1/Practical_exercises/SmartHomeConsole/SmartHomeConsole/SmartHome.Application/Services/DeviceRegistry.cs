@@ -8,7 +8,6 @@ namespace SmartHome.Application.Services
     public class DeviceRegistry : IDeviceRegistry
     {
         List<SmartDevice> devices = [];
-
         public IReadOnlyList<SmartDevice> Devices => devices;
 
         public void Add(SmartDevice device)
@@ -43,8 +42,14 @@ namespace SmartHome.Application.Services
 
         public void Remove(SmartDevice device)
         {
-            Console.WriteLine($"Device removed from registry.");
+            if (!devices.Contains(device))
+            {
+                throw new InvalidOperationException($"Device {device.Name} is not in the registry.");
+            }  
+
             devices.Remove(device);
+
+            Console.WriteLine($"Device removed from registry.");
         }
 
         public List<string> ListAll()
@@ -62,28 +67,7 @@ namespace SmartHome.Application.Services
                     $"ID: {device.Id}, " +
                     $"Type: {device.DeviceType}, " +
                     $"Power: {device.GetStatus}, " +
-                    $"{GetParticularAttribute()})");
-
-                string GetParticularAttribute()
-                {
-                    List<string> attributes = [];
-
-                    if (device is IDimmable dimmable) 
-                        attributes.Add($"Brightness: {dimmable.Brightness}%");
-                    
-
-                    if (device is ITemperatureControl tempControl)
-                        attributes.Add($"Target Temperature: {tempControl.TargetCelsius}°C");
-                    
-
-                    if (device is IMeasurableLoad measurableLoad)
-                        attributes.Add($"Total Wh: {measurableLoad.TotalWh}");
-
-                    if (device is IColorControl colorControl)
-                        attributes.Add($"Color: {colorControl.Color}");
-
-                    return string.Join(", ", attributes);
-                }
+                    $"{GetParticularAttribute(device)})");
             }
 
             return deviceDetails;
@@ -97,6 +81,25 @@ namespace SmartHome.Application.Services
         public bool IsValidId(int id)
         {
             return devices.Any(device => device.Id == id);
+        }
+
+        private string GetParticularAttribute(SmartDevice device)
+        {
+            List<string> attributes = [];
+
+            if (device is IDimmable dimmable)
+                attributes.Add($"Brightness: {dimmable.Brightness}%");
+
+            if (device is ITemperatureControl tempControl)
+                attributes.Add($"Target Temperature: {tempControl.TargetCelsius}°C");
+
+            if (device is IMeasurableLoad measurableLoad)
+                attributes.Add($"Total Wh: {measurableLoad.TotalWh}");
+
+            if (device is IColorControl colorControl)
+                attributes.Add($"Color: {colorControl.Color}");
+
+            return string.Join(", ", attributes);
         }
     }
 }

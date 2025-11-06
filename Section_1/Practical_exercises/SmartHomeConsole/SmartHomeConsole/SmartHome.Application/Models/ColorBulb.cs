@@ -1,4 +1,5 @@
 ﻿using SmartHome.Application.Models.Interfaces;
+using SmartHome.Application.Enums;
 
 namespace SmartHome.Application.Models
 {
@@ -8,7 +9,7 @@ namespace SmartHome.Application.Models
 
         public int Brightness { get; private set; }
 
-        public override string DeviceType => "color bulb";
+        public override DeviceType DeviceType => DeviceType.ColorBulb;
 
         public void SetColor(string color)
         {

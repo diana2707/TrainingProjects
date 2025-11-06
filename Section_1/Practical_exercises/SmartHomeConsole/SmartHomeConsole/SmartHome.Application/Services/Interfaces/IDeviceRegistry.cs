@@ -7,11 +7,8 @@ namespace SmartHome.Application.Services.Interfaces
         public IReadOnlyList<SmartDevice> Devices { get; }
         public void Add(SmartDevice device);
         public void Remove(SmartDevice device);
-
         public List<string> ListAll();
-
         public SmartDevice? GetById(int id);
-
         public bool IsValidId(int id);
     }
 }
