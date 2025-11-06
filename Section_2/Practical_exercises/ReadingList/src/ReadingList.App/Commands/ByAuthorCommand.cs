@@ -34,7 +34,6 @@ namespace ReadingList.App.Commands
                 return;
             }
 
-            // use quotes for names?
             string authorName = validatedArguments.Value;
 
             Result<IReadOnlyList<Book>> booksResult = _querryService.FilterByAuthor(authorName);
@@ -47,7 +46,6 @@ namespace ReadingList.App.Commands
 
             IReadOnlyList<Book> books = booksResult.Value;
 
-            // consider making displayer more generic
             _displayer.PrintBooksList(books);
         }
     }

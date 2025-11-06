@@ -2,7 +2,7 @@
 using ReadingList.Domain.Shared;
 using ReadingList.Infrastructure.Mappers;
 
-namespace ReadingList.Tests
+namespace ReadingList.Tests.ApplicationTests
 {
     public class CsvToBookMapperTests
     {

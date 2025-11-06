@@ -40,7 +40,6 @@ namespace ReadingList.App.UI
                 return Result<CommandType>.Failure("Invalid command. Type 'help' to list valid commands.");
             }
 
-            // can return tuple, no need for arguments in result
             return Result<CommandType>.Success(command, arguments);
         }
 
@@ -64,6 +63,63 @@ namespace ReadingList.App.UI
             }
 
             return Result<string[]>.Success(arguments);
+        }
+
+        public Result<bool> ValidateListAllArguments(string[] arguments)
+        {
+            if (arguments.Length > 0)
+            {
+                return Result<bool>.Failure("The 'list all' command does not accept any arguments.");
+            }
+
+            return Result<bool>.Success(true);
+        }
+
+        public Result<bool> ValidateFilterFinishedArguments(string[] arguments)
+        {
+            if (arguments.Length > 0)
+            {
+                return Result<bool>.Failure("The 'filter finished' command does not accept any arguments.");
+            }
+
+            return Result<bool>.Success(true);
+        }
+
+        public Result<int> ValidateTopRatedArguments(string[] arguments)
+        {
+            if (arguments.Length != 1)
+            {
+                return Result<int>.Failure("The 'top rated' command requires exactly one argument specifying the number of top-rated books to display.");
+            }
+
+            if (!int.TryParse(arguments[0], out int value) && value <= 0)
+            {
+                return Result<int>.Failure("Invalid argument. The number of top-rated books must be a number larger then 0.");
+            }
+
+            return Result<int>.Success(value);
+        }
+
+        public Result<string> ValidateByAuthorArguments(string[] arguments)
+        {
+            if (arguments.Length == 0)
+            {
+                return Result<string>.Failure("No arguments provided. An author name should be provided for filtering.");
+            }
+
+            string authorName = string.Join(' ', arguments);
+
+            return Result<string>.Success(authorName);
+        }
+
+        public Result<bool> ValidateStatsArguments(string[] arguments)
+        {
+            if (arguments.Length > 0)
+            {
+                return Result<bool>.Failure("The 'stats' command does not accept any arguments.");
+            }
+
+            return Result<bool>.Success(true);
         }
 
         public Result<(int, float)> ValidateRateArguments(string[] arguments)
@@ -99,64 +155,6 @@ namespace ReadingList.App.UI
             }
 
             return Result<int>.Success(id);
-        }
-
-        public Result<string> ValidateByAuthorArguments(string[] arguments)
-        {
-            if (arguments.Length == 0)
-            {
-                return Result<string>.Failure("No arguments provided. An author name should be provided for filtering.");
-            }
-
-            string authorName = string.Join(' ', arguments);
-
-            return Result<string>.Success(authorName);
-        }
-
-
-        public Result<bool> ValidateListAllArguments(string[] arguments)
-        {
-            if (arguments.Length > 0)
-            {
-                return Result<bool>.Failure("The 'list all' command does not accept any arguments.");
-            }
-
-            return Result<bool>.Success(true);
-        }
-
-        public Result<bool> ValidateFilterFinishedArguments(string[] arguments)
-        {
-            if (arguments.Length > 0)
-            {
-                return Result<bool>.Failure("The 'filter finished' command does not accept any arguments.");
-            }
-
-            return Result<bool>.Success(true);
-        }
-
-        public Result<bool> ValidateStatsArguments(string[] arguments)
-        {
-            if (arguments.Length > 0)
-            {
-                return Result<bool>.Failure("The 'stats' command does not accept any arguments.");
-            }
-
-            return Result<bool>.Success(true);
-        }
-
-        public Result<int> ValidateTopRatedArguments(string[] arguments)
-        {
-            if (arguments.Length != 1)
-            {
-                return Result<int>.Failure("The 'top rated' command requires exactly one argument specifying the number of top-rated books to display.");
-            }
-
-            if (!int.TryParse(arguments[0], out int value) && value <= 0)
-            {
-                return Result<int>.Failure("Invalid argument. The number of top-rated books must be a number larger then 0.");
-            }
-
-            return Result<int>.Success(value);
         }
 
         public Result<string> ValidateExportJsonArguments(string[] arguments)
@@ -202,8 +200,6 @@ namespace ReadingList.App.UI
 
             return Result<string>.Success(filePath);
         }
-
-        // make extension method for cheking if multiple words andgive message arguments not accepted
 
         public Result<CommandType> ValidateHelpCommand(string input)
         {

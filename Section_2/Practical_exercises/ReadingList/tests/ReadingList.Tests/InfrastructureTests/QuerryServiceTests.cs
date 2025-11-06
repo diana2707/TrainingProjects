@@ -3,7 +3,7 @@ using ReadingList.Domain.Shared;
 using ReadingList.Infrastructure.Services;
 using ReadingList.Tests.Fakes;
 
-namespace ReadingList.Tests
+namespace ReadingList.Tests.InfrastructureTests
 {
     public class QuerryServiceTests
     {

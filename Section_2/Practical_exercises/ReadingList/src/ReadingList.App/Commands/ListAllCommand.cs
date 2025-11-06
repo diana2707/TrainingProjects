@@ -43,7 +43,6 @@ namespace ReadingList.App.Commands
 
             IReadOnlyList<Book> books = booksResult.Value;
 
-            // consider making displayer more generic
             _displayer.PrintBooksList(books);
         }
     }

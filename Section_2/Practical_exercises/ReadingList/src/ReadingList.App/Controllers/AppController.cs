@@ -20,18 +20,18 @@ namespace ReadingList.App.Controllers
             _validator = validator;
         }
 
-        public async Task Run()
+        public async Task RunAsync()
         {
             _displayer.Clear();
             _displayer.PrintAppTitle();
 
-            while (true)
+            while(true)
             {
                 string input = _displayer.GetUserInput("> ");
 
                 Result<CommandType> exitCommand = _validator.ValidateExitCommand(input);
 
-                if ( exitCommand.IsSuccess)
+                if(exitCommand.IsSuccess)
                 {
                     _displayer.PrintMessage("Exiting application. Goodbye!");
                     break;

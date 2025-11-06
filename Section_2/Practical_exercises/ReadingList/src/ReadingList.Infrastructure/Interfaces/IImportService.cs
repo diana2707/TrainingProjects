@@ -1,5 +1,4 @@
-﻿
-using ReadingList.Domain.Shared;
+﻿using ReadingList.Domain.Shared;
 
 namespace ReadingList.Infrastructure.Interfaces
 {

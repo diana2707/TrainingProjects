@@ -1,5 +1,4 @@
-﻿
-using ReadingList.App.Interfaces;
+﻿using ReadingList.App.Interfaces;
 using ReadingList.Domain.Enums;
 using ReadingList.Domain.Shared;
 using ReadingList.Infrastructure.Interfaces;

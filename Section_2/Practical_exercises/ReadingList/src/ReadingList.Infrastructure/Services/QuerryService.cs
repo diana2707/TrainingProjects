@@ -16,7 +16,6 @@ namespace ReadingList.Infrastructure.Services
             _repository = repository;
         }
 
-        // log errors here if needed
         public Result<IReadOnlyList<Book>> ListAll()
         {
             IEnumerable<Book> list = _repository.GetAll();

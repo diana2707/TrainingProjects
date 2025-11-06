@@ -1,6 +1,5 @@
 ﻿using ReadingList.App.Interfaces;
 using ReadingList.Domain.Enums;
-using ReadingList.Domain.Models;
 using ReadingList.Domain.Shared;
 using ReadingList.Infrastructure.DTOs;
 using ReadingList.Infrastructure.Interfaces;

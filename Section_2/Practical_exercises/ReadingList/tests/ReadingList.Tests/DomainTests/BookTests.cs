@@ -1,6 +1,6 @@
 using ReadingList.Domain.Models;
 
-namespace ReadingList.Tests
+namespace ReadingList.Tests.DomainTests
 {
     public class BookTests
     {

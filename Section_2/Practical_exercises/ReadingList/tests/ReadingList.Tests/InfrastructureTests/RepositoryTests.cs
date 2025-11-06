@@ -1,13 +1,12 @@
 ﻿using ReadingList.Domain.Models;
 using ReadingList.Infrastructure.Data;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ReadingList.Tests
+namespace ReadingList.Tests.InfrastructureTests
 {
     public class RepositoryTests
     {

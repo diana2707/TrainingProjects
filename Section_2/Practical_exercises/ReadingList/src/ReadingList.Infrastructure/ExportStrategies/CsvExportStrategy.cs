@@ -14,7 +14,6 @@ namespace ReadingList.Infrastructure.ExportStrategies
             _bookToCsvMapper = bookToCsvMapper;
         }
 
-        // throw errors compose result higher
         public async Task<Result<bool>> ExportAsync(IEnumerable<Book> items, string filePath, CancellationToken cancelToken)
         {
             Result<string> csvString = _bookToCsvMapper.Map(items);

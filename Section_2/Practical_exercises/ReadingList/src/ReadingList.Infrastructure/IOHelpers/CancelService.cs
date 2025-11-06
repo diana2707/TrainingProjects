@@ -39,5 +39,4 @@ namespace ReadingList.Infrastructure.IOHelpers
             _currentSource?.Dispose();
         }
     }
-
 }

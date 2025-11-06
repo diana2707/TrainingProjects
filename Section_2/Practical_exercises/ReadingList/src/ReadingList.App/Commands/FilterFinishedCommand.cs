@@ -3,11 +3,6 @@ using ReadingList.Domain.Enums;
 using ReadingList.Domain.Models;
 using ReadingList.Domain.Shared;
 using ReadingList.Infrastructure.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ReadingList.App.Commands
 {
@@ -47,7 +42,6 @@ namespace ReadingList.App.Commands
 
             IReadOnlyList<Book> books = booksResult.Value;
 
-            // consider making displayer more generic
             _displayer.PrintBooksList(books);
         }
     }

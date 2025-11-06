@@ -10,18 +10,20 @@ namespace ReadingList.App.Commands
         private IDisplayer _displayer;
         private IInputValidator _validator;
 
-        public CommandManager(IDisplayer displayer, IInputValidator validator)
+        public CommandManager(IEnumerable<ICommand> commands, IDisplayer displayer, IInputValidator validator)
         {
             _displayer = displayer;
             _validator = validator;
+
+            foreach (var command in commands)
+            {
+                RegisterCommand(command);
+            }
         }
 
         public void RegisterCommand(ICommand command)
         {
-            if (!commands.ContainsKey(command.CommandType))
-            {
-                commands.Add(command.CommandType, command);
-            }
+            commands.TryAdd(command.CommandType, command);
         }
 
         public async Task ExecuteCommandAsync(string input)
