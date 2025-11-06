@@ -24,39 +24,18 @@ namespace ReadingList.Infrastructure.Services
         public async Task<Result<bool>> ExportAsync(ExportType exportType, string filePath)
         {
             CancellationToken cancelToken = _cancelService.GetCancellationToken();
-
             IEnumerable<Book> items = _repository.GetAll();
+            IExportStrategy exportStrategy = _exportStrategyFactory.Create(exportType);
 
-            switch (exportType)
+            Result<bool> exportResult = await exportStrategy.ExportAsync(items, filePath, cancelToken);
+
+            if (exportResult.IsFailure)
             {
-                case ExportType.Json:
-                    IExportStrategy jsonStrategy = _exportStrategyFactory.Create(ExportType.Json);
-                    Result<bool> jsonExportResult = await jsonStrategy.ExportAsync(items, filePath, cancelToken);
-
-                    if (jsonExportResult.IsFailure)
-                    {
-                        _logger.LogError($"JSON Export failed: {jsonExportResult.ErrorMessage}");
-                        return Result<bool>.Failure(jsonExportResult.ErrorMessage);
-                    }
-
-                    return Result<bool>.Success(true);
-
-                case ExportType.Csv:
-                    IExportStrategy csvStrategy = _exportStrategyFactory.Create(ExportType.Csv);
-                    Result<bool> csvExportResult = await csvStrategy.ExportAsync(items, filePath, cancelToken);
-
-                    if (csvExportResult.IsFailure)
-                    {
-                        _logger.LogError($"CSV Export failed: {csvExportResult.ErrorMessage}");
-                        return Result<bool>.Failure(csvExportResult.ErrorMessage);
-                    }
-
-                    return Result<bool>.Success(true);
-
-                default:
-                    _logger.LogError($"Export failed: Unsupported export type: {exportType}.");
-                    return Result<bool>.Failure("Unsupported export type.");
+                _logger.LogError($"{exportType} export failed: {exportResult.ErrorMessage}");
+                return Result<bool>.Failure(exportResult.ErrorMessage);
             }
+
+            return Result<bool>.Success(true);
         }
     }
 }
