@@ -45,6 +45,16 @@ namespace ReadingList.Infrastructure.Services
                 _logger.LogWarning(cancelMessage);
                 return Result<bool>.Failure(cancelMessage);
             }
+            catch (IOException ex)
+            {
+                _logger.LogError($"I/O error while reading file: {ex.Message}");
+                return Result<bool>.Failure($"I/O error while reading file.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Failed to import: {ex.Message}");
+                return Result<bool>.Failure($"Failed to import. Unexpected error ocurred.");
+            }
         }
 
         private async Task ProcessFileAsync(string filePath, CancellationToken cancelToken)
@@ -55,6 +65,7 @@ namespace ReadingList.Infrastructure.Services
             for (int i = 1; i < lines.Length; i++)
             {   
                 Result<Book> book = _csvToBookMapper.Map(lines[i]);
+
                 if (book.IsSuccess)
                 {
                     try
