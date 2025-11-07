@@ -22,14 +22,14 @@ namespace ReadingList.App.Commands
         public string Name => "top rated <n>";
         public string Description => "List all N top-rated books in the reading list.";
 
-        public async Task ExecuteAsync(string[] arguments)
+        public Task Execute(string[] arguments)
         {
             Result<int> validatedArguments = _validator.ValidateTopRatedArguments(arguments);
 
             if (validatedArguments.IsFailure)
             {
                 _displayer.PrintErrorMessage(validatedArguments.ErrorMessage);
-                return;
+                return Task.CompletedTask;
             }
 
             int topNumber = validatedArguments.Value;
@@ -39,12 +39,13 @@ namespace ReadingList.App.Commands
             if (booksResult.IsFailure)
             {
                 _displayer.PrintErrorMessage(booksResult.ErrorMessage);
-                return;
+                return Task.CompletedTask;
             }
 
             IReadOnlyList<Book> books = booksResult.Value;
 
             _displayer.PrintBooksList(books);
+            return Task.CompletedTask;
         }
     }
 }

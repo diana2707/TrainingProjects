@@ -22,7 +22,7 @@ namespace ReadingList.App.Commands
         public string Name => "export json <path>";
         public string Description => "Export books to specified JSON files.";
 
-        public async Task ExecuteAsync(string[] arguments)
+        public async Task Execute(string[] arguments)
         {
             Result<string> validatedArguments = _validator.ValidateExportJsonArguments(arguments);
             

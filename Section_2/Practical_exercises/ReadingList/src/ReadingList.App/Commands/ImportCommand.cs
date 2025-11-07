@@ -22,7 +22,7 @@ namespace ReadingList.App.Commands
         public string Name => "import <file1.csv> [file2.csv ...]";
         public string Description => "Import books from specified CSV files.";
 
-        public async Task ExecuteAsync(string[] arguments)
+        public async Task Execute(string[] arguments)
         {
             Result<string[]> validatedArguments = _validator.ValidateImportArguments(arguments);
             

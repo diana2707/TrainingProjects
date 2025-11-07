@@ -23,14 +23,14 @@ namespace ReadingList.App.Commands
         public string Name => "rate <id> <0-5>";
         public string Description => "Rate the book with the specified ID with a value between 0-5.";
 
-        public async Task ExecuteAsync(string[] arguments)
+        public Task Execute(string[] arguments)
         {
             Result<(int, float)> validatedArguments = _validator.ValidateRateArguments(arguments);
 
             if (validatedArguments.IsFailure)
             {
                 _displayer.PrintErrorMessage(validatedArguments.ErrorMessage);
-                return;
+                return Task.CompletedTask;
             }
 
             (int bookId, float rating) = validatedArguments.Value;
@@ -40,12 +40,13 @@ namespace ReadingList.App.Commands
             if (ratingResult.IsFailure)
             {
                 _displayer.PrintErrorMessage(ratingResult.ErrorMessage);
-                return;
+                return Task.CompletedTask;
             }
 
             Book ratedBook = ratingResult.Value;
 
             _displayer.PrintMessage($"Book '{ratedBook.Title}' is rated with {rating:F2}.");
+            return Task.CompletedTask;
         }
     }
 }

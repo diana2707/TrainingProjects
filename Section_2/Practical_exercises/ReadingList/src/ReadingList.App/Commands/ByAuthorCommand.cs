@@ -24,14 +24,14 @@ namespace ReadingList.App.Commands
         public string Description => "List all books by the specified author.";
         public string Name => "by author <name>";
 
-        public async Task ExecuteAsync(string[] arguments)
+        public Task Execute(string[] arguments)
         {
             Result<string> validatedArguments = _validator.ValidateByAuthorArguments(arguments);
 
             if (validatedArguments.IsFailure)
             {
                 _displayer.PrintErrorMessage(validatedArguments.ErrorMessage);
-                return;
+                return Task.CompletedTask;
             }
 
             string authorName = validatedArguments.Value;
@@ -41,12 +41,13 @@ namespace ReadingList.App.Commands
             if (booksResult.IsFailure)
             {
                 _displayer.PrintErrorMessage(booksResult.ErrorMessage);
-                return;
+                return Task.CompletedTask;
             }
 
             IReadOnlyList<Book> books = booksResult.Value;
 
             _displayer.PrintBooksList(books);
+            return Task.CompletedTask;
         }
     }
 }

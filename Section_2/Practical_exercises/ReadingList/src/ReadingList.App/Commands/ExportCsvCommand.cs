@@ -22,7 +22,7 @@ namespace ReadingList.App.Commands
         public string Name => "export csv <path>";
         public string Description => "Export books to specified CSV files.";
 
-        public async Task ExecuteAsync(string[] arguments)
+        public async Task Execute(string[] arguments)
         {
             Result<string> validatedArguments = _validator.ValidateExportCsvArguments(arguments);
 

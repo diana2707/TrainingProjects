@@ -23,14 +23,14 @@ namespace ReadingList.App.Commands
         public string Name => "mark finished <id>";
         public string Description => "Mark the book with the specified ID as finished.";
 
-        public async Task ExecuteAsync(string[] arguments)
+        public Task Execute(string[] arguments)
         {
             Result<int> validatedArguments = _validator.ValidateMarkFinishedArguments(arguments);
 
             if (validatedArguments.IsFailure)
             {
                 _displayer.PrintErrorMessage(validatedArguments.ErrorMessage);
-                return;
+                return Task.CompletedTask;
             }
 
             int bookId = validatedArguments.Value;
@@ -40,12 +40,13 @@ namespace ReadingList.App.Commands
             if (finishedBookResult.IsFailure)
             {
                 _displayer.PrintErrorMessage(finishedBookResult.ErrorMessage);
-                return;
+                return Task.CompletedTask;
             }
 
             Book finishedBook = finishedBookResult.Value;
 
             _displayer.PrintMessage($"Book '{finishedBook.Title}' is marked as finished.");
+            return Task.CompletedTask;
         }
     }
 }

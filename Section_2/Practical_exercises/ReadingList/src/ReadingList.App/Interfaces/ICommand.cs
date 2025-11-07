@@ -7,6 +7,6 @@ namespace ReadingList.App.Interfaces
         public CommandType CommandType { get; }
         public string Name { get; }
         public string Description { get; }
-        public Task ExecuteAsync(string[] arguments);
+        public Task Execute(string[] arguments);
     }
 }

@@ -22,14 +22,14 @@ namespace ReadingList.App.Commands
         public string Name => "filter finished";
         public string Description => "List all finished books in the reading list.";
 
-        public async Task ExecuteAsync(string[] arguments)
+        public Task Execute(string[] arguments)
         {
             Result<bool> validatedArguments = _validator.ValidateFilterFinishedArguments(arguments);
 
             if (validatedArguments.IsFailure)
             {
                 _displayer.PrintErrorMessage(validatedArguments.ErrorMessage);
-                return;
+                return Task.CompletedTask;
             }
 
             Result<IReadOnlyList<Book>> booksResult = _querryService.FilterFinished();
@@ -37,12 +37,13 @@ namespace ReadingList.App.Commands
             if (booksResult.IsFailure)
             {
                 _displayer.PrintErrorMessage(booksResult.ErrorMessage);
-                return;
+                return Task.CompletedTask;
             }
 
             IReadOnlyList<Book> books = booksResult.Value;
 
             _displayer.PrintBooksList(books);
+            return Task.CompletedTask;
         }
     }
 }

@@ -23,14 +23,14 @@ namespace ReadingList.App.Commands
         public string Name => "stats";
         public string Description => "Show statistics about the reading list.";
 
-        public async Task ExecuteAsync(string[] arguments)
+        public Task Execute(string[] arguments)
         {
             Result<bool> validatedArguments = _validator.ValidateStatsArguments(arguments);
 
             if (validatedArguments.IsFailure)
             {
                 _displayer.PrintErrorMessage(validatedArguments.ErrorMessage);
-                return;
+                return Task.CompletedTask;
             }
 
             Result<BookStatsDto> statsResult = _querryService.GetStatistics();
@@ -38,12 +38,13 @@ namespace ReadingList.App.Commands
             if (statsResult.IsFailure)
             {
                 _displayer.PrintErrorMessage(statsResult.ErrorMessage);
-                return;
+                return Task.CompletedTask;
             }
 
             BookStatsDto stats = statsResult.Value;
 
             _displayer.PrintStatistics(stats);
+            return Task.CompletedTask;
         }
     }
 }

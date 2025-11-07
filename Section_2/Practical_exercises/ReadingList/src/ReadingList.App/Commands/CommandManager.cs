@@ -46,7 +46,7 @@ namespace ReadingList.App.Commands
 
             if (commands.TryGetValue(commandResult.Value, out var command))
             {
-                await commands[commandResult.Value].ExecuteAsync(commandResult.Arguments);
+                await commands[commandResult.Value].Execute(commandResult.Arguments);
                 return;
             }
         }
