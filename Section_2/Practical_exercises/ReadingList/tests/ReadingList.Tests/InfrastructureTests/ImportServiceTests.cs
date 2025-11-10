@@ -1,0 +1,38 @@
+﻿using ReadingList.Domain.Models;
+using ReadingList.Domain.Shared;
+using ReadingList.Infrastructure.Data;
+using ReadingList.Infrastructure.Interfaces;
+using ReadingList.Infrastructure.Mappers;
+using ReadingList.Infrastructure.Services;
+using ReadingList.Tests.Fakes;
+
+namespace ReadingList.Tests.InfrastructureTests
+{
+    public class ImportServiceTests
+    {
+        // implement a fake logger
+        [Fact]
+        public async Task Import_2CsvFiles_CombinesResults()
+        {
+            IRepository<Book, int> repository = new FakeBookRepository();
+            IMapper<string, Result<Book>> mapper = new CsvToBookMapper();
+            IFileReader fileReader = new FakeFileReader();
+            ImportService importService = new (repository, fileReader, mapper);
+            ICancelService cancelService = new CancelService();
+
+            string loggedMalformedLine = string.Empty;
+            string failedAddMessage = string.Empty;
+            string[] filePaths = ["file1.csv", "file2.csv"];
+
+            CancellationToken token = cancelService.GetCancellationToken();
+            await importService.ImportAsync(filePaths, token);
+
+            // Duplicate Id and Malformed line should be skipped
+            Assert.Equal(4, repository.Count);
+            Assert.Equal(1, repository.GetByKey(1).Id);
+            Assert.Equal(2, repository.GetByKey(2).Id);
+            Assert.Equal(3, repository.GetByKey(3).Id);
+            Assert.Equal(5, repository.GetByKey(5).Id);
+        }
+    }
+}

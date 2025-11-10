@@ -1,0 +1,15 @@
+﻿using ReadingList.Domain.Models;
+using ReadingList.Domain.Shared;
+using ReadingList.Infrastructure.DTOs;
+
+namespace ReadingList.Infrastructure.Interfaces
+{
+    public interface IQuerryService
+    {
+        public Result<IReadOnlyList<Book>> ListAll();
+        public Result<IReadOnlyList<Book>> FilterFinished();
+        public Result<IReadOnlyList<Book>> FilterTopRated(int topNumber);
+        public Result<IReadOnlyList<Book>> FilterByAuthor(string authorName);
+        public Result<BookStatsDto> GetStatistics();
+    }
+}

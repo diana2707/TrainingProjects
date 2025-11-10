@@ -1,0 +1,19 @@
+﻿namespace ReadingList.Domain.Enums
+{
+    public enum CommandType
+    {
+        Invalid,
+        Import,
+        ListAll,
+        FilterFinished,
+        TopRated,
+        ByAuthor,
+        Stats,
+        MarkFinished,
+        Rate,
+        ExportJson,
+        ExportCsv,
+        Help,
+        Exit
+    }
+}
