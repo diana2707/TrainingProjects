@@ -1,2 +1,17 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿using Cafe.ConsoleUI.Controllers;
+using Cafe.ConsoleUI.Interfaces;
+using Cafe.ConsoleUI.UI;
+
+namespace Cafe.ConsoleUI
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            IDisplayer displayer = new Displayer();
+            IInputValidator inputValidator = new InputValidator();
+            var menuController = new MenuController(inputValidator, displayer);
+            menuController.Run();
+        }
+    }
+}
