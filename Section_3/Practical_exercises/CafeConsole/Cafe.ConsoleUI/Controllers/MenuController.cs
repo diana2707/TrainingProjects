@@ -1,11 +1,6 @@
 ﻿using Cafe.Application.Shared;
 using Cafe.ConsoleUI.Interfaces;
-using Cafe.Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Cafe.ConsoleUI.Controllers
 {
@@ -22,81 +17,55 @@ namespace Cafe.ConsoleUI.Controllers
         {
             while (true)
             {
-                string beverageInput = String.Empty;
-                string addOnsInput = String.Empty;
-                string syrupFlavourInput = String.Empty;
-                string pricingPolicyInput = String.Empty;
-                Result<int> beverageOption = null;
-                Result<IEnumerable<int>> addOnsOptions = null;
-                Result<string> syrupFlavourResult = null;
-                Result<int> pricingPolicyResult = null;
-
                 _displayer.Clear();
                 _displayer.DisplayAppTitle();
                 _displayer.DisplayMainMenu();
 
-                while (true)
-                {
-                    beverageInput = _displayer.GetUserInput("Please select a single beverage option: ");
-                    beverageOption = _validator.ValidateSingleMenuOption(beverageInput, 1, 3);
-
-                    if (beverageOption.IsSuccess)
-                    {
-                        break;
-                    }
-
-                    _displayer.GetUserInput(beverageOption.ErrorMessage + " Press Enter to try again...");
-                }
+                int beverageOption = GetValidInput<int>(
+                    "Please select a single beverage option: ",
+                    input => _validator.ValidateSingleMenuOption(input, 1, 3)
+                );
 
                 _displayer.DisplayAddOnsMenu();
 
-                while (true)
-                {
-                    addOnsInput = _displayer.GetUserInput("Please select add-ons (comma-separated for multiple and 0 for done): ");
-                    addOnsOptions = _validator.ValidateMultipleMenuOptions(addOnsInput, 1, 3, 0);
-                    
-                    if (addOnsOptions.IsSuccess)
-                    {
-                        break;
-                    }
-                    
-                    _displayer.DisplayErrorMessage(addOnsOptions.ErrorMessage + " Press Enter to try again...");
-                }
+                IEnumerable<int> addOnsOptions = GetValidInput<IEnumerable<int>>(
+                    "Please select add-ons (comma-separated for multiple and 0 for done): ",
+                    input => _validator.ValidateMultipleMenuOptions(input, 1, 3, 0)
+                );
 
                 // Make displayer Menu more general?
                 //veryfy by type not option item
-                if (addOnsOptions.Value.Any(option => option == 2))
+                if (addOnsOptions.Any(option => option == 2))
                 {
-                    while (true)
-                    {
-                        syrupFlavourInput = _displayer.GetUserInput("Please enter syrup flavour (vanilla, caramel, hazelnut, chocolate): ");
-                        syrupFlavourResult = _validator.ValidateStringOption(syrupFlavourInput, ["vanilla", "caramel", "hazelnut", "chocolate"]);
-
-                        if (syrupFlavourResult.IsSuccess)
-                        {
-                            break;
-                        }
-
-                        _displayer.DisplayErrorMessage(syrupFlavourResult.ErrorMessage + " Press Enter to try again...");
-                    }
-                   
+                    string syrupFlavour = GetValidInput<string>(
+                        "Please enter syrup flavour (vanilla, caramel, hazelnut, chocolate): ",
+                        input => _validator.ValidateStringOption(input, ["vanilla", "caramel", "hazelnut", "chocolate"])
+                    );
                 }
 
                 _displayer.DisplayPricingPolicyMenu();
 
-                while (true)
+                int pricingPolicy = GetValidInput<int>(
+                    "Please select a pricing policy: ",
+                    input => _validator.ValidateSingleMenuOption(input, 1, 2)
+                );
+
+            }
+        }
+
+        private T GetValidInput<T>(string userPrompt, Func<string, Result<T>> validate)
+        {
+            while (true)
+            {
+                string input = _displayer.GetUserInput(userPrompt);
+                Result<T> result = validate(input);
+
+                if (result.IsSuccess)
                 {
-                    pricingPolicyInput = _displayer.GetUserInput("Please select a pricing policy: ");
-                    pricingPolicyResult = _validator.ValidateSingleMenuOption(pricingPolicyInput, 1, 2);
-
-                    if (pricingPolicyResult.IsSuccess)
-                    {
-                        break;
-                    }
-
-                    _displayer.DisplayErrorMessage(pricingPolicyResult.ErrorMessage + " Press Enter to try again...");
+                    return result.Value;
                 }
 
+                _displayer.DisplayErrorMessage(result.ErrorMessage);
             }
         }
     }
