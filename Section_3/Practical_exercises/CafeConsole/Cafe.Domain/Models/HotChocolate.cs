@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Cafe.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,7 @@ namespace Cafe.Domain.Models
     public class HotChocolate : IBeverage
     {
         private readonly decimal _cost = 3.00m;
+        public BaseBeverageType BeverageType => BaseBeverageType.HotChocolate;
         public string Name => "Hot Chocolate";
         public decimal Cost()
         {
@@ -18,6 +20,5 @@ namespace Cafe.Domain.Models
         {
             return "A warm and comforting hot chocolate.";
         }
-    {
     }
 }

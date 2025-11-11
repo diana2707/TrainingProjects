@@ -13,6 +13,5 @@ namespace Cafe.Domain.Pricing
         {
             return subtotal * (1 - _discountPercentage);
         }
-    {
     }
 }

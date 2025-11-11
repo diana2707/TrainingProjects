@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Cafe.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -15,6 +16,7 @@ namespace Cafe.Domain.Models
         {
             _beverage = beverage;
         }
+        public AddOnsType AddOnType => AddOnsType.ExtraShot;
         public string Name => _beverage.Name + " + Extra Shot";
         public decimal Cost()
         {
