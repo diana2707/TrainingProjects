@@ -4,12 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cafe.Domain.Enums
+namespace Cafe.Infrastructure.Observers
 {
-    public enum AddOnsType
+    internal class InMemoryorderAnalytics
     {
-        Milk,
-        Syrup,
-        ExtraShot
     }
 }

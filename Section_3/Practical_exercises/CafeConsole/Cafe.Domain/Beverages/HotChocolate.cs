@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 
 namespace Cafe.Domain.Models
 {
-    public class Tea : IBeverage
+    public class HotChocolate : IBeverage
     {
-        private readonly decimal _cost = 2.00m;
-        public BaseBeverageType BeverageType => BaseBeverageType.Tea;
-        public string Name => "Tea";
+        private readonly decimal _cost = 3.00m;
+        public BeverageType BeverageType => BeverageType.HotChocolate;
+        public string Name => "Hot Chocolate";
         public decimal Cost()
         {
             return _cost;
         }
         public string Describe()
         {
-            return "A soothing cup of tea.";
+            return "A warm and comforting hot chocolate.";
         }
     }
 }

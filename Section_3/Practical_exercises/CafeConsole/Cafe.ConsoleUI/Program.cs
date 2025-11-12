@@ -10,7 +10,8 @@ namespace Cafe.ConsoleUI
         {
             IDisplayer displayer = new Displayer();
             IInputValidator inputValidator = new InputValidator();
-            var menuController = new MenuController(inputValidator, displayer);
+            IMenuSelectionParser menuSelectionParser = new MenuSelectionParser();
+            var menuController = new MenuController(inputValidator, displayer, menuSelectionParser);
             menuController.Run();
         }
     }

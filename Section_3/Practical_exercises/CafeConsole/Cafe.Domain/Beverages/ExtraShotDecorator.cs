@@ -16,7 +16,7 @@ namespace Cafe.Domain.Models
         {
             _beverage = beverage;
         }
-        public AddOnsType AddOnType => AddOnsType.ExtraShot;
+        public BeverageType AddOnType => BeverageType.ExtraShot;
         public string Name => _beverage.Name + " + Extra Shot";
         public decimal Cost()
         {

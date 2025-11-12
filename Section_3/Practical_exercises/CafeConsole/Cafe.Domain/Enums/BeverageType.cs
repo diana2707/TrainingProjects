@@ -1,5 +1,4 @@
-﻿using Cafe.Domain.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,10 +6,14 @@ using System.Threading.Tasks;
 
 namespace Cafe.Domain.Enums
 {
-    public enum BaseBeverageType
+    public enum BeverageType
     {
+        None,
         Espresso,
         Tea,
-        HotChocolate
+        HotChocolate,
+        Milk,
+        Syrup,
+        ExtraShot
     }
 }

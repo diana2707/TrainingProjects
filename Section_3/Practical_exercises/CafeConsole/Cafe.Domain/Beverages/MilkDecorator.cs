@@ -15,7 +15,7 @@ namespace Cafe.Domain.Models
         {
             _beverage = beverage;
         }
-        public AddOnsType AddOnType => AddOnsType.Milk;
+        public BeverageType AddOnType => BeverageType.Milk;
         public string Name => _beverage.Name + " + Milk";
         public decimal Cost()
         {

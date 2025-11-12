@@ -11,13 +11,13 @@ namespace Cafe.Domain.Models
     {
         private readonly IBeverage _beverage;
         private readonly decimal _syrupCost = 0.50m;
-        private readonly string _syrupFlavor;
-        public SyrupDecorator(IBeverage beverage, string syrupFlavor)
+        private readonly SyrupFlavourType _syrupFlavor;
+        public SyrupDecorator(IBeverage beverage, SyrupFlavourType syrupFlavor)
         {
             _beverage = beverage;
             _syrupFlavor = syrupFlavor;
         }
-        public AddOnsType AddOnType => AddOnsType.Syrup;
+        public BeverageType AddOnType => BeverageType.Syrup;
         public string Name => _beverage.Name + $" + {_syrupFlavor} Syrup";
         public decimal Cost()
         {

@@ -1,5 +1,6 @@
 ﻿using Cafe.Application.Shared;
 using Cafe.ConsoleUI.Interfaces;
+using Cafe.Domain.Enums;
 using System.Security.Cryptography.X509Certificates;
 
 namespace Cafe.ConsoleUI.Controllers
@@ -8,10 +9,12 @@ namespace Cafe.ConsoleUI.Controllers
     {
         private readonly IInputValidator _validator;
         private readonly IDisplayer _displayer;
-        public MenuController(IInputValidator validator, IDisplayer displayer)
+        private readonly IMenuSelectionParser _parser;
+        public MenuController(IInputValidator validator, IDisplayer displayer, IMenuSelectionParser parser)
         {
             _validator = validator;
             _displayer = displayer;
+            _parser = parser;
         }
         public void Run()
         {
@@ -21,51 +24,58 @@ namespace Cafe.ConsoleUI.Controllers
                 _displayer.DisplayAppTitle();
                 _displayer.DisplayMainMenu();
 
-                int beverageOption = GetValidInput<int>(
+                BeverageType beverageOption = GetValidInput(
                     "Please select a single beverage option: ",
-                    input => _validator.ValidateSingleMenuOption(input, 1, 3)
+                    input => _validator.ValidateSingleMenuOption(input, 1, 3),
+                    validInput => _parser.ParseToBaseBeverageType(validInput)
                 );
 
                 _displayer.DisplayAddOnsMenu();
 
-                IEnumerable<int> addOnsOptions = GetValidInput<IEnumerable<int>>(
+                IEnumerable<BeverageType> addOnsOptions = GetValidInput(
                     "Please select add-ons (comma-separated for multiple and 0 for done): ",
-                    input => _validator.ValidateMultipleMenuOptions(input, 1, 3, 0)
+                    input => _validator.ValidateMultipleMenuOptions(input, 1, 3, 0),
+                    validInput => _parser.ParseToAddOnsBeverageTypes(validInput)
                 );
 
                 // Make displayer Menu more general?
-                //veryfy by type not option item
-                if (addOnsOptions.Any(option => option == 2))
+                if (addOnsOptions.Any(option => option == BeverageType.Syrup))
                 {
-                    string syrupFlavour = GetValidInput<string>(
+                    SyrupFlavourType syrupFlavour = GetValidInput(
                         "Please enter syrup flavour (vanilla, caramel, hazelnut, chocolate): ",
-                        input => _validator.ValidateStringOption(input, ["vanilla", "caramel", "hazelnut", "chocolate"])
+                        input => _validator.ValidateStringOption(input, ["vanilla", "caramel", "hazelnut", "chocolate"]),
+                        validInput => _parser.ParseToSyrupFlavourType(validInput)
                     );
                 }
 
                 _displayer.DisplayPricingPolicyMenu();
 
-                int pricingPolicy = GetValidInput<int>(
+                PricingPolicyType pricingPolicy = GetValidInput(
                     "Please select a pricing policy: ",
-                    input => _validator.ValidateSingleMenuOption(input, 1, 2)
+                    input => _validator.ValidateSingleMenuOption(input, 1, 2),
+                    validInput => _parser.ParseToPricingPolicyType(validInput)
                 );
 
             }
         }
 
-        private T GetValidInput<T>(string userPrompt, Func<string, Result<T>> validate)
+        private TParsedInput GetValidInput<TValidInput, TParsedInput>(
+            string userPrompt,
+            Func<string, Result<TValidInput>> validate, 
+            Func<TValidInput, TParsedInput> parse)
         {
             while (true)
             {
                 string input = _displayer.GetUserInput(userPrompt);
-                Result<T> result = validate(input);
+                Result<TValidInput> validInput = validate(input);
 
-                if (result.IsSuccess)
+                if (validInput.IsSuccess)
                 {
-                    return result.Value;
+                    TParsedInput parsedInput = parse(validInput.Value);
+                    return parsedInput;
                 }
 
-                _displayer.DisplayErrorMessage(result.ErrorMessage);
+                _displayer.DisplayErrorMessage(validInput.ErrorMessage);
             }
         }
     }
