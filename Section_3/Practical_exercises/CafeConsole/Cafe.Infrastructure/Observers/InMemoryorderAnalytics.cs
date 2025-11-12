@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Cafe.Domain.Events;
 
 namespace Cafe.Infrastructure.Observers
 {
-    internal class InMemoryorderAnalytics
+    public class InMemoryOrderAnalytics : IOrderEventSubscriber
     {
+        private int _totalOrders = 0;
+        private decimal _totalRevenue = 0m;
+        public void On(OrderPlaced evt)
+        {
+            _totalOrders++;
+            _totalRevenue += evt.Total;
+        }
     }
 }

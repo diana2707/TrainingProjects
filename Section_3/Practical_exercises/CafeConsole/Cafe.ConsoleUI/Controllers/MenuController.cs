@@ -1,7 +1,9 @@
-﻿using Cafe.Application.Shared;
+﻿using Cafe.Application.DTOs;
+using Cafe.Application.Services;
+using Cafe.Application.Shared;
 using Cafe.ConsoleUI.Interfaces;
 using Cafe.Domain.Enums;
-using System.Security.Cryptography.X509Certificates;
+using Cafe.Domain.Events;
 
 namespace Cafe.ConsoleUI.Controllers
 {
@@ -10,11 +12,18 @@ namespace Cafe.ConsoleUI.Controllers
         private readonly IInputValidator _validator;
         private readonly IDisplayer _displayer;
         private readonly IMenuSelectionParser _parser;
-        public MenuController(IInputValidator validator, IDisplayer displayer, IMenuSelectionParser parser)
+        private readonly IOrderService _orderService;
+
+        public MenuController(
+            IInputValidator validator,
+            IDisplayer displayer,
+            IMenuSelectionParser parser,
+            IOrderService orderService)
         {
             _validator = validator;
             _displayer = displayer;
             _parser = parser;
+            _orderService = orderService;
         }
         public void Run()
         {
@@ -38,10 +47,12 @@ namespace Cafe.ConsoleUI.Controllers
                     validInput => _parser.ParseToAddOnsBeverageTypes(validInput)
                 );
 
+                SyrupFlavourType syrupFlavour = SyrupFlavourType.None;
+
                 // Make displayer Menu more general?
                 if (addOnsOptions.Any(option => option == BeverageType.Syrup))
                 {
-                    SyrupFlavourType syrupFlavour = GetValidInput(
+                    syrupFlavour = GetValidInput(
                         "Please enter syrup flavour (vanilla, caramel, hazelnut, chocolate): ",
                         input => _validator.ValidateStringOption(input, ["vanilla", "caramel", "hazelnut", "chocolate"]),
                         validInput => _parser.ParseToSyrupFlavourType(validInput)
@@ -56,6 +67,30 @@ namespace Cafe.ConsoleUI.Controllers
                     validInput => _parser.ParseToPricingPolicyType(validInput)
                 );
 
+                OrderDetails orderDetails = new()
+                {
+                    Items = addOnsOptions.Prepend(beverageOption).ToArray(),
+                    SyrupFlavour = syrupFlavour,
+                    PricingPolicy = pricingPolicy
+                };
+
+                Receipt order = _orderService.PlaceOrder(orderDetails);
+
+                //_displayer.DisplayOrderSummary(order);
+
+                //_displayer.DisplayContinuePromptMenu();
+
+                //bool continueOrdering = GetValidInput<int, bool>(
+                //    "Select option: ",
+                //    input => _validator.ValidateSingleMenuOption(input, 1, 2),
+                //    validInput => _parser.ParseToContinueOrdering(validInput)
+                //    );
+
+                //if (!continueOrdering)
+                //{
+                //    //_displayer.DisplayExitMessage();
+                //    break;
+                //}
             }
         }
 

@@ -1,12 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Cafe.Domain.Events;
 
 namespace Cafe.Infrastructure.Observers
 {
-    internal class ConsoleOrderLogger
+    public class ConsoleOrderLogger : IOrderEventSubscriber
     {
+        public void On(OrderPlaced evt)
+        {
+             Console.WriteLine(
+                 "\r\n" +
+                 $"[INFO]Order Placed: OrderId={evt.OrderId}, " +
+                 $"@ {evt.At}, " +
+                 $"Items={evt.Description}" +
+                 $"Subtotal={evt.Subtotal}" +
+                 $"Total={evt.Total}" +
+                 "\r\n");
+        }
     }
 }

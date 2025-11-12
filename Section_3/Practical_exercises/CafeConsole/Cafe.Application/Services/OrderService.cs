@@ -1,18 +1,33 @@
-﻿using Cafe.Domain.Events;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Cafe.Application.DTOs;
+using Cafe.Application.Mappers;
+using Cafe.Domain.Events;
 
 namespace Cafe.Application.Services
 {
-    public class OrderService /*: IOrderService*/
+    public class OrderService : IOrderService
     {
         private readonly IOrderEventPublisher _orderEventPublisher;
-        public OrderService(IOrderEventPublisher orderEventPublisher)
+        private readonly IMapper<OrderDetails, OrderPlaced> _orderDetailsToPlacedOrderMapper;
+        private readonly IMapper<OrderPlaced, Receipt> _placedOrderToReceiptMapper;
+        public OrderService(IOrderEventPublisher orderEventPublisher,
+            IMapper<OrderDetails, OrderPlaced> orderDetailsMapper,
+            IMapper<OrderPlaced, Receipt> receiptMapper)
         {
+            _orderEventPublisher = orderEventPublisher;
+            _orderDetailsToPlacedOrderMapper = orderDetailsMapper;
+            _placedOrderToReceiptMapper = receiptMapper;
+        }
 
+        public Receipt PlaceOrder(OrderDetails orderDetails)
+        {
+            
+            OrderPlaced placedOrder = _orderDetailsToPlacedOrderMapper.Map(orderDetails);
+
+            _orderEventPublisher.Publish(placedOrder);
+
+            Receipt receipt = _placedOrderToReceiptMapper.Map(placedOrder);
+
+            return receipt;
         }
     }
 }
