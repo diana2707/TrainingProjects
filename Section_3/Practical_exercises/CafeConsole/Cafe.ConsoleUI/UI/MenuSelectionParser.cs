@@ -49,5 +49,15 @@ namespace Cafe.ConsoleUI.UI
                 _ => throw new ArgumentOutOfRangeException("Invalid pricing policy option selected.")
             };
         }
+
+        public bool ParseToContinueOrderingOption(int option)
+        {
+            return option switch
+            {
+                0 => false,
+                1 => true,
+                _ => throw new ArgumentOutOfRangeException("Invalid continue ordering option selected.")
+            };
+        }
     }
 }

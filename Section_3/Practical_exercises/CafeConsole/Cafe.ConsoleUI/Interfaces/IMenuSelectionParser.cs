@@ -9,5 +9,6 @@ namespace Cafe.ConsoleUI.Interfaces
         public IEnumerable<BeverageType> ParseToAddOnsBeverageTypes(IEnumerable<int> options);
         public SyrupFlavourType ParseToSyrupFlavourType(string option);
         public PricingPolicyType ParseToPricingPolicyType(int option);
+        public bool ParseToContinueOrderingOption(int option);
     }
 }

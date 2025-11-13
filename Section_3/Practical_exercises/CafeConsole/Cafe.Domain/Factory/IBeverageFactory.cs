@@ -5,6 +5,6 @@ namespace Cafe.Domain.Factory
 {
     public interface IBeverageFactory
     {
-        public IBeverage Create(BeverageType bevarageType, IBeverage beverage = null, SyrupFlavourType syrupFlavor = 0);
+        public IBeverage Create(BeverageType bevarageType, IBeverage beverage = null, SyrupFlavourType syrupFlavor = SyrupFlavourType.None);
     }
 }

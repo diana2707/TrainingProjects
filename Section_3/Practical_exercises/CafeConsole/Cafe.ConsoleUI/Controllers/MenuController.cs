@@ -67,30 +67,36 @@ namespace Cafe.ConsoleUI.Controllers
                     validInput => _parser.ParseToPricingPolicyType(validInput)
                 );
 
+                BeverageDetails beverageDetails = new()
+                {
+                    BaseBeverage = beverageOption,
+                    AddOns = addOnsOptions.ToArray(),
+                    SyrupFlavour = syrupFlavour
+                };
+
                 OrderDetails orderDetails = new()
                 {
-                    Items = addOnsOptions.Prepend(beverageOption).ToArray(),
-                    SyrupFlavour = syrupFlavour,
+                    BeverageDetails = beverageDetails,
                     PricingPolicy = pricingPolicy
                 };
 
-                Receipt order = _orderService.PlaceOrder(orderDetails);
+                Receipt receipt = _orderService.PlaceOrder(orderDetails);
 
-                //_displayer.DisplayOrderSummary(order);
+                _displayer.DisplayReceipt(receipt);
 
-                //_displayer.DisplayContinuePromptMenu();
+                _displayer.DisplayContinueOrderingMenu();
 
-                //bool continueOrdering = GetValidInput<int, bool>(
-                //    "Select option: ",
-                //    input => _validator.ValidateSingleMenuOption(input, 1, 2),
-                //    validInput => _parser.ParseToContinueOrdering(validInput)
-                //    );
+                bool continueOrdering = GetValidInput<int, bool>(
+                    "Select option: ",
+                    input => _validator.ValidateSingleMenuOption(input, 0, 1),
+                    validInput => _parser.ParseToContinueOrderingOption(validInput)
+                    );
 
-                //if (!continueOrdering)
-                //{
-                //    //_displayer.DisplayExitMessage();
-                //    break;
-                //}
+                if (!continueOrdering)
+                {
+                    _displayer.DisplayExitMessage();
+                    break;
+                }
             }
         }
 

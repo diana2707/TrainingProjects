@@ -6,10 +6,14 @@ namespace Cafe.Infrastructure.Observers
     {
         private int _totalOrders = 0;
         private decimal _totalRevenue = 0m;
+
         public void On(OrderPlaced evt)
         {
             _totalOrders++;
             _totalRevenue += evt.Total;
         }
+
+        public int GetTotalOrders() => _totalOrders;
+        public decimal GetTotalRevenue() => _totalRevenue;
     }
 }

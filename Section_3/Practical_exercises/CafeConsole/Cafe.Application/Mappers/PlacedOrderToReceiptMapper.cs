@@ -5,9 +5,17 @@ namespace Cafe.Application.Mappers
 {
     public class OrderPlacedToReceiptMapper : IMapper <OrderPlaced, Receipt>
     {
-        public Receipt Map(OrderPlaced placedOrder)
+        public Receipt Map(OrderPlaced orderPlaced)
         {
-            throw new NotImplementedException();
+            return new Receipt
+            {
+                Id = orderPlaced.OrderId,
+                Date = orderPlaced.At,
+                Description = orderPlaced.Description,
+                PricingPolicy = orderPlaced.PricingPolicy,
+                Subtotal = orderPlaced.Subtotal,
+                Total = orderPlaced.Total
+            };
         }
     }
 }

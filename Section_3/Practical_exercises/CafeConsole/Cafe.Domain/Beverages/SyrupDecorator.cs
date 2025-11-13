@@ -17,7 +17,7 @@ namespace Cafe.Domain.Models
             _beverage = beverage;
             _syrupFlavor = syrupFlavor;
         }
-        public BeverageType AddOnType => BeverageType.Syrup;
+        public BeverageType Type => BeverageType.Syrup;
         public string Name => _beverage.Name + $" + {_syrupFlavor} Syrup";
         public decimal Cost()
         {

@@ -1,4 +1,5 @@
-﻿using Cafe.ConsoleUI.Interfaces;
+﻿using Cafe.Application.DTOs;
+using Cafe.ConsoleUI.Interfaces;
 
 namespace Cafe.ConsoleUI.UI
 {
@@ -49,6 +50,37 @@ namespace Cafe.ConsoleUI.UI
                 "\r\nSelect Pricing Policy:" +
                 "\r\n1. Regular" +
                 "\r\n2. Happy Hour" +
+                "\r\n");
+        }
+
+        public void DisplayReceipt(Receipt receipt)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(
+                $"\r\n" +
+                $"\r\nOrder: {receipt.Id} at {receipt.Date}" +
+                $"\r\nItems: {receipt.Description}" +
+                $"\r\nSubtotal: {receipt.Subtotal:C2}" +
+                $"\r\nPricing Policy: {receipt.PricingPolicy}" +
+                $"\r\nTotal: {receipt.Total:C2}" +
+                "\r\n");
+            Console.ResetColor();
+        }
+
+        public void DisplayContinueOrderingMenu()
+        {
+            Console.WriteLine(
+                "\r\n" +
+                "1. New order" +
+                "\r\n0. Exit" +
+                "\r\n");
+        }
+
+        public void DisplayExitMessage()
+        {
+            Console.WriteLine(
+                "\r\n" +
+                "Exiting Cafe Console. Goodbye!" +
                 "\r\n");
         }
 

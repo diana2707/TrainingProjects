@@ -6,7 +6,7 @@ namespace Cafe.Infrastructure.Factories
 {
     public class BeverageFactory : IBeverageFactory
     {
-        public IBeverage Create(BeverageType bevarageType, IBeverage baseBeverage = null, SyrupFlavourType syrupFlavour = 0)
+        public IBeverage Create(BeverageType bevarageType, IBeverage baseBeverage = null, SyrupFlavourType syrupFlavour = SyrupFlavourType.None)
         {
             return bevarageType switch
             {

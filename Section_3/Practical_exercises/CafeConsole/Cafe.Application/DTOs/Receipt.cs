@@ -8,9 +8,9 @@ namespace Cafe.Application.DTOs
     {
         public Guid Id { get; init; }
         public DateTimeOffset Date { get; init; }
-        public List<IBeverage> Items { get; init; } = new();
+        public string Description { get; init; } = string.Empty;
+        public PricingPolicyType PricingPolicy { get; init; }
         public decimal Subtotal { get; init; }
-        public PricingPolicyType AppliedPricingPolicy { get; init; }
-        public decimal TotalAmount { get; init; }
+        public decimal Total { get; init; }
     }
 }
