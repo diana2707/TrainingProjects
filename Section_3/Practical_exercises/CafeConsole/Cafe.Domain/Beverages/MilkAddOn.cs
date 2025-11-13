@@ -7,23 +7,22 @@ using System.Threading.Tasks;
 
 namespace Cafe.Domain.Models
 {
-    public class MilkDecorator : IBeverage
+    public class MilkAddOn : IBeverage
     {
         private readonly IBeverage _beverage;
         private readonly decimal _milkCost = 0.40m;
-        public MilkDecorator(IBeverage beverage)
+        public MilkAddOn(IBeverage beverage)
         {
             _beverage = beverage;
         }
-        public BeverageType Type => BeverageType.Milk;
-        public string Name => _beverage.Name + " + Milk";
+        public BeverageType Name => BeverageType.Milk;
         public decimal Cost()
         {
             return _beverage.Cost() + _milkCost;
         }
         public string Describe()
         {
-            return _beverage.Describe() + " Added milk for a creamier taste.";
+            return _beverage.Describe() + " + Milk";
         }
     }
 }

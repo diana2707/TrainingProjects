@@ -17,13 +17,13 @@ namespace Cafe.Application.Services
 
         public OrderService(
             IBeverageAssembler beverageAssembler,
-            ICostCalculator costCalculator,
+            ICostCalculator discountCalculator,
             IOrderEventPublisher orderEventPublisher,
             IMapper<OrderPlaced, Receipt> receiptMapper)
         {
             _orderEventPublisher = orderEventPublisher;
             _placedOrderToReceiptMapper = receiptMapper;
-            _costCalculator = costCalculator;
+            _costCalculator = discountCalculator;
             _beverageAssembler = beverageAssembler;
         }
 
@@ -37,14 +37,13 @@ namespace Cafe.Application.Services
 
             OrderPlaced orderPlaced = new (
                 beverage.Describe(),
-                pricingPolicy,
                 subtotal,
                 total
             );
 
             _orderEventPublisher.Publish(orderPlaced);
 
-            Receipt receipt = _placedOrderToReceiptMapper.Map(orderPlaced);
+            Receipt receipt = _placedOrderToReceiptMapper.Map(orderPlaced, pricingPolicy);
 
             return receipt;
         }

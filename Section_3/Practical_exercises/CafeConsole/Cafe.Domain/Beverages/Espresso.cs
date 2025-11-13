@@ -10,15 +10,14 @@ namespace Cafe.Domain.Models
     public class Espresso : IBeverage
     {
         private readonly decimal _cost = 2.50m;
-        public BeverageType Type => BeverageType.Espresso;
-        public string Name => "Espresso";
+        public BeverageType Name => BeverageType.Espresso;
         public decimal Cost()
         {
             return _cost;
         }
         public string Describe()
         {
-            return "A strong and bold espresso shot.";
+            return "Espresso";
         }
     }
 }

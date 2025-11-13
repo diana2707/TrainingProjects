@@ -8,11 +8,11 @@ namespace Cafe.Infrastructure.Observers
         {
              Console.WriteLine(
                  "\r\n" +
-                 $"[INFO]Order Placed: OrderId={evt.OrderId}, " +
+                 $"[INFO] Order Placed: OrderId = {evt.OrderId}, " +
                  $"@ {evt.At}, " +
-                 $"Items={evt.Description}" +
-                 $"Subtotal={evt.Subtotal}" +
-                 $"Total={evt.Total}" +
+                 $"Items = {evt.Description}, " +
+                 $"Subtotal = {evt.Subtotal} " +
+                 $"Total = {evt.Total} " +
                  "\r\n");
         }
     }

@@ -4,8 +4,7 @@ namespace Cafe.Domain.Models
 {
     public interface IBeverage
     {
-        BeverageType Type { get; }
-        string Name { get; }
+        BeverageType Name { get; }
         decimal Cost();
         string Describe();
     }

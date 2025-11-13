@@ -3,7 +3,6 @@ using Cafe.Application.Services;
 using Cafe.Application.Shared;
 using Cafe.ConsoleUI.Interfaces;
 using Cafe.Domain.Enums;
-using Cafe.Domain.Events;
 
 namespace Cafe.ConsoleUI.Controllers
 {
@@ -25,6 +24,7 @@ namespace Cafe.ConsoleUI.Controllers
             _parser = parser;
             _orderService = orderService;
         }
+
         public void Run()
         {
             while (true)
@@ -49,7 +49,6 @@ namespace Cafe.ConsoleUI.Controllers
 
                 SyrupFlavourType syrupFlavour = SyrupFlavourType.None;
 
-                // Make displayer Menu more general?
                 if (addOnsOptions.Any(option => option == BeverageType.Syrup))
                 {
                     syrupFlavour = GetValidInput(
@@ -102,7 +101,7 @@ namespace Cafe.ConsoleUI.Controllers
 
         private TParsedInput GetValidInput<TValidInput, TParsedInput>(
             string userPrompt,
-            Func<string, Result<TValidInput>> validate, 
+            Func<string, Result<TValidInput>> validate,
             Func<TValidInput, TParsedInput> parse)
         {
             while (true)

@@ -10,15 +10,14 @@ namespace Cafe.Domain.Models
     public class HotChocolate : IBeverage
     {
         private readonly decimal _cost = 3.00m;
-        public BeverageType Type => BeverageType.HotChocolate;
-        public string Name => "Hot Chocolate";
+        public BeverageType Name => BeverageType.HotChocolate;
         public decimal Cost()
         {
             return _cost;
         }
         public string Describe()
         {
-            return "A warm and comforting hot chocolate.";
+            return "Hot Chocolate";
         }
     }
 }

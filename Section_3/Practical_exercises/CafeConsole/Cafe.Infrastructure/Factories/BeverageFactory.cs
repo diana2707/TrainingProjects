@@ -13,8 +13,8 @@ namespace Cafe.Infrastructure.Factories
                 BeverageType.Espresso => new Espresso(),
                 BeverageType.Tea => new Tea(),
                 BeverageType.HotChocolate => new HotChocolate(),
-                BeverageType.Milk when baseBeverage != null => new MilkDecorator(baseBeverage),
-                BeverageType.Syrup when baseBeverage != null && syrupFlavour != 0 => new SyrupDecorator(baseBeverage, syrupFlavour),
+                BeverageType.Milk when baseBeverage != null => new MilkAddOn(baseBeverage),
+                BeverageType.Syrup when baseBeverage != null && syrupFlavour != 0 => new SyrupAddOn(baseBeverage, syrupFlavour),
                 BeverageType.ExtraShot when baseBeverage != null => new ExtraShotDecorator(baseBeverage),
                 _ => throw new ArgumentException("Invalid beverage type or missing base beverage for add-on."),
             };

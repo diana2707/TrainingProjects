@@ -16,15 +16,14 @@ namespace Cafe.Domain.Models
         {
             _beverage = beverage;
         }
-        public BeverageType Type => BeverageType.ExtraShot;
-        public string Name => _beverage.Name + " + Extra Shot";
+        public BeverageType Name => BeverageType.ExtraShot;
         public decimal Cost()
         {
             return _beverage.Cost() + _extraShotCost;
         }
         public string Describe()
         {
-            return _beverage.Describe() + " Added an extra shot of espresso for a stronger flavor.";
+            return _beverage.Describe() + " + Extra Shot";
         }
     }
 }

@@ -16,9 +16,9 @@ namespace Cafe.ConsoleUI.UI
         public void DisplayMainMenu()
         {
             Console.WriteLine(
-                "\r\n1. Espresso" +
-                "\r\n2. Tea" +
-                "\r\n3. Hot Chocolate" +
+                "\r\n1. Espresso ($2.50)" +
+                "\r\n2. Tea ($2.00)" +
+                "\r\n3. Hot Chocolate ($3.00)" +
                 "\r\n");
         }
 
@@ -36,9 +36,9 @@ namespace Cafe.ConsoleUI.UI
             Console.WriteLine(
                 "\r\n" +
                 "\r\nAvailable Add-Ons:" +
-                "\r\n1. Milk (+0.40)" +
-                "\r\n2. Syrup (+0.50)" +
-                "\r\n3. Extra shot (+0.80)" +
+                "\r\n1. Milk (+ $0.40)" +
+                "\r\n2. Syrup (+ $0.50)" +
+                "\r\n3. Extra shot (+ $0.80)" +
                 "\r\n0. Done" +
                 "\r\n");
         }
