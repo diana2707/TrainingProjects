@@ -1,5 +1,4 @@
-﻿
-namespace Cafe.Tests.DomainTests.PricingStartegyTests
+﻿namespace Cafe.Tests.DomainTests.PricingStartegyTests
 {
     public class RegularPricingTests
     {

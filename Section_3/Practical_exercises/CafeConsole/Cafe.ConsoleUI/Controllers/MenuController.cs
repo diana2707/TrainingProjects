@@ -85,7 +85,7 @@ namespace Cafe.ConsoleUI.Controllers
 
                 _displayer.DisplayContinueOrderingMenu();
 
-                bool continueOrdering = GetValidInput<int, bool>(
+                bool continueOrdering = GetValidInput(
                     "Select option: ",
                     input => _validator.ValidateSingleMenuOption(input, 0, 1),
                     validInput => _parser.ParseToContinueOrderingOption(validInput)

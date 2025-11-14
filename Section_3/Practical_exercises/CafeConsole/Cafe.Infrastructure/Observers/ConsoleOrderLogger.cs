@@ -6,14 +6,14 @@ namespace Cafe.Infrastructure.Observers
     {
         public void On(OrderPlaced evt)
         {
-             Console.WriteLine(
-                 "\r\n" +
-                 $"[INFO] Order Placed: OrderId = {evt.OrderId}, " +
-                 $"@ {evt.At}, " +
-                 $"Items = {evt.Description}, " +
-                 $"Subtotal = {evt.Subtotal} " +
-                 $"Total = {evt.Total} " +
-                 "\r\n");
+            Console.WriteLine(
+                "\r\n" +
+                $"[INFO] Order Placed: OrderId = {evt.OrderId}, " +
+                $"@ {evt.At}, " +
+                $"Items = {evt.Description}, " +
+                $"Subtotal = {evt.Subtotal:C2}, " +
+                $"Total = {evt.Total:C2} " +
+                "\r\n");
         }
     }
 }

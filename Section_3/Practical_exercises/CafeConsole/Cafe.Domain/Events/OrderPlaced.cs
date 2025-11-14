@@ -1,7 +1,4 @@
-﻿
-using Cafe.Domain.Enums;
-
-namespace Cafe.Domain.Events
+﻿namespace Cafe.Domain.Events
 {
     public class OrderPlaced
     {

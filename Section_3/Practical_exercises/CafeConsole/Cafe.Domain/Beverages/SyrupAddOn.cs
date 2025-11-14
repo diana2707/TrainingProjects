@@ -1,9 +1,4 @@
 ﻿using Cafe.Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cafe.Domain.Models
 {
@@ -20,11 +15,12 @@ namespace Cafe.Domain.Models
         }
 
         public BeverageType Name => BeverageType.Syrup;
-        
+
         public decimal Cost()
         {
             return _beverage.Cost() + _syrupCost;
         }
+
         public string Describe()
         {
             return _beverage.Describe() + $" + {_syrupFlavor} Syrup";

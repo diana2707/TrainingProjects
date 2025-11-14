@@ -1,6 +1,5 @@
 ﻿using Cafe.Application.Shared;
 using Cafe.ConsoleUI.Interfaces;
-using Cafe.Domain.Enums;
 
 namespace Cafe.ConsoleUI.UI
 {
@@ -29,7 +28,7 @@ namespace Cafe.ConsoleUI.UI
                 if (int.TryParse(inputParts[i], out int option))
                 {
                     if (option == doneOption) break;
-                    
+
                     if (option >= minOption && option <= maxOption)
                     {
                         validOptions.Add(option);

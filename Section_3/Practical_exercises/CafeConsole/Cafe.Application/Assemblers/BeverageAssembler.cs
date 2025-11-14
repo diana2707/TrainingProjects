@@ -1,5 +1,5 @@
 ﻿using Cafe.Application.DTOs;
-using Cafe.Domain.Factory;
+using Cafe.Domain.Factories.Beverage;
 using Cafe.Domain.Models;
 
 namespace Cafe.Application.Assemblers
@@ -15,10 +15,16 @@ namespace Cafe.Application.Assemblers
 
         public IBeverage Assemble(BeverageDetails beverageDetails)
         {
-            IBeverage baseBeverage = _beverageFactory.Create(beverageDetails.BaseBeverage);
+            IBeverage baseBeverage = _beverageFactory.Create(new BeverageCreationData { Beverage = beverageDetails.BaseBeverage });
 
-            IBeverage finalBeverage = beverageDetails.AddOns.Aggregate(baseBeverage, (finalBeverage, addOn) 
-                => _beverageFactory.Create(addOn, finalBeverage, beverageDetails.SyrupFlavour));
+            IBeverage finalBeverage = beverageDetails.AddOns.Aggregate(baseBeverage, (finalBeverage, addOn)
+                => _beverageFactory.Create(
+                    new BeverageCreationData
+                    {
+                        Beverage = addOn,
+                        BaseBeverage = finalBeverage,
+                        SyrupFlavour = beverageDetails.SyrupFlavour
+                    }));
 
             return finalBeverage;
         }

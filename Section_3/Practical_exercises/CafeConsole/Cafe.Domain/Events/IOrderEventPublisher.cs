@@ -1,5 +1,4 @@
-﻿
-namespace Cafe.Domain.Events
+﻿namespace Cafe.Domain.Events
 {
     public interface IOrderEventPublisher
     {

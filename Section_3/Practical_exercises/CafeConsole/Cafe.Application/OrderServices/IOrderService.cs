@@ -1,5 +1,4 @@
 ﻿using Cafe.Application.DTOs;
-using Cafe.Domain.Events;
 
 namespace Cafe.Application.Services
 {

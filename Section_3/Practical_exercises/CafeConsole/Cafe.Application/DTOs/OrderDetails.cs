@@ -1,5 +1,4 @@
 ﻿using Cafe.Domain.Enums;
-using Cafe.Domain.Models;
 
 namespace Cafe.Application.DTOs
 {

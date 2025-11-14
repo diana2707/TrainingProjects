@@ -17,13 +17,13 @@ namespace Cafe.Application.Services
 
         public OrderService(
             IBeverageAssembler beverageAssembler,
-            ICostCalculator discountCalculator,
+            ICostCalculator costCalculator,
             IOrderEventPublisher orderEventPublisher,
             IMapper<OrderPlaced, Receipt> receiptMapper)
         {
             _orderEventPublisher = orderEventPublisher;
             _placedOrderToReceiptMapper = receiptMapper;
-            _costCalculator = discountCalculator;
+            _costCalculator = costCalculator;
             _beverageAssembler = beverageAssembler;
         }
 

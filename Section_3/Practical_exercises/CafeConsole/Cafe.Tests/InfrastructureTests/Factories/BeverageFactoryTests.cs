@@ -1,5 +1,5 @@
-﻿
-using Cafe.Domain.Enums;
+﻿using Cafe.Domain.Enums;
+using Cafe.Domain.Factories.Beverage;
 using Cafe.Domain.Models;
 using Cafe.Infrastructure.Factories;
 
@@ -11,9 +11,17 @@ namespace Cafe.Tests.InfrastructureTests.Factories
         public void Create_ShouldReturnCorrectBeverageInstance_WhenGivenType()
         {
             var beverageFactory = new BeverageFactory();
-            
-            var espresso = beverageFactory.Create(Domain.Enums.BeverageType.Espresso);
-            var milkAddOn = beverageFactory.Create(Domain.Enums.BeverageType.Milk, espresso);
+
+            var espresso = beverageFactory.Create(new BeverageCreationData
+            {
+                Beverage = BeverageType.Espresso
+            });
+
+            var milkAddOn = beverageFactory.Create(new BeverageCreationData
+            {
+                Beverage = BeverageType.Milk,
+                BaseBeverage = espresso
+            });
 
             Assert.IsType<Espresso>(espresso);
             Assert.Equal("Espresso", espresso.Describe());
@@ -26,8 +34,13 @@ namespace Cafe.Tests.InfrastructureTests.Factories
         {
             var beverageFactory = new BeverageFactory();
 
-            var espresso = beverageFactory.Create(Domain.Enums.BeverageType.Espresso);
-            var syrupAddOn = beverageFactory.Create(Domain.Enums.BeverageType.Syrup, espresso, SyrupFlavourType.Vanilla);
+            var espresso = beverageFactory.Create(new BeverageCreationData { Beverage = BeverageType.Espresso });
+            var syrupAddOn = beverageFactory.Create(new BeverageCreationData
+            {
+                Beverage = BeverageType.Syrup,
+                BaseBeverage = espresso,
+                SyrupFlavour = SyrupFlavourType.Vanilla
+            });
 
             Assert.IsType<SyrupAddOn>(syrupAddOn);
             Assert.Equal("Espresso + Vanilla Syrup", syrupAddOn.Describe());
@@ -36,7 +49,10 @@ namespace Cafe.Tests.InfrastructureTests.Factories
         public void Create_ShouldThrowArgumentException_WhenGivenInvalidType()
         {
             var beverageFactory = new BeverageFactory();
-            Assert.Throws<ArgumentException>(() => beverageFactory.Create((BeverageType)int.MaxValue));
+            Assert.Throws<ArgumentException>(() => beverageFactory.Create(new BeverageCreationData
+            {
+                Beverage = (BeverageType)int.MaxValue
+            }));
         }
     }
 }

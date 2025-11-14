@@ -1,5 +1,4 @@
-﻿
-using Cafe.Domain.Enums;
+﻿using Cafe.Domain.Enums;
 
 namespace Cafe.ConsoleUI.Interfaces
 {

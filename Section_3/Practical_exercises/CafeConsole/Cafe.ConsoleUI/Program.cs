@@ -7,7 +7,8 @@ using Cafe.ConsoleUI.Controllers;
 using Cafe.ConsoleUI.Interfaces;
 using Cafe.ConsoleUI.UI;
 using Cafe.Domain.Events;
-using Cafe.Domain.Factory;
+using Cafe.Domain.Factories.Beverage;
+using Cafe.Domain.Factories.PricingFactory;
 using Cafe.Infrastructure.Factories;
 using Cafe.Infrastructure.Observers;
 

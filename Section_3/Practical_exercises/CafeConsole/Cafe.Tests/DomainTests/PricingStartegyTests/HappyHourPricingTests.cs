@@ -1,5 +1,4 @@
-﻿
-using Cafe.Domain.Pricing;
+﻿using Cafe.Domain.Pricing;
 
 namespace Cafe.Tests.DomainTests.PricingStartegyTests
 {

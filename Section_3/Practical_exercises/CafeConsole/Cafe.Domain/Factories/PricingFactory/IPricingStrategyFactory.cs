@@ -1,7 +1,7 @@
 ﻿using Cafe.Domain.Enums;
 using Cafe.Domain.Pricing;
 
-namespace Cafe.Domain.Factory
+namespace Cafe.Domain.Factories.PricingFactory
 {
     public interface IPricingStrategyFactory
     {

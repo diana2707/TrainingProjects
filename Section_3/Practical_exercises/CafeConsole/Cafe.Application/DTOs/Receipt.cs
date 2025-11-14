@@ -1,6 +1,4 @@
-﻿
-using Cafe.Domain.Enums;
-using Cafe.Domain.Models;
+﻿using Cafe.Domain.Enums;
 
 namespace Cafe.Application.DTOs
 {

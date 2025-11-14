@@ -1,24 +1,33 @@
 ﻿using Cafe.Domain.Enums;
-using Cafe.Domain.Factory;
+using Cafe.Domain.Factories.Beverage;
 using Cafe.Domain.Models;
 
 namespace Cafe.Infrastructure.Factories
 {
     public class BeverageFactory : IBeverageFactory
     {
-        public IBeverage Create(BeverageType bevarageType, IBeverage baseBeverage = null, SyrupFlavourType syrupFlavour = SyrupFlavourType.None)
+        public IBeverage Create(BeverageCreationData beverageData)
         {
-            return bevarageType switch
+            return beverageData switch
             {
-                BeverageType.Espresso => new Espresso(),
-                BeverageType.Tea => new Tea(),
-                BeverageType.HotChocolate => new HotChocolate(),
-                BeverageType.Milk when baseBeverage != null => new MilkAddOn(baseBeverage),
-                BeverageType.Syrup when baseBeverage != null && syrupFlavour != 0 => new SyrupAddOn(baseBeverage, syrupFlavour),
-                BeverageType.ExtraShot when baseBeverage != null => new ExtraShotDecorator(baseBeverage),
+                { Beverage: BeverageType.Espresso } => new Espresso(),
+                { Beverage: BeverageType.Tea } => new Tea(),
+                { Beverage: BeverageType.HotChocolate } => new HotChocolate(),
+                {
+                    Beverage: BeverageType.Milk,
+                    BaseBeverage: not null
+                } => new MilkAddOn(beverageData.BaseBeverage),
+                {
+                    Beverage: BeverageType.Syrup,
+                    BaseBeverage: not null,
+                    SyrupFlavour: > 0
+                } => new SyrupAddOn(beverageData.BaseBeverage, beverageData.SyrupFlavour),
+                {
+                    Beverage: BeverageType.ExtraShot,
+                    BaseBeverage: not null
+                } => new ExtraShotDecorator(beverageData.BaseBeverage),
                 _ => throw new ArgumentException("Invalid beverage type or missing base beverage for add-on."),
             };
-
         }
     }
 }

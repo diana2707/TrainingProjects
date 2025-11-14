@@ -4,7 +4,7 @@ using Cafe.Domain.Events;
 
 namespace Cafe.Application.Mappers
 {
-    public class OrderPlacedToReceiptMapper : IMapper <OrderPlaced, Receipt>
+    public class OrderPlacedToReceiptMapper : IMapper<OrderPlaced, Receipt>
     {
         public Receipt Map(OrderPlaced orderPlaced, PricingPolicyType pricingPolicy)
         {

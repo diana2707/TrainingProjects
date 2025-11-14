@@ -1,14 +1,9 @@
 ﻿using Cafe.Application.Assemblers;
 using Cafe.Application.DTOs;
 using Cafe.Domain.Enums;
-using Cafe.Domain.Factory;
+using Cafe.Domain.Factories.Beverage;
 using Cafe.Domain.Models;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cafe.Tests.ApplicationTests.AssemblersTests
 {
@@ -17,27 +12,32 @@ namespace Cafe.Tests.ApplicationTests.AssemblersTests
         [Fact]
         public void Assemble_ShouldReturnCorrectBeverageCost()
         {
-            // Arrange
             var beverageFactory = new Mock<IBeverageFactory>();
             var beverageAssembler = new BeverageAssembler(beverageFactory.Object);
 
             var beverageDetails = new BeverageDetails
             {
                 BaseBeverage = BeverageType.Espresso,
-                AddOns = new BeverageType[] { BeverageType.Syrup },
+                AddOns = new[] { BeverageType.Syrup },
                 SyrupFlavour = SyrupFlavourType.Vanilla
             };
 
-            // setup for base beverage
+            // Setup for base beverage
             beverageFactory
-                .Setup(f => f.Create(BeverageType.Espresso, null, SyrupFlavourType.None))
+                .Setup(factory => factory.Create(It.Is<BeverageCreationData>(data =>
+                    data.Beverage == BeverageType.Espresso &&
+                    data.BaseBeverage == null &&
+                    data.SyrupFlavour == SyrupFlavourType.None)))
                 .Returns(new Espresso());
 
-            // setup for add-on
+            // Setup for add-on
             beverageFactory
-                .Setup(f => f.Create(BeverageType.Syrup, It.IsAny<IBeverage>(), SyrupFlavourType.Vanilla))
-                .Returns<BeverageType, IBeverage, SyrupFlavourType>((type, baseBeverage, flavour) =>
-                    new SyrupAddOn(baseBeverage, flavour));
+                .Setup(factory => factory.Create(It.Is<BeverageCreationData>(data =>
+                    data.Beverage == BeverageType.Syrup &&
+                    data.BaseBeverage is Espresso &&
+                    data.SyrupFlavour == SyrupFlavourType.Vanilla)))
+                .Returns<BeverageCreationData>(data =>
+                    new SyrupAddOn(data.BaseBeverage, data.SyrupFlavour));
 
             var finalBeverage = beverageAssembler.Assemble(beverageDetails);
 

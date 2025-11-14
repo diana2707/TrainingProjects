@@ -1,6 +1,5 @@
-﻿
-using Cafe.Domain.Enums;
-using Cafe.Domain.Factory;
+﻿using Cafe.Domain.Enums;
+using Cafe.Domain.Factories.PricingFactory;
 using Cafe.Domain.Pricing;
 
 namespace Cafe.Application.PricingServices
