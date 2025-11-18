@@ -7,7 +7,7 @@ namespace Cafe.Tests.DomainTests.PricingStartegyTests
         [Fact]
         public void Apply_ShouldApplyHappyHourDiscount()
         {
-            var pricingStrategy = new HappyHourPricing();
+            var pricingStrategy = new HappyHourPricing(0.2m);
             decimal subtotal = 10.00m;
 
             decimal finalTotal = pricingStrategy.Apply(subtotal);
