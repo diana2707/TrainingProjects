@@ -9,6 +9,7 @@ using Cafe.ConsoleUI.UI;
 using Cafe.Domain.Events;
 using Cafe.Domain.Factories.Beverage;
 using Cafe.Domain.Factories.PricingFactory;
+using Cafe.Domain.Pricing;
 using Cafe.Infrastructure.Factories;
 using Cafe.Infrastructure.Observers;
 
@@ -33,8 +34,10 @@ namespace Cafe.ConsoleUI
 
             //Pricing services
             decimal happyHourDiscountPercentage = 0.2m; // configure as needed
-            IPricingStrategyFactory pricingStrategyFactory = new PricingStrategyFactory();
-            IPricingService pricingService = new PricingService(pricingStrategyFactory, happyHourDiscountPercentage);
+            IPricingStrategy regularPricing = new RegularPricing();
+            IPricingStrategy happyHourPricing = new HappyHourPricing(happyHourDiscountPercentage);
+            IPricingStrategyProvider pricingStrategyProvider = new PricingStrategyProvider([regularPricing, happyHourPricing]);
+            IPricingService pricingService = new PricingService(pricingStrategyProvider);
 
             //Assemblers
             IBeverageFactory beverageFactory = new BeverageFactory();

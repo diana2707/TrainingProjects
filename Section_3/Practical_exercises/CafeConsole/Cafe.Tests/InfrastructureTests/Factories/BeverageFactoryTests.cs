@@ -11,12 +11,10 @@ namespace Cafe.Tests.InfrastructureTests.Factories
         public void Create_ShouldReturnCorrectBeverageInstance_WhenGivenType()
         {
             var beverageFactory = new BeverageFactory();
-
             var espresso = beverageFactory.Create(new BeverageCreationData
             {
                 Beverage = BeverageType.Espresso
             });
-
             var milkAddOn = beverageFactory.Create(new BeverageCreationData
             {
                 Beverage = BeverageType.Milk,
