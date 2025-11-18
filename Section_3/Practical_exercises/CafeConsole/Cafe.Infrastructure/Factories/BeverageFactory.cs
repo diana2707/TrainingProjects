@@ -20,7 +20,7 @@ namespace Cafe.Infrastructure.Factories
                 {
                     Beverage: BeverageType.Syrup,
                     BaseBeverage: not null,
-                    SyrupFlavour: > 0
+                    SyrupFlavour: not SyrupFlavourType.None,
                 } => new SyrupAddOn(beverageData.BaseBeverage, beverageData.SyrupFlavour),
                 {
                     Beverage: BeverageType.ExtraShot,
