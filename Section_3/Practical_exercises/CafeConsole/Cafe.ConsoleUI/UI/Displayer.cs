@@ -13,7 +13,7 @@ namespace Cafe.ConsoleUI.UI
                 "\r\n");
         }
 
-        public void DisplayMainMenu()
+        public void DisplayBeverageMenu()
         {
             Console.WriteLine(
                 "\r\n1. Espresso ($2.50)" +

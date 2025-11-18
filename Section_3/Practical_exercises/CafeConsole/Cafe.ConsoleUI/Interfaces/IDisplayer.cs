@@ -5,7 +5,7 @@ namespace Cafe.ConsoleUI.Interfaces
     public interface IDisplayer
     {
         public void DisplayAppTitle();
-        public void DisplayMainMenu();
+        public void DisplayBeverageMenu();
         public void DisplayAddOnsMenu();
         public void DisplayPricingPolicyMenu();
         public void DisplayReceipt(Receipt receipt);

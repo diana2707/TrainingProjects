@@ -31,65 +31,24 @@ namespace Cafe.ConsoleUI.Controllers
             {
                 _displayer.Clear();
                 _displayer.DisplayAppTitle();
-                _displayer.DisplayMainMenu();
 
-                BeverageType beverageOption = GetValidInput(
-                    "Please select a single beverage option: ",
-                    input => _validator.ValidateSingleMenuOption(input, 1, 3),
-                    validInput => _parser.ParseToBaseBeverageType(validInput)
-                );
+                BeverageType beverageOption = OrderBeverage();
 
-                _displayer.DisplayAddOnsMenu();
+                IEnumerable<BeverageType> addOnsOptions = OrderAddOns();
 
-                IEnumerable<BeverageType> addOnsOptions = GetValidInput(
-                    "Please select add-ons (comma-separated for multiple and 0 for done): ",
-                    input => _validator.ValidateMultipleMenuOptions(input, 1, 3, 0),
-                    validInput => _parser.ParseToAddOnsBeverageTypes(validInput)
-                );
+                SyrupFlavourType syrupFlavour = addOnsOptions.Any(option => option is BeverageType.Syrup)
+                    ? ChooseSyrupFlavour()
+                    : SyrupFlavourType.None;
 
-                SyrupFlavourType syrupFlavour = SyrupFlavourType.None;
+                PricingPolicyType pricingPolicy = ChoosePricingPolicy();
 
-                if (addOnsOptions.Any(option => option == BeverageType.Syrup))
-                {
-                    syrupFlavour = GetValidInput(
-                        "Please enter syrup flavour (vanilla, caramel, hazelnut, chocolate): ",
-                        input => _validator.ValidateStringOption(input, ["vanilla", "caramel", "hazelnut", "chocolate"]),
-                        validInput => _parser.ParseToSyrupFlavourType(validInput)
-                    );
-                }
-
-                _displayer.DisplayPricingPolicyMenu();
-
-                PricingPolicyType pricingPolicy = GetValidInput(
-                    "Please select a pricing policy: ",
-                    input => _validator.ValidateSingleMenuOption(input, 1, 2),
-                    validInput => _parser.ParseToPricingPolicyType(validInput)
-                );
-
-                BeverageDetails beverageDetails = new()
-                {
-                    BaseBeverage = beverageOption,
-                    AddOns = addOnsOptions.ToArray(),
-                    SyrupFlavour = syrupFlavour
-                };
-
-                OrderDetails orderDetails = new()
-                {
-                    BeverageDetails = beverageDetails,
-                    PricingPolicy = pricingPolicy
-                };
+                OrderDetails orderDetails = GetOrderDetails(beverageOption, addOnsOptions, syrupFlavour, pricingPolicy);
 
                 Receipt receipt = _orderService.PlaceOrder(orderDetails);
 
                 _displayer.DisplayReceipt(receipt);
 
-                _displayer.DisplayContinueOrderingMenu();
-
-                bool continueOrdering = GetValidInput(
-                    "Select option: ",
-                    input => _validator.ValidateSingleMenuOption(input, 0, 1),
-                    validInput => _parser.ParseToContinueOrderingOption(validInput)
-                    );
+                bool continueOrdering = ChooseToContinueOrdering();
 
                 if (!continueOrdering)
                 {
@@ -97,6 +56,54 @@ namespace Cafe.ConsoleUI.Controllers
                     break;
                 }
             }
+        }
+
+        private BeverageType OrderBeverage()
+        {
+            _displayer.DisplayBeverageMenu();
+
+            return GetValidInput(
+                    "Please select a single beverage option: ",
+                    input => _validator.ValidateSingleMenuOption(input, 1, 3),
+                    validInput => _parser.ParseToBaseBeverageType(validInput));
+        }
+
+        private IEnumerable<BeverageType> OrderAddOns()
+        {
+            _displayer.DisplayAddOnsMenu();
+
+            return GetValidInput(
+                    "Please select add-ons (comma-separated for multiple and 0 for done): ",
+                    input => _validator.ValidateMultipleMenuOptions(input, 1, 3, 0),
+                    validInput => _parser.ParseToAddOnsBeverageTypes(validInput));
+        }
+
+        private SyrupFlavourType ChooseSyrupFlavour()
+        {
+            return GetValidInput(
+                       "Please enter syrup flavour (vanilla, caramel, hazelnut, chocolate): ",
+                       input => _validator.ValidateStringOption(input, ["vanilla", "caramel", "hazelnut", "chocolate"]),
+                       validInput => _parser.ParseToSyrupFlavourType(validInput));
+        }
+
+        private PricingPolicyType ChoosePricingPolicy()
+        {
+            _displayer.DisplayPricingPolicyMenu();
+
+            return GetValidInput(
+                    "Please select a pricing policy: ",
+                    input => _validator.ValidateSingleMenuOption(input, 1, 2),
+                    validInput => _parser.ParseToPricingPolicyType(validInput));
+        }
+
+        private bool ChooseToContinueOrdering()
+        {
+            _displayer.DisplayContinueOrderingMenu();
+
+            return GetValidInput(
+                    "Select option: ",
+                    input => _validator.ValidateSingleMenuOption(input, 0, 1),
+                    validInput => _parser.ParseToContinueOrderingOption(validInput));
         }
 
         private TParsedInput GetValidInput<TValidInput, TParsedInput>(
@@ -117,6 +124,28 @@ namespace Cafe.ConsoleUI.Controllers
 
                 _displayer.DisplayErrorMessage(validInput.ErrorMessage);
             }
+        }
+
+        private OrderDetails GetOrderDetails(
+            BeverageType beverageOption,
+            IEnumerable<BeverageType> addOnsOptions,
+            SyrupFlavourType syrupFlavour,
+            PricingPolicyType pricingPolicy)
+        {
+            BeverageDetails beverageDetails = new()
+            {
+                BaseBeverage = beverageOption,
+                AddOns = addOnsOptions.ToArray(),
+                SyrupFlavour = syrupFlavour
+            };
+
+            OrderDetails orderDetails = new()
+            {
+                BeverageDetails = beverageDetails,
+                PricingPolicy = pricingPolicy
+            };
+
+            return orderDetails;
         }
     }
 }
