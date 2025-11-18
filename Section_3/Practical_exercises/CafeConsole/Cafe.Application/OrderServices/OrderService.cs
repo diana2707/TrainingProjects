@@ -11,19 +11,19 @@ namespace Cafe.Application.Services
     public class OrderService : IOrderService
     {
         private readonly IOrderEventPublisher _orderEventPublisher;
-        private readonly IMapper<OrderPlaced, Receipt> _placedOrderToReceiptMapper;
-        private readonly ICostCalculator _costCalculator;
+        private readonly IPlacedOrderToReceiptMapper _placedOrderToReceiptMapper;
+        private readonly IPricingService _pricingService;
         private readonly IBeverageAssembler _beverageAssembler;
 
         public OrderService(
             IBeverageAssembler beverageAssembler,
-            ICostCalculator costCalculator,
+            IPricingService pricingService,
             IOrderEventPublisher orderEventPublisher,
-            IMapper<OrderPlaced, Receipt> receiptMapper)
+            IPlacedOrderToReceiptMapper receiptMapper)
         {
             _orderEventPublisher = orderEventPublisher;
             _placedOrderToReceiptMapper = receiptMapper;
-            _costCalculator = costCalculator;
+            _pricingService = pricingService;
             _beverageAssembler = beverageAssembler;
         }
 
@@ -32,8 +32,9 @@ namespace Cafe.Application.Services
             IBeverage beverage = _beverageAssembler.Assemble(orderDetails.BeverageDetails);
 
             PricingPolicyType pricingPolicy = orderDetails.PricingPolicy;
+            decimal discount = _pricingService.GetDiscountForPricingPolicy(pricingPolicy);
             decimal subtotal = beverage.Cost();
-            decimal total = _costCalculator.ApplyPricingPolicy(subtotal, pricingPolicy);
+            decimal total = _pricingService.ApplyPricingPolicy(subtotal, pricingPolicy);
 
             OrderPlaced orderPlaced = new (
                 beverage.Describe(),
@@ -43,7 +44,7 @@ namespace Cafe.Application.Services
 
             _orderEventPublisher.Publish(orderPlaced);
 
-            Receipt receipt = _placedOrderToReceiptMapper.Map(orderPlaced, pricingPolicy);
+            Receipt receipt = _placedOrderToReceiptMapper.Map(orderPlaced, pricingPolicy, discount);
 
             return receipt;
         }

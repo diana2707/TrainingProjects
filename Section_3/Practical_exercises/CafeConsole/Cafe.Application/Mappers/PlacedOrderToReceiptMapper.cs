@@ -4,16 +4,19 @@ using Cafe.Domain.Events;
 
 namespace Cafe.Application.Mappers
 {
-    public class OrderPlacedToReceiptMapper : IMapper<OrderPlaced, Receipt>
+    public class OrderPlacedToReceiptMapper : IPlacedOrderToReceiptMapper
     {
-        public Receipt Map(OrderPlaced orderPlaced, PricingPolicyType pricingPolicy)
+        public Receipt Map(OrderPlaced orderPlaced, PricingPolicyType pricingPolicy, decimal discount)
         {
             return new Receipt
             {
                 Id = orderPlaced.OrderId,
                 Date = orderPlaced.At,
                 Description = orderPlaced.Description,
-                PricingPolicy = pricingPolicy,
+                PricingPolicyDescription = pricingPolicy is PricingPolicyType.Regular 
+                        ? pricingPolicy.ToString() 
+                        : pricingPolicy.ToString() + $" ({discount:P0})",
+                Discount = discount,
                 Subtotal = orderPlaced.Subtotal,
                 Total = orderPlaced.Total
             };

@@ -61,7 +61,7 @@ namespace Cafe.ConsoleUI.UI
                 $"\r\nOrder: {receipt.Id} at {receipt.Date}" +
                 $"\r\nItems: {receipt.Description}" +
                 $"\r\nSubtotal: {receipt.Subtotal:C2}" +
-                $"\r\nPricing Policy: {receipt.PricingPolicy}" +
+                $"\r\nPricing Policy: {receipt.PricingPolicyDescription}" +
                 $"\r\nTotal: {receipt.Total:C2}" +
                 "\r\n");
             Console.ResetColor();

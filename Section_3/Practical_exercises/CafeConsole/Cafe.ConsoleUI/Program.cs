@@ -16,7 +16,7 @@ namespace Cafe.ConsoleUI
 {
     internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             //UI
             IDisplayer displayer = new Displayer();
@@ -29,18 +29,19 @@ namespace Cafe.ConsoleUI
             IOrderEventPublisher orderEventPublisher = new SimpleOrderEventPublisher([logger, analytics]);
 
             //Mappers
-            IMapper<OrderPlaced, Receipt> orderToReceiptMapper = new OrderPlacedToReceiptMapper();
+            IPlacedOrderToReceiptMapper orderToReceiptMapper = new OrderPlacedToReceiptMapper();
 
             //Pricing services
+            decimal happyHourDiscountPercentage = 0.2m; // configure as needed
             IPricingStrategyFactory pricingStrategyFactory = new PricingStrategyFactory();
-            ICostCalculator costCalculator = new CostCalculator(pricingStrategyFactory);
+            IPricingService pricingService = new PricingService(pricingStrategyFactory, happyHourDiscountPercentage);
 
             //Assemblers
             IBeverageFactory beverageFactory = new BeverageFactory();
             IBeverageAssembler beverageAssembler = new BeverageAssembler(beverageFactory);
 
             //Order services
-            IOrderService orderService = new OrderService(beverageAssembler, costCalculator, orderEventPublisher, orderToReceiptMapper);
+            IOrderService orderService = new OrderService(beverageAssembler, pricingService, orderEventPublisher, orderToReceiptMapper);
 
             //Controller
             var menuController = new MenuController(inputValidator, displayer, menuSelectionParser, orderService);

@@ -5,6 +5,6 @@ namespace Cafe.Domain.Factories.PricingFactory
 {
     public interface IPricingStrategyFactory
     {
-        public IPricingStrategy Create(PricingPolicyType pricingPolicy);
+        public IPricingStrategy Create(PricingPolicyType pricingPolicy, decimal happyHourDiscountPercentage);
     }
 }
