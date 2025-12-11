@@ -1,0 +1,6 @@
+@Cms.WebApi_HostAddress = http://localhost:5148
+
+GET {{Cms.WebApi_HostAddress}}/courses/
+Accept: application/json
+
+###
