@@ -8,10 +8,10 @@ namespace AirportTool.Infrastructure.Repositories
 {
     public interface IGenericRepository<T> where T : class
     {
-        public void Add(T entity);
-        public void Update(T entity);
+        public Task<T> AddAsync(T entity);
+        public T Update(T entity);
         public bool Delete(T entity);
-        public T Get(int id);
-        public IEnumerable<T> GetAll();
+        public Task<T> GetAsync(int id);
+        public Task<IEnumerable<T>> GetAllAsync();
     }
 }
