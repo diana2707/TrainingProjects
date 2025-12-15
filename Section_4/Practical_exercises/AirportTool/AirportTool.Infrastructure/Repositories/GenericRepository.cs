@@ -1,13 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AirportTool.Domain.Contracts;
+using AirportTool.Infrastructure.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
 namespace AirportTool.Infrastructure.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        private readonly DbContext _context;
+        private readonly AirportDbContext _context;
 
-        public GenericRepository(DbContext context)
+        public GenericRepository(AirportDbContext context)
         {
             _context = context;
         }
@@ -49,19 +51,14 @@ namespace AirportTool.Infrastructure.Repositories
             return true;
         }
 
-        public async Task<T> GetAsync(int id)
+        public async Task<T> GetAsync(int id, CancellationToken cancellationToken)
         {
-            return await _context.Set<T>().FindAsync(id);
+            return await _context.Set<T>().FindAsync(id, cancellationToken);
         }
 
-        public IEnumerable<T> GetAll()
+        public async Task<List<T>> GetAllAsync(CancellationToken cancellationToken)
         {
-            return _context.Set<T>().AsEnumerable<T>();
-        }
-
-        public async Task<IEnumerable<T>> GetAllAsync()
-        {
-            return await _context.Set<T>().ToListAsync();
+            return await _context.Set<T>().ToListAsync(cancellationToken);
         }
     }
 }

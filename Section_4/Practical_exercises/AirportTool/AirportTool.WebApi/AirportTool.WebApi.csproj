@@ -12,9 +12,11 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AirportTool.Application\AirportTool.Application.csproj" />
     <ProjectReference Include="..\AirportTool.Infrastructure\AirportTool.Infrastructure.csproj" />
   </ItemGroup>
 
