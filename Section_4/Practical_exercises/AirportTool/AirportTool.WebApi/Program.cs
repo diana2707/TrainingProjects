@@ -3,6 +3,7 @@ using AirportTool.Application.Services;
 using AirportTool.Domain.Contracts;
 using AirportTool.Infrastructure.Models;
 using AirportTool.Infrastructure.Repositories;
+using AirportTool.WebApi.Middleware;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -50,6 +51,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseAuthorization();
+
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
 app.MapControllers();
 

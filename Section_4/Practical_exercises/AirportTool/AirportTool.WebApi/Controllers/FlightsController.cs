@@ -29,12 +29,12 @@ namespace AirportTool.WebApi.Controllers
             return Ok(flights);
         }
 
-        // GET api/<FlightsController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
+        //// GET api/<FlightsController>/5
+        //[HttpGet("{id}")]
+        //public string Get(int id)
+        //{
+        //    return "value";
+        //}
 
         // POST api/<FlightsController>
         [HttpPost]
