@@ -26,5 +26,7 @@ namespace AirportTool.Domain.Entities
         public byte Status { get; set; }
 
         public DateTime CreatedUtc { get; set; }
+
+        public virtual TicketDomain? Ticket { get; set; } = null!;
     }
 }

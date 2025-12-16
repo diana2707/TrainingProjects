@@ -12,6 +12,7 @@ namespace AirportTool.Infrastructure.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         private readonly AirportDbContext _context;
+
         public UnitOfWork(AirportDbContext context)
         {
             _context = context;

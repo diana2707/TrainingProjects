@@ -23,6 +23,7 @@ builder.Services.AddDbContext<AirportDbContext>(options =>
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IFlightsRepository, FlightsRepository>();
+builder.Services.AddScoped<IAircraftRepository, AircraftRepository>();
 builder.Services.AddScoped<IFlightsService, FlightsService>();
 
 // Add CORS policy
@@ -35,6 +36,9 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader();
     });
 });
+
+// Logging
+builder.Logging.AddConsole();
 
 var app = builder.Build();
 

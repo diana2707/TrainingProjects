@@ -23,5 +23,15 @@ namespace AirportTool.Domain.Entities
         public int? DefaultAircraftId { get; set; }
 
         public bool IsActive { get; set; }
+
+        public virtual AirlineDomain? Airline { get; set; } = null!;
+
+        public virtual AircraftDomain? DefaultAircraft { get; set; }
+
+        public virtual AirportDomain? DestinationAirport { get; set; } = null!;
+
+        public virtual List<FlightScheduleDomain> FlightSchedules { get; set; } = [];
+
+        public virtual AirportDomain? OriginAirport { get; set; } = null!;
     }
 }

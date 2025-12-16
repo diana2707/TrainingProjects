@@ -17,10 +17,10 @@ namespace AirportTool.Application.Mappers
                 FlightId = flight.FlightId,
                 FlightNumber = flight.FlightNumber,
                 IsActive = flight.IsActive,
-                //Airline = flight.Airline,
-                //DefaultAircraft = flight.DefaultAircraft,
-                //OriginAirport = flight.OriginAirport,
-                //DestinationAirport = flight.DestinationAirport,
+                AirlineName = flight.Airline?.Name,
+                DefaultTailNumber = flight.DefaultAircraft?.TailNumber,
+                DestinationIata = flight.DestinationAirport?.IATACode,
+                OriginIata = flight.OriginAirport?.IATACode
             };
         }
     }

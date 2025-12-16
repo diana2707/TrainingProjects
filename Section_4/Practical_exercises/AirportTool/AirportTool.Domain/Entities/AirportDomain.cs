@@ -22,5 +22,11 @@ namespace AirportTool.Domain.Entities
         public string? Country { get; set; }
 
         public string TimeZone { get; set; } = null!;
+
+        public virtual List<FlightDomain> FlightDestinationAirports { get; set; } = [];
+
+        public virtual List<FlightDomain> FlightOriginAirports { get; set; } = [];
+
+        public virtual List<GateDomain> Gates { get; set; } = [];
     }
 }

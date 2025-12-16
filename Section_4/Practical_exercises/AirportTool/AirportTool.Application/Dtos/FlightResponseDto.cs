@@ -16,12 +16,12 @@ namespace AirportTool.Application.Dtos
 
         public bool IsActive { get; set; }
 
-        public virtual AirlineDomain Airline { get; set; } = null!;
+        public string AirlineName { get; set; } = null!;
 
-        public virtual AircraftDomain? DefaultAircraft { get; set; }
+        public string DefaultTailNumber { get; set; } = null!;
 
-        public virtual AirportDomain DestinationAirport { get; set; } = null!;
+        public string DestinationIata { get; set; } = null!;
 
-        public virtual AirportDomain OriginAirport { get; set; } = null!;
+        public string OriginIata { get; set; } = null!;
     }
 }

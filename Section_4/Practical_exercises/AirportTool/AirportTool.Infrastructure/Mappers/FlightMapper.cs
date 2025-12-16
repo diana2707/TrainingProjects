@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AirportTool.Infrastructure.Mappers
 {
-    public static class FlightsMapper
+    public static class FlightMapper
     {
         public static FlightDomain ToDomain(this Flight flight)
         {
@@ -21,6 +21,10 @@ namespace AirportTool.Infrastructure.Mappers
                 OriginAirportId = flight.OriginAirportId,
                 DestinationAirportId = flight.DestinationAirportId,
                 DefaultAircraftId = flight.DefaultAircraftId,
+                Airline = flight.Airline?.ToDomain(),
+                OriginAirport = flight.OriginAirport?.ToDomain(),
+                DestinationAirport = flight.DestinationAirport?.ToDomain(),
+                DefaultAircraft = flight.DefaultAircraft?.ToDomain(),
                 IsActive = flight.IsActive,
             };
         }

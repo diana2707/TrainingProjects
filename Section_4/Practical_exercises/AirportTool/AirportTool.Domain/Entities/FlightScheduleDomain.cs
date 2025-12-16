@@ -25,5 +25,13 @@ namespace AirportTool.Domain.Entities
         public int? AssignedAircraftId { get; set; }
 
         public byte Status { get; set; }
+
+        public virtual AircraftDomain? AssignedAircraft { get; set; }
+
+        public virtual FlightDomain? Flight { get; set; } = null!;
+
+        public virtual GateDomain? Gate { get; set; }
+
+        public virtual List<TicketDomain>? Tickets { get; set; } = [];
     }
 }

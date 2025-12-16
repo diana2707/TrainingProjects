@@ -63,19 +63,23 @@ namespace AirportTool.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<FlightDomain> GetAsync(int id, CancellationToken cancellationToken)
-        {
-            return await _context.Set<FlightDomain>().FindAsync(id, cancellationToken);
-        }
+        //public async Task<FlightDomain> GetAsync(int id, CancellationToken cancellationToken)
+        //{
+        //    return await _context.Set<FlightDomain>().FindAsync(id, cancellationToken);
+        //}
 
         //return an ireasonlylist
-        public async Task<List<FlightDomain>> GetByRouteAsync(string origin, string destination, CancellationToken cancellationToken)
+        public async Task<List<FlightDomain>> GetByRouteAsync(string originIata, string destinationIata, CancellationToken cancellationToken)
         {
-            var flights = await _context.Flights.Where(flight => flight.OriginAirport.Name == origin
-                                                                && flight.DestinationAirport.Name == destination)
+            var flights = await _context.Flights.Where(flight => flight.OriginAirport.IATACode == originIata
+                                                                && flight.DestinationAirport.IATACode == destinationIata)
+                                                .Include(flight => flight.Airline)
+                                                .Include(flight => flight.DefaultAircraft)
+                                                .Include(flight => flight.OriginAirport)
+                                                .Include(flight => flight.DestinationAirport)
                                                 .ToListAsync(cancellationToken);
 
-            return flights.Select(FlightsMapper.ToDomain).ToList();
+            return flights.Select(FlightMapper.ToDomain).ToList();
         }
 
         //public async Task<List<FlightDomain>> GetAllAsync(CancellationToken cancellationToken)

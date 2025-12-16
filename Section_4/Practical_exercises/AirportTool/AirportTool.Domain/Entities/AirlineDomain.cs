@@ -15,5 +15,9 @@ namespace AirportTool.Domain.Entities
         public string IATACode { get; set; } = null!;
 
         public string Name { get; set; } = null!;
+
+        public virtual List<AircraftDomain> Aircrafts { get; set; } = [];
+
+        public virtual List<FlightDomain> Flights { get; set; } = [];
     }
 }

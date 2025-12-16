@@ -23,5 +23,9 @@ namespace AirportTool.Domain.Entities
         public bool IsRefundable { get; set; }
 
         public int SeatInventory { get; set; }
+
+        public virtual List<BookingDomain>? Bookings { get; set; } = [];
+
+        public virtual FlightScheduleDomain? FlightSchedule { get; set; } = null!;
     }
 }

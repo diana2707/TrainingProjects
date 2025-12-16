@@ -1,5 +1,6 @@
 ﻿using AirportTool.Application.Contracts;
 using AirportTool.Application.Dtos;
+using AirportTool.Application.Exceptions;
 using AirportTool.Application.Mappers;
 using AirportTool.Domain.Contracts;
 using System;
@@ -12,13 +13,13 @@ namespace AirportTool.Application.Services
 {
     public class FlightsService : IFlightsService
     {
-        private readonly IFlightsRepository _repository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IFlightsRepository _flightsRepository;
 
-        public FlightsService(IFlightsRepository repository, IUnitOfWork unitOfWork)
+        public FlightsService(IUnitOfWork unitOfWork, IFlightsRepository flightsRepository)
         {
-            _repository = repository;
             _unitOfWork = unitOfWork;
+            _flightsRepository = flightsRepository;
         }
 
         //public async Task<List<FlightResponseDto>> GetAllFlightsAsync(CancellationToken cancellationToken)
@@ -29,12 +30,23 @@ namespace AirportTool.Application.Services
         //    return flightDtos;
         //}
 
+        //public async Task<FlightResponseDto> CreateFlight(FlightCreateRequestDto requestDto)
+        //{
+        //    if (requestDto.Origin == requestDto.Destination)
+        //    {
+        //        throw new DomainValidationException("Origin and destination cannot be the same.");
+        //    }
+
+        //    var flightDomain = FlightMapper.ToDomain(requestDto);
+        //}
+
         public async Task<List<FlightResponseDto>> GetFlightsByAsync(string origin, string destination, CancellationToken cancellationToken)
         {
-            var flights = await _repository.GetByRouteAsync(origin, destination, cancellationToken);
-            var flightDtos = flights.Select(FlightMapper.ToResponseDto).ToList();
+            var flights = await _flightsRepository.GetByRouteAsync(origin, destination, cancellationToken);
 
-            return flightDtos;
+            var flightsDtos = flights.Select(FlightMapper.ToResponseDto).ToList();
+
+            return flightsDtos;
         }
     }
 }
