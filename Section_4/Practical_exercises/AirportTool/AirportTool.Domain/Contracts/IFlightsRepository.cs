@@ -16,5 +16,6 @@ namespace AirportTool.Domain.Contracts
         //public Task<FlightDomain> GetAsync(int id, CancellationToken cancellationToken);
         //public Task<List<FlightDomain>> GetAllAsync(CancellationToken cancellationToken);
         public Task<List<FlightDomain>> GetByRouteAsync(string origin, string destination, CancellationToken cancellationToken);
+        public FlightDomain? GetByNumber(string number);
     }
 }

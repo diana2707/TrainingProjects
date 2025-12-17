@@ -20,12 +20,12 @@ namespace AirportTool.WebApi.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(List<FlightResponseDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<FlightResponseDto>>> Get(
+        public async Task<ActionResult<IEnumerable<FlightResponseDto>>> GetFlight(
             [FromQuery] string origin,
             [FromQuery] string destination,
             CancellationToken cancellationToken)
         {
-            var flights = await _flightsService.GetFlightsByAsync(origin, destination, cancellationToken);
+            var flights = await _flightsService.GetFlightsByRouteAsync(origin, destination, cancellationToken);
             return Ok(flights);
         }
 
@@ -38,8 +38,13 @@ namespace AirportTool.WebApi.Controllers
 
         // POST api/<FlightsController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<ActionResult<FlightResponseDto>> CreateFlight([FromBody] FlightRequestDto flightRequest, CancellationToken cancelationToken)
         {
+            var createdFlight = await _flightsService.CreateFlight(flightRequest, cancelationToken);
+
+            var uri = $"/api/flights/{createdFlight.FlightId}";
+
+            return Created(uri, createdFlight);
         }
 
         // PUT api/<FlightsController>/5

@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace AirportTool.Domain.Contracts
 {
-    public interface IAircraftRepository
+    public interface IAirlineRepository
     {
-        public Task<string?> GetTailNumberBy(int id);
-        public AircraftDomain? GetByTailNumber(string tailNumber);
+        public AirlineDomain? GetByIata(string iataCode);
     }
 }

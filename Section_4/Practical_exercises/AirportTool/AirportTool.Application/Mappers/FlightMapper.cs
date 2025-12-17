@@ -18,7 +18,6 @@ namespace AirportTool.Application.Mappers
                 FlightNumber = flight.FlightNumber,
                 IsActive = flight.IsActive,
                 AirlineName = flight.Airline?.Name,
-                DefaultTailNumber = flight.DefaultAircraft?.TailNumber,
                 DestinationIata = flight.DestinationAirport?.IATACode,
                 OriginIata = flight.OriginAirport?.IATACode
             };

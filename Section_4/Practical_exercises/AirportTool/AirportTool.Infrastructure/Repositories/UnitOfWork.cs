@@ -12,11 +12,28 @@ namespace AirportTool.Infrastructure.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         private readonly AirportDbContext _context;
+        private readonly IAircraftRepository _aircraftRepository;
+        private readonly IAirlineRepository _airlineRepository;
+        private readonly IAirportRepository _airportRepository;
+        private readonly IFlightsRepository _flightRepository;
 
-        public UnitOfWork(AirportDbContext context)
+        public UnitOfWork(AirportDbContext context,
+            IAircraftRepository aircraftRepository,
+            IAirlineRepository airlineRepository,
+            IAirportRepository airpostRepository,
+            IFlightsRepository flightRepository)
         {
             _context = context;
+            _aircraftRepository = aircraftRepository;
+            _airlineRepository = airlineRepository;
+            _airportRepository = airpostRepository;
+            _flightRepository = flightRepository;
         }
+
+        public IAircraftRepository Aircrafts => _aircraftRepository;
+        public IAirlineRepository Airlines => _airlineRepository;
+        public IAirportRepository Airports => _airportRepository;
+        public IFlightsRepository Flights => _flightRepository;
 
         public Task BeginTransactionAsync(CancellationToken cancellationToken = default)
         {

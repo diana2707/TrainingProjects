@@ -25,5 +25,13 @@ namespace AirportTool.Infrastructure.Repositories
 
             return aircraft?.TailNumber ?? null;
         }
+
+        public AircraftDomain? GetByTailNumber(string tailNumber)
+        {
+            var aircraft = _context.Aircraft
+                .FirstOrDefault(a => a.TailNumber == tailNumber);
+
+            return aircraft?.ToDomain();
+        }
     }
 }

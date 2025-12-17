@@ -13,6 +13,7 @@ namespace AirportTool.Infrastructure.Mappers
         public static FlightDomain ToDomain(this Flight flight)
         {
             if (flight == null) return null;
+
             return new FlightDomain
             {
                 FlightId = flight.FlightId,
@@ -26,6 +27,22 @@ namespace AirportTool.Infrastructure.Mappers
                 DestinationAirport = flight.DestinationAirport?.ToDomain(),
                 DefaultAircraft = flight.DefaultAircraft?.ToDomain(),
                 IsActive = flight.IsActive,
+            };
+        }
+
+        public static Flight ToDbModel(this FlightDomain flightDomain)
+        {
+            if (flightDomain == null) return null;
+
+            return new Flight
+            {
+                FlightId = flightDomain.FlightId,
+                AirlineId = flightDomain.AirlineId,
+                FlightNumber = flightDomain.FlightNumber,
+                OriginAirportId = flightDomain.OriginAirportId,
+                DestinationAirportId = flightDomain.DestinationAirportId,
+                DefaultAircraftId = flightDomain.DefaultAircraftId,
+                IsActive = flightDomain.IsActive,
             };
         }
     }

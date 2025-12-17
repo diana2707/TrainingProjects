@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace AirportTool.Application.Dtos
 {
-    public class FlightRequstDto
+    public class FlightRequestDto
     {
         public string AirlineIata { get; set; } = null!;
         public string FlightNumber { get; set; } = null!;
-        //public string OriginIata { get; set; } = null!;
-        //public string DestinationIata { get; set; } = null!;
-        //public string DefaultAircraftTail { get; set; } = null!;
+        public string OriginIata { get; set; } = null!;
+        public string DestinationIata { get; set; } = null!;
+        public string DefaultAircraftTail { get; set; } = null!;
         public bool IsActive { get; set; }
     }
 }

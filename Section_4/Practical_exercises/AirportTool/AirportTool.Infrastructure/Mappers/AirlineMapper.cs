@@ -18,8 +18,6 @@ namespace AirportTool.Infrastructure.Mappers
                 AirlineId = airline.AirlineId,
                 IATACode = airline.IATACode,
                 Name = airline.Name,
-                Aircrafts = airline.Aircraft?.Select(fs => fs.ToDomain()).ToList() ?? [],
-                Flights = airline.Flights?.Select(f => f.ToDomain()).ToList() ?? [],
             };
         }
     }

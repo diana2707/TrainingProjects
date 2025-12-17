@@ -18,8 +18,6 @@ namespace AirportTool.Application.Dtos
 
         public string AirlineName { get; set; } = null!;
 
-        public string DefaultTailNumber { get; set; } = null!;
-
         public string DestinationIata { get; set; } = null!;
 
         public string OriginIata { get; set; } = null!;

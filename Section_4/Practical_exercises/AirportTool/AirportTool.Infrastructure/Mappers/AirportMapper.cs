@@ -21,9 +21,6 @@ namespace AirportTool.Infrastructure.Mappers
                 City = airport.City,
                 Country = airport.Country,
                 TimeZone = airport.TimeZone,
-                FlightDestinationAirports = airport.FlightDestinationAirports?.Select(f => f.ToDomain()).ToList() ?? [],
-                FlightOriginAirports = airport.FlightOriginAirports?.Select(f => f.ToDomain()).ToList() ?? [],
-                Gates = airport.Gates?.Select(g => g.ToDomain()).ToList() ?? [],
             };
         }
     }

@@ -22,8 +22,6 @@ namespace AirportTool.Infrastructure.Mappers
                 SeatCapacity = aircraft.SeatCapacity,
                 OwnedByAirlineId = aircraft.OwnedByAirlineId,
                 OwnedByAirline = aircraft.OwnedByAirline?.ToDomain(),
-                FlightSchedules = aircraft.FlightSchedules?.Select(fs => fs.ToDomain()).ToList() ?? [],
-                Flights = aircraft.Flights?.Select(f => f.ToDomain()).ToList() ?? [],
             };
         }
     }

@@ -20,10 +20,6 @@ namespace AirportTool.Domain.Entities
 
         public int? OwnedByAirlineId { get; set; }
 
-        public virtual List<FlightScheduleDomain> FlightSchedules { get; set; } = [];
-
-        public virtual List<FlightDomain> Flights { get; set; } = [];
-
         public virtual AirlineDomain? OwnedByAirline { get; set; }
     }
 }

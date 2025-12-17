@@ -30,8 +30,6 @@ namespace AirportTool.Domain.Entities
 
         public virtual AirportDomain? DestinationAirport { get; set; } = null!;
 
-        public virtual List<FlightScheduleDomain> FlightSchedules { get; set; } = [];
-
         public virtual AirportDomain? OriginAirport { get; set; } = null!;
     }
 }

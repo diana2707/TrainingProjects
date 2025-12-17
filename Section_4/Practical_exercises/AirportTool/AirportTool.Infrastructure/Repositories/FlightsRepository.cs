@@ -20,18 +20,19 @@ namespace AirportTool.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<FlightDomain> AddAsync(FlightDomain entity)
+        // could make add void because it returns the entity not persisted
+        public async Task<FlightDomain> AddAsync(FlightDomain flightDomain)
         {
-            //if (entity == null)
-            //{
-            //    throw new ArgumentNullException(nameof(entity));
-            //}
+            if (flightDomain == null)
+            {
+                throw new ArgumentNullException(nameof(flightDomain));
+            }
 
-            //await _context.Set<T>().AddAsync(entity);
+            var flightDbModel = FlightMapper.ToDbModel(flightDomain);
 
-            //return entity;
+            await _context.Flights.AddAsync(flightDbModel);
 
-            throw new NotImplementedException();
+            return flightDbModel.ToDomain();
         }
 
         // verify here if the entity exists in the database before updating
@@ -80,6 +81,13 @@ namespace AirportTool.Infrastructure.Repositories
                                                 .ToListAsync(cancellationToken);
 
             return flights.Select(FlightMapper.ToDomain).ToList();
+        }
+
+        public FlightDomain? GetByNumber(string number)
+        {
+            var flight = _context.Flights.FirstOrDefault(flight => flight.FlightNumber == number);
+
+            return flight != null ? FlightMapper.ToDomain(flight) : null;
         }
 
         //public async Task<List<FlightDomain>> GetAllAsync(CancellationToken cancellationToken)
