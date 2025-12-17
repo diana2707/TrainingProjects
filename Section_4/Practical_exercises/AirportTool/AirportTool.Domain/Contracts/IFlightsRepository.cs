@@ -11,11 +11,13 @@ namespace AirportTool.Domain.Contracts
     public interface IFlightsRepository
     {
         public Task<FlightDomain> AddAsync(FlightDomain entity);
-        public FlightDomain Update(FlightDomain entity);
+        public Task<FlightDomain> Update(int id, FlightDomain flight, CancellationToken cancellationToken);
         public bool Delete(FlightDomain entity);
         //public Task<FlightDomain> GetAsync(int id, CancellationToken cancellationToken);
         //public Task<List<FlightDomain>> GetAllAsync(CancellationToken cancellationToken);
         public Task<List<FlightDomain>> GetByRouteAsync(string origin, string destination, CancellationToken cancellationToken);
         public FlightDomain? GetByNumber(string number);
+
+        public Task<FlightDomain?> GetByIdAsync(int id, CancellationToken cancellationToken);
     }
 }

@@ -1,3 +1,4 @@
+using AirportTool.Application.Assmplers;
 using AirportTool.Application.Contracts;
 using AirportTool.Application.Services;
 using AirportTool.Domain.Contracts;
@@ -26,6 +27,7 @@ builder.Services.AddScoped<IFlightsRepository, FlightsRepository>();
 builder.Services.AddScoped<IAircraftRepository, AircraftRepository>();
 builder.Services.AddScoped<IAirportRepository, AirportRepository>();
 builder.Services.AddScoped<IAirlineRepository, AirlineRepository>();
+builder.Services.AddScoped<IFlightAssembler, FlightAssembler>();
 builder.Services.AddScoped<IFlightsService, FlightsService>();
 
 // Add CORS policy

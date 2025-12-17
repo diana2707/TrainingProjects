@@ -35,19 +35,21 @@ namespace AirportTool.Infrastructure.Repositories
             return flightDbModel.ToDomain();
         }
 
-        // verify here if the entity exists in the database before updating
-        public FlightDomain Update(FlightDomain entity)
+        // make void, the returned flight is not persisted?
+        public async Task<FlightDomain> Update(int id, FlightDomain flightDomain, CancellationToken cancellationToken)
         {
-            //if (entity == null)
-            //{
-            //    throw new ArgumentNullException(nameof(entity));
-            //}
+            if (flightDomain == null)
+            {
+                throw new ArgumentNullException(nameof(flightDomain));
+            }
 
-            //_context.Set<T>().Update(entity);
+            var flight = await _context.Flights.FindAsync(id, cancellationToken);
 
-            //return entity;
+            if (flight == null) return null;
 
-            throw new NotImplementedException();
+            flight = flightDomain.ToDbModel(flight);
+
+            return flight.ToDomain();
         }
 
         public bool Delete(FlightDomain entity)
@@ -64,10 +66,12 @@ namespace AirportTool.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        //public async Task<FlightDomain> GetAsync(int id, CancellationToken cancellationToken)
-        //{
-        //    return await _context.Set<FlightDomain>().FindAsync(id, cancellationToken);
-        //}
+        public async Task<FlightDomain?> GetByIdAsync(int id, CancellationToken cancellationToken)
+        {
+            var flight = await _context.Flights.FindAsync(id, cancellationToken);
+
+            return flight?.ToDomain();
+        }
 
         //return an ireasonlylist
         public async Task<List<FlightDomain>> GetByRouteAsync(string originIata, string destinationIata, CancellationToken cancellationToken)

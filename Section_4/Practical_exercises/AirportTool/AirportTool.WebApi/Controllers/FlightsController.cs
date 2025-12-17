@@ -40,6 +40,11 @@ namespace AirportTool.WebApi.Controllers
         [HttpPost]
         public async Task<ActionResult<FlightResponseDto>> CreateFlight([FromBody] FlightRequestDto flightRequest, CancellationToken cancelationToken)
         {
+            if (flightRequest == null)
+            {
+                return BadRequest("Body can not be null.");
+            }
+
             var createdFlight = await _flightsService.CreateFlight(flightRequest, cancelationToken);
 
             var uri = $"/api/flights/{createdFlight.FlightId}";
@@ -49,8 +54,16 @@ namespace AirportTool.WebApi.Controllers
 
         // PUT api/<FlightsController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<ActionResult<FlightResponseDto>> Put(int id, [FromBody] FlightRequestDto flightRequest, CancellationToken cancelationToken)
         {
+            if (flightRequest == null)
+            {
+                return BadRequest("Body can not be null.");
+            }
+
+            var updatedFlight = await _flightsService.UpdateFlight(id, flightRequest, cancelationToken);
+
+            return Ok(updatedFlight);
         }
 
         // DELETE api/<FlightsController>/5

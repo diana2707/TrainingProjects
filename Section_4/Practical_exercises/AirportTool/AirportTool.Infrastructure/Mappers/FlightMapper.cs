@@ -30,20 +30,24 @@ namespace AirportTool.Infrastructure.Mappers
             };
         }
 
-        public static Flight ToDbModel(this FlightDomain flightDomain)
+        public static Flight ToDbModel(this FlightDomain flightDomain, Flight existingFlight = null)
         {
             if (flightDomain == null) return null;
 
-            return new Flight
+            if (existingFlight == null)
             {
-                FlightId = flightDomain.FlightId,
-                AirlineId = flightDomain.AirlineId,
-                FlightNumber = flightDomain.FlightNumber,
-                OriginAirportId = flightDomain.OriginAirportId,
-                DestinationAirportId = flightDomain.DestinationAirportId,
-                DefaultAircraftId = flightDomain.DefaultAircraftId,
-                IsActive = flightDomain.IsActive,
-            };
+                existingFlight = new Flight();
+                existingFlight.FlightId = flightDomain.FlightId;
+            }
+
+            existingFlight.AirlineId = flightDomain.AirlineId;
+            existingFlight.FlightNumber = flightDomain.FlightNumber;
+            existingFlight.OriginAirportId = flightDomain.OriginAirportId;
+            existingFlight.DestinationAirportId = flightDomain.DestinationAirportId;
+            existingFlight.DefaultAircraftId = flightDomain.DefaultAircraftId;
+            existingFlight.IsActive = flightDomain.IsActive;
+
+            return existingFlight;
         }
     }
 }

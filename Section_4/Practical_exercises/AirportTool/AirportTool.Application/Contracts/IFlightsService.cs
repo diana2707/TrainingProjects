@@ -10,7 +10,9 @@ namespace AirportTool.Application.Contracts
     public interface IFlightsService
     {
         //public Task<List<FlightResponseDto>> GetAllFlightsAsync(CancellationToken cancellationToken);
+
         public Task<List<FlightResponseDto>> GetFlightsByRouteAsync(string origin, string destination, CancellationToken cancellationToken);
         public Task<FlightResponseDto> CreateFlight(FlightRequestDto flightRequest, CancellationToken cancelationToken);
+        public Task<FlightResponseDto> UpdateFlight(int id, FlightRequestDto flightRequest, CancellationToken cancelationToken);
     }
 }
