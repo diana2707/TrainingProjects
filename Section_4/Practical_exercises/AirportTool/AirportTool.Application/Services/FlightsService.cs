@@ -85,5 +85,22 @@ namespace AirportTool.Application.Services
 
             return flightsDtos;
         }
+
+        public async Task DeleteFlight(int id, CancellationToken cancellationToken)
+        {
+            if (!await _unitOfWork.Flights.ExistsAsync(id, cancellationToken))
+            {
+                throw new NotFoundException("The resource was not found");
+            }
+
+            var hasDependencies = await _unitOfWork.Flights.HasDependenciesAsync(id, cancellationToken);
+            if (hasDependencies)
+            {
+                throw new ConflictException("Cannot delete flight because it has related dependencies.");
+            }
+
+            await _unitOfWork.Flights.DeleteFlightAsync(id, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+        }
     }
 }

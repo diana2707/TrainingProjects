@@ -3,6 +3,7 @@ using AirportTool.Domain.Entities;
 using AirportTool.Infrastructure.Mappers;
 using AirportTool.Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,23 +53,21 @@ namespace AirportTool.Infrastructure.Repositories
             return flight.ToDomain();
         }
 
-        public bool Delete(FlightDomain entity)
+        public async Task DeleteFlightAsync(int id, CancellationToken cancellationToken)
         {
-            //if (entity == null)
-            //{
-            //    return false;
-            //}
+            var flight = await _context.Flights.FindAsync(id, cancellationToken);
+            
+            if (flight == null)
+            {
+                throw new KeyNotFoundException($"Flight with ID {id} not found.");
+            }
 
-            //_context.Set<T>().Remove(entity);
-
-            //return true;
-
-            throw new NotImplementedException();
+            _context.Flights.Remove(flight);
         }
 
         public async Task<FlightDomain?> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
-            var flight = await _context.Flights.FindAsync(id, cancellationToken);
+            var flight = await _context.Flights.FindAsync([id], cancellationToken);
 
             return flight?.ToDomain();
         }
@@ -99,5 +98,17 @@ namespace AirportTool.Infrastructure.Repositories
         //    var flights = await _context.Set<Flight>().ToListAsync(cancellationToken);
         //    return flights.Select(FlightsMapper.ToDomain).ToList();
         //}
+
+        public async Task<bool> HasDependenciesAsync(int flightId, CancellationToken cancellationToken)
+        {
+            return await _context.FlightSchedules
+                       .AnyAsync(s => s.FlightId == flightId, cancellationToken);
+        }
+
+        public async Task<bool> ExistsAsync(int flightId, CancellationToken cancellationToken)
+        {
+            return await _context.Flights
+                       .AnyAsync(f => f.FlightId == flightId, cancellationToken);
+        }
     }
 }
