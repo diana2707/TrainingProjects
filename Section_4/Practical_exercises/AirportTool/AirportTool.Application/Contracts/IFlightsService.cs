@@ -1,4 +1,4 @@
-﻿using AirportTool.Application.Dtos;
+﻿using AirportTool.Application.Dtos.Flights;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -9,6 +9,6 @@ namespace AirportTool.Domain.Contracts
 {
     public interface IAirlineRepository
     {
-        public AirlineDomain? GetByIata(string iataCode);
+        public Task<AirlineDomain?> GetByIataAsync(string iataCode);
     }
 }

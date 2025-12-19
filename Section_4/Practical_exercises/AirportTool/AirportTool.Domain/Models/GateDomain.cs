@@ -16,8 +16,6 @@ namespace AirportTool.Domain.Entities
 
         public string Code { get; set; } = null!;
 
-        public virtual AirportDomain? Airport { get; set; } = null!;
-
         public virtual List<FlightScheduleDomain>? FlightSchedules { get; set; } = [];
     }
 }

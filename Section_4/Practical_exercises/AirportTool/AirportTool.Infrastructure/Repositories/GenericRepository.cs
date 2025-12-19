@@ -1,5 +1,5 @@
 ﻿using AirportTool.Domain.Contracts;
-using AirportTool.Infrastructure.Models;
+using AirportTool.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 

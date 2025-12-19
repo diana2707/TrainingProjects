@@ -1,8 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using AirportTool.Domain.Entities;
+using AirportTool.Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
 
-namespace AirportTool.Infrastructure.Models;
+namespace AirportTool.Infrastructure.Services;
 
 public partial class AirportDbContext : DbContext
 {
@@ -26,10 +28,6 @@ public partial class AirportDbContext : DbContext
     public virtual DbSet<Gate> Gates { get; set; }
 
     public virtual DbSet<Ticket> Tickets { get; set; }
-
-//    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-//        => optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=AirportManagementDb;Trusted_Connection=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

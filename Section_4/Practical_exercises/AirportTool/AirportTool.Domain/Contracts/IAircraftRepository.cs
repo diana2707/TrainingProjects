@@ -9,7 +9,7 @@ namespace AirportTool.Domain.Contracts
 {
     public interface IAircraftRepository
     {
-        public Task<string?> GetTailNumberBy(int id);
-        public AircraftDomain? GetByTailNumber(string tailNumber);
+        public Task<string?> GetTailNumberByIdAsync(int id);
+        public Task<AircraftDomain?> GetByTailNumberAsync(string tailNumber);
     }
 }

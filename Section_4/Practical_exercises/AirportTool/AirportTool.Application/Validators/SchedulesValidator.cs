@@ -1,0 +1,129 @@
+﻿using AirportTool.Application.Contracts;
+using AirportTool.Application.Dtos.Schedules;
+using AirportTool.Domain.Contracts;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace AirportTool.Application.Validators
+{
+    public class SchedulesValidator : ISchedulesValidator
+    {
+
+        public readonly IFlightsRepository _flightRepository;
+        public readonly IGateRepository _gateRepository;
+        public readonly ISchedulesRepository _schedulesRepository;
+
+        public SchedulesValidator(
+            IFlightsRepository flightRepository,
+            IGateRepository gateRepository,
+            ISchedulesRepository schedulesRepository
+        )
+        {
+            _flightRepository = flightRepository;
+            _gateRepository = gateRepository;
+            _schedulesRepository = schedulesRepository;
+        }
+
+        public void ValidateDeserializedJson(List<ScheduleImportDto> schedules, int maxRows)
+        {
+            if (schedules == null)
+            {
+                throw new ValidationException("JSON cannot be null.");
+            }
+
+            if (schedules.Count > maxRows)
+            {
+                throw new ValidationException($"Max rows exceeded. Rows count: {schedules.Count}/ Max rows: {maxRows}");
+            }
+        }
+
+        public bool IsValidScheduleFormat(ScheduleImportDto schedule, ImportResultDto importResult, int rowNumber)
+        {
+            var validationResults = new List<ValidationResult>();
+
+            bool isValid = Validator.TryValidateObject(
+                    schedule,
+                    new ValidationContext(schedule),
+                    validationResults,
+                    validateAllProperties: true
+                );
+
+            if (!isValid)
+            {
+                foreach (var validationResult in validationResults)
+                {
+                    importResult.Errors.Add(new ImportErrorDto
+                    {
+                        Row = rowNumber,
+                        Message = validationResult.ErrorMessage ?? "Validation error"
+                    });
+                }
+
+                return false;
+            }
+
+            return true;
+        }
+
+        public async Task<bool> IsValidByBussinessRules(ScheduleImportDto schedule, ImportResultDto importResult, int rowNumber, CancellationToken cancellationToken)
+        {
+            var validArrivalAndDeparture = IsValidArrivalAndDeparture(schedule, importResult, rowNumber);
+
+            var validGateAllocation = await IsValidGateAllocationAsync(schedule, importResult, rowNumber, cancellationToken);
+
+            return validArrivalAndDeparture && validGateAllocation;
+        }
+
+        private async Task<bool> IsValidGateAllocationAsync(ScheduleImportDto schedule, ImportResultDto importResult, int rowNumber, CancellationToken cancellationToken)
+        {
+            if (schedule.GateCode == null) return true;
+
+            var airport = await _flightRepository.GetOriginAirportForFlightAsync(schedule.FlightId);
+            var gate = await _gateRepository.GetByCodeAndAirportIdAsync(schedule.GateCode, airport.AirportId);
+
+            if (gate == null) return true;
+
+            bool hasConflict = await _schedulesRepository.HasGateConflictAsync(
+                gate.GateId,
+                schedule.ScheduledDepartureUtc.Value,
+                schedule.ScheduledArrivalUtc.Value,
+                schedule.FlightId!.Value,
+                cancellationToken
+            );
+
+            if (hasConflict)
+            {
+                importResult.Errors.Add(new ImportErrorDto
+                {
+                    Row = rowNumber,
+                    Message = "Gate is already allocated to another flight in this time interval."
+                });
+
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool IsValidArrivalAndDeparture(ScheduleImportDto schedule, ImportResultDto importResult, int rowNumber)
+        {
+            // Rule 1: Temporal logic
+            if (schedule.ScheduledArrivalUtc <= schedule.ScheduledDepartureUtc)
+            {
+                importResult.Errors.Add(new ImportErrorDto
+                {
+                    Row = rowNumber,
+                    Message = "Arrival time must be after departure time."
+                });
+
+                return false;
+            }
+
+            return true;
+        }
+    }
+}

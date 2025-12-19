@@ -13,6 +13,7 @@ namespace AirportTool.Infrastructure.Mappers
         public static FlightScheduleDomain ToDomain(this FlightSchedule flightSchedule)
         {
             if (flightSchedule == null) return null;
+
             return new FlightScheduleDomain
             {
                 FlightScheduleId = flightSchedule.FlightScheduleId,
@@ -25,8 +26,30 @@ namespace AirportTool.Infrastructure.Mappers
                 AssignedAircraft = flightSchedule.AssignedAircraft?.ToDomain(),
                 Flight = flightSchedule.Flight?.ToDomain(),
                 Gate = flightSchedule.Gate?.ToDomain(),
-                Tickets = flightSchedule.Tickets?.Select(t => t.ToDomain()).ToList()
             };
+        }
+
+        public static FlightSchedule ToDbModel(this FlightScheduleDomain flightScheduleDomain, FlightSchedule flightSchedule = null)
+        {
+            if (flightScheduleDomain == null) return null;
+
+            if (flightSchedule == null)
+            {
+                flightSchedule = new FlightSchedule();
+                flightSchedule.FlightScheduleId = flightScheduleDomain.FlightScheduleId;
+            }
+
+            flightSchedule.FlightId = flightScheduleDomain.FlightId;
+            flightSchedule.ScheduledDepartureUtc = flightScheduleDomain.ScheduledDepartureUtc;
+            flightSchedule.ScheduledArrivalUtc = flightScheduleDomain.ScheduledArrivalUtc;
+            flightSchedule.GateId = flightScheduleDomain.GateId;
+            flightSchedule.AssignedAircraftId = flightScheduleDomain.AssignedAircraftId;
+            flightSchedule.Status = flightScheduleDomain.Status;
+            //flightSchedule.AssignedAircraft = flightScheduleDomain.AssignedAircraft?.ToEntity();
+            //flightSchedule.Flight = flightScheduleDomain.Flight?.ToEntity();
+            //flightSchedule.Gate = flightScheduleDomain.Gate?.ToEntity();
+
+            return flightSchedule;
         }
     }
 }

@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace AirportTool.Domain.Contracts
 {
-    public interface IAirportRepository
+    public interface IGateRepository
     {
-        public Task<AirportDomain?> GetByIataAsync(string iataCode);
+        public Task<GateDomain> GetByCodeAndAirportIdAsync(string gateCode, int airportId);
     }
 }

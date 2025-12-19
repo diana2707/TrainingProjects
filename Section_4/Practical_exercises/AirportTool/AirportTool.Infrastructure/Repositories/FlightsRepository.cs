@@ -1,7 +1,8 @@
 ﻿using AirportTool.Domain.Contracts;
 using AirportTool.Domain.Entities;
 using AirportTool.Infrastructure.Mappers;
-using AirportTool.Infrastructure.Models;
+using AirportTool.Infrastructure.Services;
+using AirportTool.Infrastructure.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -15,13 +16,15 @@ namespace AirportTool.Infrastructure.Repositories
     public class FlightsRepository : IFlightsRepository
     {
         private readonly AirportDbContext _context;
+        private readonly PendingEntitiesService _pendingEntitiesService;
 
-        public FlightsRepository(AirportDbContext context)
+        public FlightsRepository(AirportDbContext context, PendingEntitiesService pendingEntitiesService)
         {
             _context = context;
+            _pendingEntitiesService = pendingEntitiesService;
         }
 
-        // could make add void because it returns the entity not persisted
+        // can make void
         public async Task<FlightDomain> AddAsync(FlightDomain flightDomain)
         {
             if (flightDomain == null)
@@ -31,13 +34,19 @@ namespace AirportTool.Infrastructure.Repositories
 
             var flightDbModel = FlightMapper.ToDbModel(flightDomain);
 
-            await _context.Flights.AddAsync(flightDbModel);
+            var createdFlight = await _context.Flights.AddAsync(flightDbModel);
 
-            return flightDbModel.ToDomain();
+            _pendingEntitiesService.Add(
+                flightDomain,
+                createdFlight.Entity,
+                (dom, db) => dom.FlightId = db.FlightId
+            );
+
+
+            return flightDomain;
         }
 
-        // make void, the returned flight is not persisted?
-        public async Task<FlightDomain> Update(int id, FlightDomain flightDomain, CancellationToken cancellationToken)
+        public async Task<FlightDomain> UpdateAsync(int id, FlightDomain flightDomain, CancellationToken cancellationToken)
         {
             if (flightDomain == null)
             {
@@ -48,9 +57,9 @@ namespace AirportTool.Infrastructure.Repositories
 
             if (flight == null) return null;
 
-            flight = flightDomain.ToDbModel(flight);
+            flightDomain.ToDbModel(flight);
 
-            return flight.ToDomain();
+            return flightDomain;
         }
 
         public async Task DeleteFlightAsync(int id, CancellationToken cancellationToken)
@@ -72,7 +81,7 @@ namespace AirportTool.Infrastructure.Repositories
             return flight?.ToDomain();
         }
 
-        //return an ireasonlylist
+        //return an ireasonlylist?
         public async Task<List<FlightDomain>> GetByRouteAsync(string originIata, string destinationIata, CancellationToken cancellationToken)
         {
             var flights = await _context.Flights.Where(flight => flight.OriginAirport.IATACode == originIata
@@ -86,11 +95,20 @@ namespace AirportTool.Infrastructure.Repositories
             return flights.Select(FlightMapper.ToDomain).ToList();
         }
 
-        public FlightDomain? GetByNumber(string number)
+        public async Task<FlightDomain?> GetByNumberAsync(string number)
         {
-            var flight = _context.Flights.FirstOrDefault(flight => flight.FlightNumber == number);
+            var flight = await _context.Flights.FirstOrDefaultAsync(flight => flight.FlightNumber == number);
 
             return flight != null ? FlightMapper.ToDomain(flight) : null;
+        }
+
+        public async Task<AirportDomain> GetOriginAirportForFlightAsync(int? flightId)
+        {
+            var flight = await _context.Flights
+                .Include(f => f.OriginAirport)
+                .FirstOrDefaultAsync(f => f.FlightId == flightId);
+
+            return flight.OriginAirport.ToDomain();
         }
 
         //public async Task<List<FlightDomain>> GetAllAsync(CancellationToken cancellationToken)

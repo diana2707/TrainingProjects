@@ -32,6 +32,6 @@ namespace AirportTool.Domain.Entities
 
         public virtual GateDomain? Gate { get; set; }
 
-        public virtual List<TicketDomain>? Tickets { get; set; } = [];
+        //public virtual List<TicketDomain>? Tickets { get; set; } = [];
     }
 }

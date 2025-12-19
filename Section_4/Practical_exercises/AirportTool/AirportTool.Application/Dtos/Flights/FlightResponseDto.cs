@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AirportTool.Application.Dtos
+namespace AirportTool.Application.Dtos.Flights
 {
     public class FlightResponseDto
     {

@@ -1,5 +1,5 @@
 ﻿using AirportTool.Application.Contracts;
-using AirportTool.Application.Dtos;
+using AirportTool.Application.Dtos.Flights;
 using AirportTool.Application.Exceptions;
 using AirportTool.Application.Mappers;
 using AirportTool.Domain.Contracts;
@@ -15,12 +15,12 @@ namespace AirportTool.Application.Services
     public class FlightsService : IFlightsService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IFlightAssembler _flightAssembler;
+        private readonly IFlightMapper _flightMapper;
 
-        public FlightsService(IUnitOfWork unitOfWork, IFlightAssembler flightAssembler)
+        public FlightsService(IUnitOfWork unitOfWork, IFlightMapper flightMapper)
         {
             _unitOfWork = unitOfWork;
-            _flightAssembler = flightAssembler;
+            _flightMapper = flightMapper;
         }
 
         //public async Task<List<FlightResponseDto>> GetAllFlightsAsync(CancellationToken cancellationToken)
@@ -40,15 +40,12 @@ namespace AirportTool.Application.Services
                 throw new DomainValidationException("Origin and destination cannot be the same.");
             }
 
-            var flight = _flightAssembler.AssembleFlightDomain(flightRequest);
+            var flight = await _flightMapper.MapToFlightDomain(flightRequest);
 
             await _unitOfWork.Flights.AddAsync(flight);
             await _unitOfWork.SaveChangesAsync(cancelationToken);
 
-            // find a better way to get the persisted flight
-            var persistedFlight = _unitOfWork.Flights.GetByNumber(flight.FlightNumber);
-
-            return persistedFlight.ToResponseDto();
+            return _flightMapper.MapToFlightResponseDto(flight);
         }
 
         public async Task<FlightResponseDto> UpdateFlight(
@@ -61,9 +58,9 @@ namespace AirportTool.Application.Services
                 throw new DomainValidationException("Origin and destination cannot be the same.");
             }
 
-            var flight = _flightAssembler.AssembleFlightDomain(flightRequest);
+            var flight = await _flightMapper.MapToFlightDomain(flightRequest);
 
-            var updatedFlight = await _unitOfWork.Flights.Update(id, flight, cancelationToken);
+            var updatedFlight = await _unitOfWork.Flights.UpdateAsync(id, flight, cancelationToken);
 
             if (updatedFlight == null)
             {
@@ -72,16 +69,15 @@ namespace AirportTool.Application.Services
 
             await _unitOfWork.SaveChangesAsync(cancelationToken);
 
-            var persistedFlight = await _unitOfWork.Flights.GetByIdAsync(id, cancelationToken);
 
-            return persistedFlight.ToResponseDto();
+            return _flightMapper.MapToFlightResponseDto(updatedFlight);
         }
 
         public async Task<List<FlightResponseDto>> GetFlightsByRouteAsync(string origin, string destination, CancellationToken cancellationToken)
         {
             var flights = await _unitOfWork.Flights.GetByRouteAsync(origin, destination, cancellationToken);
 
-            var flightsDtos = flights.Select(FlightMapper.ToResponseDto).ToList();
+            var flightsDtos = flights.Select(flight => _flightMapper.MapToFlightResponseDto(flight)).ToList();
 
             return flightsDtos;
         }

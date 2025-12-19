@@ -1,10 +1,13 @@
-using AirportTool.Application.Assmplers;
 using AirportTool.Application.Contracts;
+using AirportTool.Application.Mappers;
 using AirportTool.Application.Services;
+using AirportTool.Application.Validators;
 using AirportTool.Domain.Contracts;
-using AirportTool.Infrastructure.Models;
 using AirportTool.Infrastructure.Repositories;
+using AirportTool.Infrastructure.Services;
+using AirportTool.Infrastructure.Utils;
 using AirportTool.WebApi.Middleware;
+using AirportTool.WebApi.Settings;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,12 +26,24 @@ builder.Services.AddDbContext<AirportDbContext>(options =>
 // Services
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
 builder.Services.AddScoped<IFlightsRepository, FlightsRepository>();
 builder.Services.AddScoped<IAircraftRepository, AircraftRepository>();
 builder.Services.AddScoped<IAirportRepository, AirportRepository>();
 builder.Services.AddScoped<IAirlineRepository, AirlineRepository>();
-builder.Services.AddScoped<IFlightAssembler, FlightAssembler>();
+builder.Services.AddScoped<ISchedulesRepository, SchedulesRepository>();
+
+builder.Services.AddScoped<IFlightMapper, FlightMapper>();
+
+builder.Services.AddScoped<PendingEntitiesService>();
+
 builder.Services.AddScoped<IFlightsService, FlightsService>();
+
+builder.Services.AddScoped<ISchedulesValidator, SchedulesValidator>();
+
+// Configurations
+builder.Services.Configure<ImportSettings>(
+    builder.Configuration.GetSection("ImportSettings"));
 
 // Add CORS policy
 builder.Services.AddCors(options =>

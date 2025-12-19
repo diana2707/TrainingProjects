@@ -12,9 +12,8 @@ namespace AirportTool.Domain.Contracts
         public IAirlineRepository Airlines { get; }
         public IAirportRepository Airports { get; }
         public IFlightsRepository Flights { get; }
-        public Task BeginTransactionAsync(CancellationToken cancellationToken);
-        public Task CommitAsync(CancellationToken cancellationToken);
-        public Task RollbackAsync(CancellationToken cancellationToken);
-        public Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+
+        public ISchedulesRepository Schedules { get; }
+        public Task SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

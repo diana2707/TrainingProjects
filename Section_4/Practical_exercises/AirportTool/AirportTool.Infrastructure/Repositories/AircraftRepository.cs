@@ -1,5 +1,4 @@
 ﻿using AirportTool.Domain.Contracts;
-using AirportTool.Infrastructure.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using AirportTool.Domain.Entities;
 using AirportTool.Infrastructure.Mappers;
+using AirportTool.Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace AirportTool.Infrastructure.Repositories
 {
@@ -19,17 +20,17 @@ namespace AirportTool.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<string?> GetTailNumberBy(int id)
+        public async Task<string?> GetTailNumberByIdAsync(int id)
         {
             var aircraft = await _context.Aircraft.FindAsync(id);
 
             return aircraft?.TailNumber ?? null;
         }
 
-        public AircraftDomain? GetByTailNumber(string tailNumber)
+        public async Task<AircraftDomain?> GetByTailNumberAsync(string tailNumber)
         {
-            var aircraft = _context.Aircraft
-                .FirstOrDefault(a => a.TailNumber == tailNumber);
+            var aircraft = await _context.Aircraft
+                .FirstOrDefaultAsync(a => a.TailNumber == tailNumber);
 
             return aircraft?.ToDomain();
         }

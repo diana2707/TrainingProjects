@@ -1,12 +1,8 @@
 ﻿using AirportTool.Domain.Contracts;
 using AirportTool.Domain.Entities;
 using AirportTool.Infrastructure.Mappers;
-using AirportTool.Infrastructure.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using AirportTool.Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace AirportTool.Infrastructure.Repositories
 {
@@ -19,9 +15,9 @@ namespace AirportTool.Infrastructure.Repositories
             _context = context;
         }
 
-        public AirportDomain? GetByIata(string iataCode)
+        public async Task<AirportDomain?> GetByIataAsync(string iataCode)
         {
-            var airport = _context.Airports.FirstOrDefault(a => a.IATACode == iataCode);
+            var airport = await _context.Airports.FirstOrDefaultAsync(a => a.IATACode == iataCode);
 
             return airport?.ToDomain();
         }

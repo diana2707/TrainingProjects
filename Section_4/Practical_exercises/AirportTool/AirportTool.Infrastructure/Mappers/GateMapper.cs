@@ -18,7 +18,7 @@ namespace AirportTool.Infrastructure.Mappers
                 GateId = gate.GateId,
                 AirportId = gate.AirportId,
                 Code = gate.Code,
-                Airport = gate.Airport?.ToDomain(),
+                //Airport = gate.Airport?.ToDomain(),
                 FlightSchedules = gate.FlightSchedules?.Select(fs => fs.ToDomain()).ToList()
             };
         }
