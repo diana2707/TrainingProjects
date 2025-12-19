@@ -4,8 +4,8 @@ namespace AirportTool.Application.Contracts
 {
     public interface ISchedulesValidator
     {
-        public void ValidateDeserializedJson(List<ScheduleImportDto> schedules, int maxRows);
-        public bool IsValidScheduleFormat(ScheduleImportDto schedule, ImportResultDto importResult, int rowNumber);
-        public Task<bool> IsValidByBussinessRules(ScheduleImportDto schedule, ImportResultDto importResult, int rowNumber, CancellationToken cancellationToken);
+        public void ValidateDeserializedJson(List<ScheduleCreateDto> schedules, int maxRows);
+        public bool IsValidScheduleFormat(ScheduleCreateDto schedule, ImportResultDto importResult, int rowNumber);
+        public Task<bool> IsValidByBussinessRules(ScheduleCreateDto schedule, ImportResultDto importResult, int rowNumber, CancellationToken cancellationToken);
     }
 }

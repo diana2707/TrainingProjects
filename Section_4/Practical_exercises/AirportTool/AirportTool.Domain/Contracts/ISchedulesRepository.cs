@@ -10,6 +10,8 @@ namespace AirportTool.Domain.Contracts
 {
     public interface ISchedulesRepository
     {
+
+        public Task<FlightScheduleDomain> AddAsync(FlightScheduleDomain scheduleDomain, CancellationToken cancellationToken);
         public Task<UpsertResult> UpsertAsync(FlightScheduleDomain schedule, CancellationToken cancellationToken);
         public Task<bool> HasGateConflictAsync(int gateId, DateTime start, DateTime end, int flightId, CancellationToken cancellationToken);
         

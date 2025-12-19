@@ -103,6 +103,18 @@ namespace AirportTool.WebApi.Controllers
             return Ok(result);
         }
 
+        // POST api/<SchedulesController>
+        [HttpPost]
+        [ProducesResponseType(typeof(ScheduleDetailedResponseDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<ScheduleDetailedResponseDto>> CreateSchedule(ScheduleCreateDto requestDto, CancellationToken cancellationToken)
+        {
+            var result = await _schedulesService.CreateSchedule(requestDto, cancellationToken);
+            var uri = Url.Action("Get", new { id = result.FlightScheduleId });
+
+            return Created(uri, result);
+        }
+
 
         // PUT api/<SchedulesController>/5
         [HttpPut("{id}")]

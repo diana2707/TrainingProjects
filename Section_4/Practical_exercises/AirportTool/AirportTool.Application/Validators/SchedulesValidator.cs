@@ -28,7 +28,7 @@ namespace AirportTool.Application.Validators
             _schedulesRepository = schedulesRepository;
         }
 
-        public void ValidateDeserializedJson(List<ScheduleImportDto> schedules, int maxRows)
+        public void ValidateDeserializedJson(List<ScheduleCreateDto> schedules, int maxRows)
         {
             if (schedules == null)
             {
@@ -41,7 +41,7 @@ namespace AirportTool.Application.Validators
             }
         }
 
-        public bool IsValidScheduleFormat(ScheduleImportDto schedule, ImportResultDto importResult, int rowNumber)
+        public bool IsValidScheduleFormat(ScheduleCreateDto schedule, ImportResultDto importResult, int rowNumber)
         {
             var validationResults = new List<ValidationResult>();
 
@@ -69,7 +69,7 @@ namespace AirportTool.Application.Validators
             return true;
         }
 
-        public async Task<bool> IsValidByBussinessRules(ScheduleImportDto schedule, ImportResultDto importResult, int rowNumber, CancellationToken cancellationToken)
+        public async Task<bool> IsValidByBussinessRules(ScheduleCreateDto schedule, ImportResultDto importResult, int rowNumber, CancellationToken cancellationToken)
         {
             var validArrivalAndDeparture = IsValidArrivalAndDeparture(schedule, importResult, rowNumber);
 
@@ -78,7 +78,7 @@ namespace AirportTool.Application.Validators
             return validArrivalAndDeparture && validGateAllocation;
         }
 
-        private async Task<bool> IsValidGateAllocationAsync(ScheduleImportDto schedule, ImportResultDto importResult, int rowNumber, CancellationToken cancellationToken)
+        private async Task<bool> IsValidGateAllocationAsync(ScheduleCreateDto schedule, ImportResultDto importResult, int rowNumber, CancellationToken cancellationToken)
         {
             if (schedule.GateCode == null) return true;
 
@@ -109,7 +109,7 @@ namespace AirportTool.Application.Validators
             return true;
         }
 
-        private bool IsValidArrivalAndDeparture(ScheduleImportDto schedule, ImportResultDto importResult, int rowNumber)
+        private bool IsValidArrivalAndDeparture(ScheduleCreateDto schedule, ImportResultDto importResult, int rowNumber)
         {
             // Rule 1: Temporal logic
             if (schedule.ScheduledArrivalUtc <= schedule.ScheduledDepartureUtc)

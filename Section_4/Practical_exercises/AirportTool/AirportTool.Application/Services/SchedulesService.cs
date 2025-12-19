@@ -58,16 +58,28 @@ namespace AirportTool.Application.Services
             return statsDtos;
         }
 
+        public async Task<ScheduleDetailedResponseDto> CreateSchedule(ScheduleCreateDto requestDto, CancellationToken cancellationToken)
+        {
+            var scheduleDomain = await _schedulesMapper.MapToDomainAsync(requestDto, cancellationToken);
+
+            var createdSchedule = await _unitOfWork.Schedules.AddAsync(scheduleDomain, cancellationToken);
+            await _unitOfWork.SaveChangesAsync();
+
+            var detailedSchedule = await _unitOfWork.Schedules.GetDetailedScheduleByIdAsync(createdSchedule.FlightScheduleId, cancellationToken);
+
+            return _schedulesMapper.MapToDetailedResponseDto(detailedSchedule);
+        }
+
         public async Task<ImportResultDto> ImportFromJsonStreamAsync(Stream jsonStream, int maxRows, CancellationToken cancellationToken)
         {
             using var reader = new StreamReader(jsonStream);
             var content = await reader.ReadToEndAsync();
 
-            List<ScheduleImportDto> schedules = [];
+            List<ScheduleCreateDto> schedules = [];
 
             try
             {
-                schedules = JsonSerializer.Deserialize<List<ScheduleImportDto>>(content);
+                schedules = JsonSerializer.Deserialize<List<ScheduleCreateDto>>(content);
             }
             catch
             {

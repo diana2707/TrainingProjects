@@ -55,7 +55,7 @@ namespace AirportTool.Application.Mappers
             };
         }
         
-        public async Task<FlightScheduleDomain> MapToDomainAsync(ScheduleImportDto dto, CancellationToken cancellationToken)
+        public async Task<FlightScheduleDomain> MapToDomainAsync(ScheduleCreateDto dto, CancellationToken cancellationToken)
         {
             var flight = await _flightRepository.GetByIdAsync(dto.FlightId!.Value, cancellationToken);
             ValidateForExistingResource(flight, $"Flight with ID {dto.FlightId} not found.");

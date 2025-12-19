@@ -10,6 +10,7 @@ namespace AirportTool.Application.Contracts
 {
     public interface ISchedulesService
     {
+        public Task<ScheduleDetailedResponseDto> CreateSchedule(ScheduleCreateDto requestDto, CancellationToken cancellationToken);
         public Task<ImportResultDto> ImportFromJsonStreamAsync(Stream jsonStream, int maxRows, CancellationToken cancellationToken);
         public Task<List<ScheduleResponseDto>> GetSchedulesByRouteAndDateAsync(string origin, string destination, DateOnly date, CancellationToken cancellationToken);
         public Task<ScheduleDetailedResponseDto> GetScheduleById(int id, CancellationToken cancellationToken);

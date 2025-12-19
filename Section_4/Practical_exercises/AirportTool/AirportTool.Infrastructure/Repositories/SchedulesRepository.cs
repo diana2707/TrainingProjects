@@ -27,6 +27,25 @@ namespace AirportTool.Infrastructure.Repositories
             _pendingEntitiesService = pendingEntitiesService;
         }
 
+        public async Task<FlightScheduleDomain> AddAsync(FlightScheduleDomain scheduleDomain, CancellationToken cancellationToken)
+        {
+            if (scheduleDomain == null)
+            {
+                throw new ArgumentNullException(nameof(scheduleDomain));
+            }
+
+            var scheduleDbModel = FlightScheduleMapper.ToDbModel(scheduleDomain);
+            var createdSchedule = await _dbContext.FlightSchedules.AddAsync(scheduleDbModel, cancellationToken);
+
+            _pendingEntitiesService.Add(
+                scheduleDomain,
+                createdSchedule.Entity,
+                (dom, db) => dom.FlightId = db.FlightId
+             );
+
+            return FlightScheduleMapper.ToDomain(createdSchedule.Entity);
+        }
+
         public async Task<UpsertResult> UpsertAsync(FlightScheduleDomain schedule, CancellationToken cancellationToken)
         {
             if (schedule == null)

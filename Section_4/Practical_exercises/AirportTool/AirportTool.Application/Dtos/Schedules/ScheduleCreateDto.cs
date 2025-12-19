@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AirportTool.Application.Dtos.Schedules
 {
-    public class ScheduleImportDto
+    public class ScheduleCreateDto
     {
         [Required]
         public int? FlightId { get; set; }
