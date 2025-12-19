@@ -56,5 +56,16 @@ namespace AirportTool.Infrastructure.Repositories
 
             return tickets.Select(TicketMapper.ToDomain).ToList();
         }
+
+        public async Task<TicketDomain> UpdateInventoryAsync(int id, int seatInventory, CancellationToken cancellationToken)
+        {
+            var ticket = await _context.Tickets.FindAsync(new object[] { id }, cancellationToken);
+
+            if (ticket == null) return null;
+
+            ticket.SeatInventory = seatInventory;
+
+            return ticket.ToDomain();
+        }
     }
 }

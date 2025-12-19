@@ -44,5 +44,15 @@ namespace AirportTool.Application.Services
             var ticketResponseDto = _ticketMapper.ToResponseDto(createdTicket);
             return ticketResponseDto;
         }
+
+        public async Task<TicketResponseDto> UpdateTicketInventoryAsync(int id, TicketInventoryUpdateDto requestDto, CancellationToken cancellationToken)
+        {
+            var updatedTicket = await _unitOfWork.Tickets.UpdateInventoryAsync(id, requestDto.SeatInventory, cancellationToken);
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return _ticketMapper.ToResponseDto(updatedTicket);
+
+        }
     }
 }

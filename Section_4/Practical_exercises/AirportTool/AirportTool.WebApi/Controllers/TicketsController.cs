@@ -1,6 +1,7 @@
 ﻿using AirportTool.Application.Contracts.Services;
 using AirportTool.Application.Dtos.Tickets;
 using Microsoft.AspNetCore.Mvc;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -36,14 +37,17 @@ namespace AirportTool.WebApi.Controllers
 
         // POST api/<TicketsController>
         [HttpPost]
-        public async Task<ActionResult<TicketResponseDto>> CreateTicketForFlightSchedule([FromBody] TicketRequestDto ticket, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(IEnumerable<TicketResponseDto>), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<TicketResponseDto>> CreateTicketForFlightSchedule([FromBody] TicketRequestDto requestDto, CancellationToken cancellationToken)
         {
-            if (ticket == null)
+            if (requestDto == null)
             {
                 return BadRequest("Body can not be null.");
             }
 
-            var createdTicket = await _ticketsService.CreateTicketAsync(ticket, cancellationToken);
+            var createdTicket = await _ticketsService.CreateTicketAsync(requestDto, cancellationToken);
 
             var uri = $"/api/tickets/{createdTicket.TicketId}";
 
@@ -51,9 +55,26 @@ namespace AirportTool.WebApi.Controllers
         }
 
         // PUT api/<TicketsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut("{id}/inventory")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<TicketResponseDto>> UpdateInventory(int id, [FromBody] TicketInventoryUpdateDto requestDto, CancellationToken cancellationToken)
         {
+            if (requestDto == null)
+            {
+                return BadRequest("Body can not be null.");
+            }
+
+            var updatedTicket = await _ticketsService.UpdateTicketInventoryAsync(id, requestDto, cancellationToken);
+
+            if (updatedTicket == null)
+            {
+                return NotFound();
+            }
+                
+            return Ok(updatedTicket);
         }
 
         // DELETE api/<TicketsController>/5
