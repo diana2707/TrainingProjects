@@ -67,5 +67,31 @@ namespace AirportTool.Infrastructure.Repositories
 
             return ticket.ToDomain();
         }
+
+        
+        public async Task DeleteTicketAsync(int id, CancellationToken cancellationToken)
+        {
+            var ticket = await _context.Tickets.FindAsync(id, cancellationToken);
+
+            if (ticket == null)
+            {
+                throw new KeyNotFoundException($"Ticket with ID {id} not found.");
+            }
+
+            _context.Tickets.Remove(ticket);
+        }
+
+
+        public async Task<bool> HasDependenciesAsync(int ticketId, CancellationToken cancellationToken)
+        {
+            return await _context.Bookings
+                       .AnyAsync(s => s.TicketId == ticketId, cancellationToken);
+        }
+
+        public async Task<bool> ExistsAsync(int ticketId, CancellationToken cancellationToken)
+        {
+            return await _context.Tickets
+                       .AnyAsync(f => f.TicketId == ticketId, cancellationToken);
+        }
     }
 }

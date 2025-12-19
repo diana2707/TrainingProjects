@@ -13,5 +13,6 @@ namespace AirportTool.Application.Contracts.Services
         public Task<IEnumerable<TicketResponseDto>> GetTicketsByFlightIdAsync(int flightId, CancellationToken cancellationToken);
         public Task<TicketResponseDto> CreateTicketAsync(TicketRequestDto ticket, CancellationToken cancellationToken);
         public Task<TicketResponseDto> UpdateTicketInventoryAsync(int id, TicketInventoryUpdateDto requestDto, CancellationToken cancellationToken);
+        public Task DeleteTicket(int id, CancellationToken cancellationToken);
     }
 }

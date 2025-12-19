@@ -70,6 +70,7 @@ namespace AirportTool.WebApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id, CancellationToken cancelationToken)
         {
+            // add not found for not founding the id
             await _flightsService.DeleteFlight(id, cancelationToken);
             return NoContent();
         }

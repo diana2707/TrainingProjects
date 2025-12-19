@@ -1,6 +1,7 @@
 ﻿using AirportTool.Application.Contracts.Mappers;
 using AirportTool.Application.Contracts.Services;
 using AirportTool.Application.Dtos.Tickets;
+using AirportTool.Application.Exceptions;
 using AirportTool.Application.Mappers;
 using AirportTool.Domain.Contracts;
 using AirportTool.Domain.Entities;
@@ -52,6 +53,23 @@ namespace AirportTool.Application.Services
             await _unitOfWork.SaveChangesAsync();
 
             return _ticketMapper.ToResponseDto(updatedTicket);
+        }
+
+        public async Task DeleteTicket(int id, CancellationToken cancellationToken)
+        {
+            if (!await _unitOfWork.Tickets.ExistsAsync(id, cancellationToken))
+            {
+                throw new NotFoundException("The resource was not found");
+            }
+
+            var hasDependencies = await _unitOfWork.Tickets.HasDependenciesAsync(id, cancellationToken);
+            if (hasDependencies)
+            {
+                throw new ConflictException("Cannot delete flight because it has related dependencies.");
+            }
+
+            await _unitOfWork.Flights.DeleteFlightAsync(id, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         }
     }
