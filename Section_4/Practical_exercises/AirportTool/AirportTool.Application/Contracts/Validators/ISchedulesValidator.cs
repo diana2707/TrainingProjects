@@ -1,6 +1,6 @@
 ﻿using AirportTool.Application.Dtos.Schedules;
 
-namespace AirportTool.Application.Contracts
+namespace AirportTool.Application.Contracts.Validators
 {
     public interface ISchedulesValidator
     {

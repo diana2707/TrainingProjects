@@ -1,4 +1,4 @@
-﻿using AirportTool.Application.Contracts;
+﻿using AirportTool.Application.Contracts.Validators;
 using AirportTool.Application.Dtos.Schedules;
 using AirportTool.Domain.Contracts;
 using System;

@@ -1,8 +1,12 @@
 using AirportTool.Application.Contracts;
+using AirportTool.Application.Contracts.Mappers;
+using AirportTool.Application.Contracts.Services;
+using AirportTool.Application.Contracts.Validators;
 using AirportTool.Application.Mappers;
 using AirportTool.Application.Services;
 using AirportTool.Application.Validators;
 using AirportTool.Domain.Contracts;
+using AirportTool.Infrastructure.Persistance;
 using AirportTool.Infrastructure.Repositories;
 using AirportTool.Infrastructure.Services;
 using AirportTool.Infrastructure.Utils;
@@ -32,12 +36,15 @@ builder.Services.AddScoped<IAircraftRepository, AircraftRepository>();
 builder.Services.AddScoped<IAirportRepository, AirportRepository>();
 builder.Services.AddScoped<IAirlineRepository, AirlineRepository>();
 builder.Services.AddScoped<ISchedulesRepository, SchedulesRepository>();
+builder.Services.AddScoped<ITicketsRepository, TicketsRepository>();
 
 builder.Services.AddScoped<IFlightMapper, FlightMapper>();
 
 builder.Services.AddScoped<PendingEntitiesService>();
 
 builder.Services.AddScoped<IFlightsService, FlightsService>();
+builder.Services.AddScoped<ISchedulesService, SchedulesService>();
+builder.Services.AddScoped<ITicketsService, TicketsService>();
 
 builder.Services.AddScoped<ISchedulesValidator, SchedulesValidator>();
 

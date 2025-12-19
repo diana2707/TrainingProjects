@@ -14,6 +14,7 @@ namespace AirportTool.Domain.Contracts
         public IFlightsRepository Flights { get; }
 
         public ISchedulesRepository Schedules { get; }
+        public ITicketsRepository Tickets {  get; }
         public Task SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

@@ -1,7 +1,7 @@
 ﻿using AirportTool.Application.Dtos.Flights;
 using AirportTool.Domain.Entities;
 
-namespace AirportTool.Application.Contracts
+namespace AirportTool.Application.Contracts.Mappers
 {
     public interface IFlightMapper
     {

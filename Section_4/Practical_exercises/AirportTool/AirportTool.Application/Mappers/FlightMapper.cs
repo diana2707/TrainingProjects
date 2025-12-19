@@ -1,4 +1,4 @@
-﻿using AirportTool.Application.Contracts;
+﻿using AirportTool.Application.Contracts.Mappers;
 using AirportTool.Application.Dtos.Flights;
 using AirportTool.Application.Exceptions;
 using AirportTool.Domain.Contracts;

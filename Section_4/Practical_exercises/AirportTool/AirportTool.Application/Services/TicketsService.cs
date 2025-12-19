@@ -1,0 +1,35 @@
+﻿using AirportTool.Application.Contracts.Mappers;
+using AirportTool.Application.Contracts.Services;
+using AirportTool.Application.Dtos.Tickets;
+using AirportTool.Application.Mappers;
+using AirportTool.Domain.Contracts;
+using AirportTool.Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace AirportTool.Application.Services
+{
+    public class TicketsService : ITicketsService
+    {
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly ITicketMapper _ticketMapper;
+
+        public TicketsService(IUnitOfWork unitOfWork, ITicketMapper ticketMapper)
+        {
+            _unitOfWork = unitOfWork;
+            _ticketMapper = ticketMapper;
+        }
+
+        public async Task<IEnumerable<TicketResponseDto>> GetTicketsByFlightIdAsync(int flightId, CancellationToken cancellationToken)
+        {
+            List<TicketDomain> tickets = await _unitOfWork.Tickets.GetByFlightId(flightId, cancellationToken);
+
+            var ticketsDtos = tickets.Select(_ticketMapper.ToResponseDto);
+
+            return ticketsDtos;
+        }
+    }
+}

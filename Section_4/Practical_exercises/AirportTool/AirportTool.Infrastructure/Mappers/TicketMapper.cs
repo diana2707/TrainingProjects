@@ -28,5 +28,18 @@ namespace AirportTool.Infrastructure.Mappers
                 FlightSchedule = ticket.FlightSchedule?.ToDomain(),
             };
         }
+
+        public static void ToDbModel(this TicketDomain ticketDomain, Ticket ticketDbModel)
+        {
+            if (ticketDomain == null || ticketDbModel == null) return;
+            ticketDbModel.FlightScheduleId = ticketDomain.FlightScheduleId;
+            ticketDbModel.FareClass = ticketDomain.FareClass;
+            ticketDbModel.BasePrice = ticketDomain.BasePrice;
+            ticketDbModel.Taxes = ticketDomain.Taxes;
+            ticketDbModel.TotalPrice = ticketDomain.TotalPrice;
+            ticketDbModel.Currency = ticketDomain.Currency;
+            ticketDbModel.IsRefundable = ticketDomain.IsRefundable;
+            ticketDbModel.SeatInventory = ticketDomain.SeatInventory;
+        }
     }
 }
