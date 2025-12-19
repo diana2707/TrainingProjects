@@ -82,7 +82,7 @@ namespace AirportTool.Application.Validators
         {
             if (schedule.GateCode == null) return true;
 
-            var airport = await _flightRepository.GetOriginAirportForFlightAsync(schedule.FlightId);
+            var airport = await _flightRepository.GetOriginAirportForFlightAsync(schedule.FlightId!.Value);
             var gate = await _gateRepository.GetByCodeAndAirportIdAsync(schedule.GateCode, airport.AirportId);
 
             if (gate == null) return true;

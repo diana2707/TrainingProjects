@@ -34,16 +34,16 @@ namespace AirportTool.Infrastructure.Repositories
                 throw new ArgumentNullException(nameof(scheduleDomain));
             }
 
-            var scheduleDbModel = FlightScheduleMapper.ToDbModel(scheduleDomain);
+            var scheduleDbModel = scheduleDomain.ToDbModel();
             var createdSchedule = await _dbContext.FlightSchedules.AddAsync(scheduleDbModel, cancellationToken);
 
             _pendingEntitiesService.Add(
                 scheduleDomain,
                 createdSchedule.Entity,
-                (dom, db) => dom.FlightId = db.FlightId
+                (dom, db) => dom.FlightScheduleId = db.FlightScheduleId
              );
 
-            return FlightScheduleMapper.ToDomain(createdSchedule.Entity);
+            return createdSchedule.Entity.ToDomain();
         }
 
         public async Task<UpsertResult> UpsertAsync(FlightScheduleDomain schedule, CancellationToken cancellationToken)
@@ -57,13 +57,13 @@ namespace AirportTool.Infrastructure.Repositories
 
             if (existing == null)
             {
-                var scheduleDbModel = FlightScheduleMapper.ToDbModel(schedule);
+                var scheduleDbModel = schedule.ToDbModel();
                 await _dbContext.FlightSchedules.AddAsync(scheduleDbModel, cancellationToken);
                 return UpsertResult.Created;
             }
             else
             {
-                FlightScheduleMapper.ToDbModel(schedule, existing);
+                schedule.ToDbModel(existing);
                 return UpsertResult.Updated;
             }
         }
@@ -81,7 +81,7 @@ namespace AirportTool.Infrastructure.Repositories
                 .Include(s => s.AssignedAircraft)
                 .FirstOrDefaultAsync(s => s.FlightScheduleId == id, cancellationToken);
             
-            return schedule != null ? FlightScheduleMapper.ToDomain(schedule) : null;
+            return schedule != null ? schedule.ToDomain() : null;
         }
 
         public async Task<List<FlightScheduleDomain>> GetByRouteAndDateAsync(string origin, string destination, DateOnly date, CancellationToken cancellationToken)

@@ -12,5 +12,6 @@ namespace AirportTool.Application.Contracts.Mappers
     public interface ITicketMapper
     {
         public TicketResponseDto ToResponseDto(TicketDomain ticket);
+        public TicketDomain ToDomain(TicketRequestDto request);
     }
 }

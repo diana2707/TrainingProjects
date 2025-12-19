@@ -9,6 +9,7 @@ namespace AirportTool.Domain.Contracts
 {
     public interface ITicketsRepository
     {
-        public Task<List<TicketDomain>> GetByFlightId(int flightId, CancellationToken cancellationToken);
+        public Task<TicketDomain> AddAsync(TicketDomain ticketDomain, CancellationToken cancellationToken);
+        public Task<List<TicketDomain>> GetByFlightIdAsync(int flightId, CancellationToken cancellationToken);
     }
 }

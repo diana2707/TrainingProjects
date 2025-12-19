@@ -16,7 +16,7 @@ namespace AirportTool.Domain.Contracts
         public Task<FlightDomain?> GetByNumberAsync(string number);
 
         public Task<FlightDomain?> GetByIdAsync(int id, CancellationToken cancellationToken);
-        public Task<AirportDomain> GetOriginAirportForFlightAsync(int? flightId);
+        public Task<AirportDomain> GetOriginAirportForFlightAsync(int flightId);
         public Task<bool> HasDependenciesAsync(int flightId, CancellationToken cancellationToken);
         public Task DeleteFlightAsync(int id, CancellationToken cancellationToken);
         public Task<bool> ExistsAsync(int flightId, CancellationToken cancellationToken);

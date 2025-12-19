@@ -26,7 +26,27 @@ namespace AirportTool.Infrastructure.Repositories
             _pending = pending;
         }
 
-        public async Task<List<TicketDomain>> GetByFlightId(int flightId, CancellationToken cancellationToken)
+        public async Task<TicketDomain> AddAsync(TicketDomain ticketDomain, CancellationToken cancellationToken)
+        {
+            if (ticketDomain == null)
+            {
+                throw new ArgumentNullException(nameof(ticketDomain));
+            }
+
+            var ticketDbModel = ticketDomain.ToDbModel();
+
+            var createdTicket = await _context.Tickets.AddAsync(ticketDbModel, cancellationToken);
+
+            _pending.Add(
+               ticketDomain,
+               createdTicket.Entity,
+               (dom, db) => dom.FlightScheduleId = db.FlightScheduleId
+            );
+
+            return createdTicket.Entity.ToDomain();
+        }
+
+        public async Task<List<TicketDomain>> GetByFlightIdAsync(int flightId, CancellationToken cancellationToken)
         {
             var tickets = await _context.Flights
                 .Where(f => f.FlightId == flightId)
@@ -34,7 +54,7 @@ namespace AirportTool.Infrastructure.Repositories
                 .SelectMany(fs => fs.Tickets)
                 .ToListAsync(cancellationToken);
 
-            return tickets.Select(ticket => TicketMapper.ToDomain(ticket)).ToList();
+            return tickets.Select(TicketMapper.ToDomain).ToList();
         }
     }
 }

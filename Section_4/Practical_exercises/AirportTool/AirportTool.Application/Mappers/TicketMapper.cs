@@ -25,5 +25,19 @@ namespace AirportTool.Application.Mappers
                 SeatInventory = ticket.SeatInventory
             };
         }
+
+        public TicketDomain ToDomain(TicketRequestDto request)
+        {
+            return new TicketDomain
+            {
+                FareClass = request.FareClass,
+                BasePrice = request.BasePrice,
+                Taxes = request.Taxes,
+                TotalPrice = request.TotalPrice,
+                Currency = request.Currency,
+                IsRefundable = request.IsRefundable,
+                SeatInventory = request.SeatInventory
+            };
+        }
     }
 }

@@ -36,8 +36,18 @@ namespace AirportTool.WebApi.Controllers
 
         // POST api/<TicketsController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<ActionResult<TicketResponseDto>> CreateTicketForFlightSchedule([FromBody] TicketRequestDto ticket, CancellationToken cancellationToken)
         {
+            if (ticket == null)
+            {
+                return BadRequest("Body can not be null.");
+            }
+
+            var createdTicket = await _ticketsService.CreateTicketAsync(ticket, cancellationToken);
+
+            var uri = $"/api/tickets/{createdTicket.TicketId}";
+
+            return Created(uri, createdTicket);
         }
 
         // PUT api/<TicketsController>/5

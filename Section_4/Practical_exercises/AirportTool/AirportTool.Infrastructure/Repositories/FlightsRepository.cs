@@ -32,7 +32,7 @@ namespace AirportTool.Infrastructure.Repositories
                 throw new ArgumentNullException(nameof(flightDomain));
             }
 
-            var flightDbModel = FlightMapper.ToDbModel(flightDomain);
+            var flightDbModel = flightDomain.ToDbModel();
 
             var createdFlight = await _context.Flights.AddAsync(flightDbModel);
 
@@ -81,7 +81,6 @@ namespace AirportTool.Infrastructure.Repositories
             return flight?.ToDomain();
         }
 
-        //return an ireasonlylist?
         public async Task<List<FlightDomain>> GetByRouteAsync(string originIata, string destinationIata, CancellationToken cancellationToken)
         {
             var flights = await _context.Flights.Where(flight => flight.OriginAirport.IATACode == originIata
@@ -99,10 +98,10 @@ namespace AirportTool.Infrastructure.Repositories
         {
             var flight = await _context.Flights.FirstOrDefaultAsync(flight => flight.FlightNumber == number);
 
-            return flight != null ? FlightMapper.ToDomain(flight) : null;
+            return flight != null ? flight.ToDomain() : null;
         }
 
-        public async Task<AirportDomain> GetOriginAirportForFlightAsync(int? flightId)
+        public async Task<AirportDomain> GetOriginAirportForFlightAsync(int flightId)
         {
             var flight = await _context.Flights
                 .Include(f => f.OriginAirport)

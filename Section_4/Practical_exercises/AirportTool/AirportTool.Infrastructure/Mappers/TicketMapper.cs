@@ -3,6 +3,7 @@ using AirportTool.Infrastructure.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,10 +30,16 @@ namespace AirportTool.Infrastructure.Mappers
             };
         }
 
-        public static void ToDbModel(this TicketDomain ticketDomain, Ticket ticketDbModel)
+        public static Ticket ToDbModel(this TicketDomain ticketDomain, Ticket ticketDbModel = null)
         {
-            if (ticketDomain == null || ticketDbModel == null) return;
-            ticketDbModel.FlightScheduleId = ticketDomain.FlightScheduleId;
+            if (ticketDomain == null) return null;
+
+            if (ticketDbModel == null)
+            {
+                ticketDbModel = ticketDbModel ?? new Ticket();
+                ticketDbModel.FlightScheduleId = ticketDomain.FlightScheduleId;
+            }
+
             ticketDbModel.FareClass = ticketDomain.FareClass;
             ticketDbModel.BasePrice = ticketDomain.BasePrice;
             ticketDbModel.Taxes = ticketDomain.Taxes;
@@ -40,6 +47,8 @@ namespace AirportTool.Infrastructure.Mappers
             ticketDbModel.Currency = ticketDomain.Currency;
             ticketDbModel.IsRefundable = ticketDomain.IsRefundable;
             ticketDbModel.SeatInventory = ticketDomain.SeatInventory;
+
+            return ticketDbModel;
         }
     }
 }

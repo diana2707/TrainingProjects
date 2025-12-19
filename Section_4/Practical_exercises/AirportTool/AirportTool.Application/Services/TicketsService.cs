@@ -7,7 +7,9 @@ using AirportTool.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AirportTool.Application.Services
@@ -25,11 +27,22 @@ namespace AirportTool.Application.Services
 
         public async Task<IEnumerable<TicketResponseDto>> GetTicketsByFlightIdAsync(int flightId, CancellationToken cancellationToken)
         {
-            List<TicketDomain> tickets = await _unitOfWork.Tickets.GetByFlightId(flightId, cancellationToken);
+            List<TicketDomain> tickets = await _unitOfWork.Tickets.GetByFlightIdAsync(flightId, cancellationToken);
 
             var ticketsDtos = tickets.Select(_ticketMapper.ToResponseDto);
 
             return ticketsDtos;
+        }
+
+        public async Task<TicketResponseDto> CreateTicketAsync(TicketRequestDto ticket, CancellationToken cancellationToken)
+        {
+            var ticketDomain = _ticketMapper.ToDomain(ticket);
+
+            var createdTicket = await _unitOfWork.Tickets.AddAsync(ticketDomain, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            var ticketResponseDto = _ticketMapper.ToResponseDto(createdTicket);
+            return ticketResponseDto;
         }
     }
 }
