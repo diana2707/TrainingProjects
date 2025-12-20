@@ -11,5 +11,6 @@ namespace AirportTool.Application.Contracts.Services
     {
         public Task<BookingResponseDto> CreateBookingAsync(BookingRequestDto requestDto, CancellationToken cancellationToken);
         public Task<BookingDetailedResponseDto?> GetBookingByConfirmationCodeAsync(string confirmationCode, CancellationToken cancellationToken);
+        public Task CancelBooking(string confirmationCode, CancellationToken cancellationToken);
     }
 }

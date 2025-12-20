@@ -28,22 +28,27 @@ namespace AirportTool.Infrastructure.Mappers
             };
         }
 
-        public static Booking ToDbModel(this BookingDomain bookingDomain)
+        public static Booking ToDbModel(this BookingDomain bookingDomain, Booking existingBooking = null)
         {
-            if (bookingDomain == null) return null!;
-            
-            return new Booking
+            if (bookingDomain == null) return null;
+
+            if (existingBooking == null)
             {
-                BookingId = bookingDomain.BookingId,
-                TicketId = bookingDomain.TicketId,
-                PassengerFullName = bookingDomain.PassengerFullName,
-                PassengerEmail = bookingDomain.PassengerEmail,
-                ConfirmationCode = bookingDomain.ConfirmationCode,
-                Quantity = bookingDomain.Quantity,
-                Status = bookingDomain.Status,
-                CreatedUtc = bookingDomain.CreatedUtc,
-                Ticket = bookingDomain.Ticket?.ToDbModel(),
-            };
+                existingBooking = new Booking();
+                existingBooking.BookingId = bookingDomain.BookingId;
+            }
+
+            existingBooking.BookingId = bookingDomain.BookingId;
+            existingBooking.TicketId = bookingDomain.TicketId;
+            existingBooking.PassengerFullName = bookingDomain.PassengerFullName;
+            existingBooking.PassengerEmail = bookingDomain.PassengerEmail;
+            existingBooking.ConfirmationCode = bookingDomain.ConfirmationCode;
+            existingBooking.Quantity = bookingDomain.Quantity;
+            existingBooking.Status = bookingDomain.Status;
+            existingBooking.CreatedUtc = bookingDomain.CreatedUtc;
+            existingBooking.Ticket = bookingDomain.Ticket?.ToDbModel();
+
+            return existingBooking;
         }
     }
 }

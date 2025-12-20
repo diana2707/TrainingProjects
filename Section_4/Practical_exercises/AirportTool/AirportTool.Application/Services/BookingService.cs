@@ -5,12 +5,9 @@ using AirportTool.Application.Dtos.Booking;
 using AirportTool.Application.Exceptions;
 using AirportTool.Application.Utils;
 using AirportTool.Domain.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using AirportTool.Domain.Entities;
+using System.Runtime.CompilerServices;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace AirportTool.Application.Services
 {
@@ -35,23 +32,14 @@ namespace AirportTool.Application.Services
 
             var booking = _bookingMapper.MapToDomain(requestDto);
 
-            // update seat inventory
-            var seatInventory = await _unitOfWork.Tickets.GetSeatInventoryByIdAsync(requestDto.TicketId!.Value, cancellationToken);
-            int updatedSeatInventory = seatInventory!.Value - requestDto.Quantity!.Value;
-            var updatedTicket = await _unitOfWork.Tickets.UpdateInventoryAsync(requestDto.TicketId!.Value, updatedSeatInventory, cancellationToken);
-
-            // generate confirmation code
+            await DecreaseSeatInventory(booking, cancellationToken);
+            var totalAmount = await GetTotalAmount(booking, cancellationToken);
             booking.ConfirmationCode = ConfirmationCodeGenerator.Generate(ConfirmationCodeLength);
 
             var createdBooking = await _unitOfWork.Bookings.AddAsync(booking, cancellationToken);
-            
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-
-            var ticketPrice = await _unitOfWork.Tickets.GetTicketPriceByIdAsync(requestDto.TicketId!.Value, cancellationToken);
-            var totalPrice = PriceCalculator.CalculateTotalPrice(ticketPrice, requestDto.Quantity!.Value);
-
-            var bookingResponseDto = _bookingMapper.MapToResponseDto(createdBooking, totalPrice);
+            var bookingResponseDto = _bookingMapper.MapToResponseDto(createdBooking, totalAmount);
 
             return bookingResponseDto;
         }
@@ -66,6 +54,44 @@ namespace AirportTool.Application.Services
             var totalPrice = PriceCalculator.CalculateTotalPrice(ticketPrice, booking.Quantity);
 
             return _bookingMapper.MapToDetailedResponseDto(booking, totalPrice);
+        }
+
+        public async Task CancelBooking(string confirmationCode, CancellationToken cancellationToken)
+        {
+            var booking = await _unitOfWork.Bookings.GetByConfirmationCodeAsync(confirmationCode, cancellationToken);
+            
+            if (booking == null)
+            {
+                throw new NotFoundException($"Booking with code {confirmationCode} not found.");
+            }
+
+            await IncreaseSeatInventory(booking, cancellationToken);
+
+            booking.Status = 1;// create enum for booking status
+
+            await _unitOfWork.Bookings.UpdateAsync(booking, cancellationToken);
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+        }
+
+        private async Task DecreaseSeatInventory(BookingDomain booking, CancellationToken cancellationToken)
+        {
+            var seatInventory = await _unitOfWork.Tickets.GetSeatInventoryByIdAsync(booking.TicketId, cancellationToken);
+            int updatedSeatInventory = seatInventory!.Value - booking.Quantity;
+            var updatedTicket = await _unitOfWork.Tickets.UpdateInventoryAsync(booking.TicketId, updatedSeatInventory, cancellationToken);
+        }
+
+        private async Task IncreaseSeatInventory(BookingDomain booking, CancellationToken cancellationToken)
+        {
+            var seatInventory = await _unitOfWork.Tickets.GetSeatInventoryByIdAsync(booking.TicketId, cancellationToken);
+            int updatedSeatInventory = seatInventory!.Value + booking.Quantity;
+            var updatedTicket = await _unitOfWork.Tickets.UpdateInventoryAsync(booking.TicketId, updatedSeatInventory, cancellationToken);
+        }
+
+        private async Task<decimal> GetTotalAmount(BookingDomain booking, CancellationToken cancellationToken)
+        {
+            var ticketPrice = await _unitOfWork.Tickets.GetTicketPriceByIdAsync(booking.TicketId, cancellationToken);
+            return PriceCalculator.CalculateTotalPrice(ticketPrice, booking.Quantity);
         }
     }
 }

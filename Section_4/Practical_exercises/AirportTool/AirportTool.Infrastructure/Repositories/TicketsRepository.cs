@@ -67,7 +67,7 @@ namespace AirportTool.Infrastructure.Repositories
             return price;
         }
 
-        public async Task<int?> GetSeatInventoryByIdAsync(int ticketId, CancellationToken cancellationToken)
+        public async Task<int?> GetSeatInventoryByIdAsync(long ticketId, CancellationToken cancellationToken)
         {
             return await _context.Tickets
                 .Where(t => t.TicketId == ticketId)
@@ -75,9 +75,9 @@ namespace AirportTool.Infrastructure.Repositories
                 .FirstOrDefaultAsync(cancellationToken);
         }
 
-        public async Task<TicketDomain> UpdateInventoryAsync(int id, int seatInventory, CancellationToken cancellationToken)
+        public async Task<TicketDomain> UpdateInventoryAsync(long ticketId, int seatInventory, CancellationToken cancellationToken)
         {
-            var ticket = await _context.Tickets.FindAsync(new object[] { id }, cancellationToken);
+            var ticket = await _context.Tickets.FindAsync(ticketId , cancellationToken);
 
             if (ticket == null) return null;
 

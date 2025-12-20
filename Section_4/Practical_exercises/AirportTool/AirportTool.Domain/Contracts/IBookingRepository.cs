@@ -11,5 +11,6 @@ namespace AirportTool.Domain.Contracts
     {
         public Task<BookingDomain> AddAsync(BookingDomain bookingDomain, CancellationToken cancellationToken);
         public Task<BookingDomain?> GetByConfirmationCodeAsync(string confirmationCode, CancellationToken cancellationToken);
+        public Task<BookingDomain> UpdateAsync(BookingDomain bookingDomain, CancellationToken cancellationToken);
     }
 }

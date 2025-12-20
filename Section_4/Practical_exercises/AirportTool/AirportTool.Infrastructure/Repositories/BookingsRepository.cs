@@ -53,5 +53,25 @@ namespace AirportTool.Infrastructure.Repositories
             return booking?.ToDomain();
         }
 
+        public async Task<BookingDomain> UpdateAsync(BookingDomain bookingDomain, CancellationToken cancellationToken)
+        {
+            if (bookingDomain == null)
+            {
+                throw new ArgumentNullException(nameof(bookingDomain));
+            }
+
+            var bookingDbModel = await _dbContext.Bookings
+                .FirstOrDefaultAsync(b => b.BookingId == bookingDomain.BookingId, cancellationToken);
+
+            if (bookingDbModel == null)
+            {
+                throw new InvalidOperationException($"Booking with ID {bookingDomain.BookingId} not found.");
+            }
+
+            bookingDomain.ToDbModel(bookingDbModel);
+
+            return bookingDomain;
+        }
+
     }
 }

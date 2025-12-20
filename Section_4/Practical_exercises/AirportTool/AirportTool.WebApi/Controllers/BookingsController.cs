@@ -1,6 +1,7 @@
 ﻿using AirportTool.Application.Contracts.Services;
 using AirportTool.Application.Dtos.Booking;
 using AirportTool.Application.Dtos.Tickets;
+using AirportTool.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -57,9 +58,12 @@ namespace AirportTool.WebApi.Controllers
         }
 
         // DELETE api/<BookingsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("{code}")]
+        public async Task<IActionResult> DeleteBooking(string confirmationCode, CancellationToken cancellationToken)
         {
+            // add not found id or not use NotFound in controller?
+            await _bookingService.CancelBooking(confirmationCode, cancellationToken);
+            return NoContent();
         }
     }
 }
