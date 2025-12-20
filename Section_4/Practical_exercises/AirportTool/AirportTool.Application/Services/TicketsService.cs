@@ -48,6 +48,7 @@ namespace AirportTool.Application.Services
 
         public async Task<TicketResponseDto> UpdateTicketInventoryAsync(int id, TicketInventoryUpdateDto requestDto, CancellationToken cancellationToken)
         {
+            // how do i calculate the total price, should not come through dto
             var updatedTicket = await _unitOfWork.Tickets.UpdateInventoryAsync(id, requestDto.SeatInventory, cancellationToken);
 
             await _unitOfWork.SaveChangesAsync();

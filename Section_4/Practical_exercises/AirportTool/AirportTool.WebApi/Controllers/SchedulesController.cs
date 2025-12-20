@@ -110,9 +110,8 @@ namespace AirportTool.WebApi.Controllers
         public async Task<ActionResult<ScheduleDetailedResponseDto>> CreateSchedule(ScheduleCreateDto requestDto, CancellationToken cancellationToken)
         {
             var result = await _schedulesService.CreateSchedule(requestDto, cancellationToken);
-            var uri = Url.Action("Get", new { id = result.FlightScheduleId });
 
-            return Created(uri, result);
+            return Created(string.Empty, result);
         }
 
 

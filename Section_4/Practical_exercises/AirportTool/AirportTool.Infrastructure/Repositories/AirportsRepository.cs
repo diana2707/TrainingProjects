@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AirportTool.Infrastructure.Repositories
 {
-    public class AirportRepository : IAirportRepository
+    public class AirportsRepository : IAirportRepository
     {
         private readonly AirportDbContext _context;
 
-        public AirportRepository(AirportDbContext context)
+        public AirportsRepository(AirportDbContext context)
         {
             _context = context;
         }

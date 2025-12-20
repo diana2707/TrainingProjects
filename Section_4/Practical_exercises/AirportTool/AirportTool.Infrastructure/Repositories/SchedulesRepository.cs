@@ -43,7 +43,7 @@ namespace AirportTool.Infrastructure.Repositories
                 (dom, db) => dom.FlightScheduleId = db.FlightScheduleId
              );
 
-            return createdSchedule.Entity.ToDomain();
+            return scheduleDomain;
         }
 
         public async Task<UpsertResult> UpsertAsync(FlightScheduleDomain schedule, CancellationToken cancellationToken)

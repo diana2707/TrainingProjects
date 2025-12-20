@@ -14,6 +14,7 @@ namespace AirportTool.Infrastructure.Persistance
         private readonly IFlightsRepository _flightRepository;
         private readonly ISchedulesRepository _schedulesRepository;
         private readonly ITicketsRepository _ticketsRepository;
+        private readonly IBookingRepository _bookingRepository;
 
         public UnitOfWork(AirportDbContext context,
             PendingEntitiesService pendingEntitiesService,
@@ -22,7 +23,8 @@ namespace AirportTool.Infrastructure.Persistance
             IAirportRepository airpostRepository,
             IFlightsRepository flightRepository,
             ISchedulesRepository schedulesRepository,
-            ITicketsRepository ticketsRepository)
+            ITicketsRepository ticketsRepository,
+            IBookingRepository bookingRepository)
         {
             _context = context;
             _pendingEntitiesService = pendingEntitiesService;
@@ -32,6 +34,7 @@ namespace AirportTool.Infrastructure.Persistance
             _flightRepository = flightRepository;
             _schedulesRepository = schedulesRepository;
             _ticketsRepository = ticketsRepository;
+            _bookingRepository = bookingRepository;
         }
 
         public IAircraftRepository Aircrafts => _aircraftRepository;
@@ -40,6 +43,7 @@ namespace AirportTool.Infrastructure.Persistance
         public IFlightsRepository Flights => _flightRepository;
         public ISchedulesRepository Schedules => _schedulesRepository;
         public ITicketsRepository Tickets => _ticketsRepository;
+        public IBookingRepository Bookings => _bookingRepository;
 
         public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
         {

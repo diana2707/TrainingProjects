@@ -12,11 +12,11 @@ using AirportTool.Domain.Contracts;
 
 namespace AirportTool.Infrastructure.Repositories
 {
-    public class GateRepository : IGateRepository
+    public class GatesRepository : IGateRepository
     {
         private readonly AirportDbContext _context;
 
-        public GateRepository(AirportDbContext context)
+        public GatesRepository(AirportDbContext context)
         {
             _context = context;
         }

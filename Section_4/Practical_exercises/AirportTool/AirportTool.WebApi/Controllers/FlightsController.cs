@@ -47,9 +47,7 @@ namespace AirportTool.WebApi.Controllers
 
             var createdFlight = await _flightsService.CreateFlight(flightRequest, cancelationToken);
 
-            var uri = $"/api/flights/{createdFlight.FlightId}";
-
-            return Created(uri, createdFlight);
+            return Created(string.Empty, createdFlight);
         }
 
         // PUT api/<FlightsController>/5

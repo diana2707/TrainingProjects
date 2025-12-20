@@ -43,7 +43,7 @@ namespace AirportTool.Infrastructure.Repositories
                (dom, db) => dom.FlightScheduleId = db.FlightScheduleId
             );
 
-            return createdTicket.Entity.ToDomain();
+            return ticketDomain;
         }
 
         public async Task<List<TicketDomain>> GetByFlightIdAsync(int flightId, CancellationToken cancellationToken)
@@ -55,6 +55,16 @@ namespace AirportTool.Infrastructure.Repositories
                 .ToListAsync(cancellationToken);
 
             return tickets.Select(TicketMapper.ToDomain).ToList();
+        }
+
+        public async Task<decimal> GetTicketPriceByIdAsync(long ticketId, CancellationToken cancellationToken)
+        {
+            decimal price = await _context.Tickets
+                .Where(t => t.TicketId == ticketId)
+                .Select(t => t.TotalPrice)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            return price;
         }
 
         public async Task<TicketDomain> UpdateInventoryAsync(int id, int seatInventory, CancellationToken cancellationToken)

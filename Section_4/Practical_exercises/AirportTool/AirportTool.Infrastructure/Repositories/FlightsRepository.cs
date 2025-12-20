@@ -42,7 +42,6 @@ namespace AirportTool.Infrastructure.Repositories
                 (dom, db) => dom.FlightId = db.FlightId
             );
 
-
             return flightDomain;
         }
 

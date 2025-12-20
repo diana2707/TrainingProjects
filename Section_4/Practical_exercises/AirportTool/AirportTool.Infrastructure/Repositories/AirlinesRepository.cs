@@ -11,10 +11,10 @@ using System.Threading.Tasks;
 
 namespace AirportTool.Infrastructure.Repositories
 {
-    public class AirlineRepository : IAirlineRepository
+    public class AirlinesRepository : IAirlineRepository
     {
         private readonly AirportDbContext _context;
-        public AirlineRepository(AirportDbContext context)
+        public AirlinesRepository(AirportDbContext context)
         {
             _context = context;
         }

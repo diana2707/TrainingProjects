@@ -49,9 +49,7 @@ namespace AirportTool.WebApi.Controllers
 
             var createdTicket = await _ticketsService.CreateTicketAsync(requestDto, cancellationToken);
 
-            var uri = $"/api/tickets/{createdTicket.TicketId}";
-
-            return Created(uri, createdTicket);
+            return Created(string.Empty, createdTicket);
         }
 
         // PUT api/<TicketsController>/5
