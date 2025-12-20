@@ -67,6 +67,14 @@ namespace AirportTool.Infrastructure.Repositories
             return price;
         }
 
+        public async Task<int?> GetSeatInventoryByIdAsync(int ticketId, CancellationToken cancellationToken)
+        {
+            return await _context.Tickets
+                .Where(t => t.TicketId == ticketId)
+                .Select(t => t.SeatInventory)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
+
         public async Task<TicketDomain> UpdateInventoryAsync(int id, int seatInventory, CancellationToken cancellationToken)
         {
             var ticket = await _context.Tickets.FindAsync(new object[] { id }, cancellationToken);

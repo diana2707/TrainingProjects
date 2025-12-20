@@ -12,6 +12,7 @@ namespace AirportTool.Domain.Contracts
         public Task<TicketDomain> AddAsync(TicketDomain ticketDomain, CancellationToken cancellationToken);
         public Task<List<TicketDomain>> GetByFlightIdAsync(int flightId, CancellationToken cancellationToken);
         public Task<decimal> GetTicketPriceByIdAsync(long ticketId, CancellationToken cancellationToken);
+        public Task<int?> GetSeatInventoryByIdAsync(int ticketId, CancellationToken cancellationToken);
         public Task<TicketDomain> UpdateInventoryAsync(int id, int seatInventory, CancellationToken cancellationToken);
         public Task<bool> ExistsAsync(int ticketId, CancellationToken cancellationToken);
         public Task<bool> HasDependenciesAsync(int ticketId, CancellationToken cancellationToken);
