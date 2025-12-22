@@ -4,12 +4,6 @@ using AirportTool.Application.Dtos.Flights;
 using AirportTool.Application.Exceptions;
 using AirportTool.Application.Mappers;
 using AirportTool.Domain.Contracts;
-using AirportTool.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AirportTool.Application.Services
 {
@@ -18,19 +12,26 @@ namespace AirportTool.Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IFlightMapper _flightMapper;
 
-        public FlightsService(IUnitOfWork unitOfWork, IFlightMapper flightMapper)
+        public FlightsService(IUnitOfWork unitOfWork,
+            IFlightMapper flightMapper)
         {
             _unitOfWork = unitOfWork;
             _flightMapper = flightMapper;
         }
 
-        //public async Task<List<FlightResponseDto>> GetAllFlightsAsync(CancellationToken cancellationToken)
-        //{
-        //    var flights = await _repository.GetAllAsync(cancellationToken);
-        //    var flightDtos = flights.Select(FlightMapper.ToResponseDto).ToList();
+        public async Task<FlightResponseDto> GetFlightByNumberAsync(string number, CancellationToken cancellationToken)
+        {
+            var flight = await _unitOfWork.Flights.GetByNumberAsync(number, cancellationToken);
 
-        //    return flightDtos;
-        //}
+            if (flight == null)
+            {
+                throw new ResourceNotFoundException("The resource was not found");
+            }
+
+            var flightDto = _flightMapper.MapToFlightResponseDto(flight);
+
+            return flightDto;
+        }
 
         public async Task<FlightResponseDto> CreateFlight(
             FlightRequestDto flightRequest,
@@ -65,7 +66,7 @@ namespace AirportTool.Application.Services
 
             if (updatedFlight == null)
             {
-                throw new NotFoundException("The resource was not found");
+                throw new ResourceNotFoundException("The resource was not found");
             }
 
             await _unitOfWork.SaveChangesAsync(cancelationToken);
@@ -87,7 +88,7 @@ namespace AirportTool.Application.Services
         {
             if (!await _unitOfWork.Flights.ExistsAsync(id, cancellationToken))
             {
-                throw new NotFoundException("The resource was not found");
+                throw new ResourceNotFoundException("The resource was not found");
             }
 
             var hasDependencies = await _unitOfWork.Flights.HasDependenciesAsync(id, cancellationToken);

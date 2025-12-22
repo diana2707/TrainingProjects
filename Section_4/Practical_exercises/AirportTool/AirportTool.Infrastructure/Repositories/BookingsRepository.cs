@@ -1,16 +1,11 @@
 ﻿using AirportTool.Domain.Contracts;
 using AirportTool.Domain.Entities;
+using AirportTool.Domain.Enums;
 using AirportTool.Infrastructure.Mappers;
 using AirportTool.Infrastructure.Persistance;
 using AirportTool.Infrastructure.Services;
 using AirportTool.Infrastructure.Utils;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace AirportTool.Infrastructure.Repositories
 {
@@ -53,25 +48,22 @@ namespace AirportTool.Infrastructure.Repositories
             return booking?.ToDomain();
         }
 
-        public async Task<BookingDomain> UpdateAsync(BookingDomain bookingDomain, CancellationToken cancellationToken)
+        public async Task UpdateStatusAsync(string confirmationCode, BookingStatus status, CancellationToken cancellationToken)
         {
-            if (bookingDomain == null)
+            if (string.IsNullOrWhiteSpace(confirmationCode))
             {
-                throw new ArgumentNullException(nameof(bookingDomain));
+                throw new ArgumentException("Confirmation code must not be null or empty.", nameof(confirmationCode));
             }
 
-            var bookingDbModel = await _dbContext.Bookings
-                .FirstOrDefaultAsync(b => b.BookingId == bookingDomain.BookingId, cancellationToken);
+            var booking = await _dbContext.Bookings
+                .FirstOrDefaultAsync(b => b.ConfirmationCode == confirmationCode, cancellationToken);
 
-            if (bookingDbModel == null)
+            if (booking == null)
             {
-                throw new InvalidOperationException($"Booking with ID {bookingDomain.BookingId} not found.");
+                throw new InvalidOperationException($"Booking with confirmation code '{confirmationCode}' not found.");
             }
 
-            bookingDomain.ToDbModel(bookingDbModel);
-
-            return bookingDomain;
+            booking.Status = (byte)status;
         }
-
     }
 }

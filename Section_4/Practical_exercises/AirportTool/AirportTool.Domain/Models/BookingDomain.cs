@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AirportTool.Domain.Enums;
 
 namespace AirportTool.Domain.Entities
 {
@@ -23,7 +16,7 @@ namespace AirportTool.Domain.Entities
 
         public int Quantity { get; set; }
 
-        public byte Status { get; set; }
+        public BookingStatus Status { get; set; }
 
         public DateTime CreatedUtc { get; set; }
 

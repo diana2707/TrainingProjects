@@ -1,10 +1,5 @@
 ﻿using AirportTool.Domain.Entities;
 using AirportTool.Infrastructure.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AirportTool.Infrastructure.Mappers
 {

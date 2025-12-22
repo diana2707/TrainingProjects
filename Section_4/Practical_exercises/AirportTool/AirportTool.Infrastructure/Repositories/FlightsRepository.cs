@@ -4,12 +4,6 @@ using AirportTool.Infrastructure.Mappers;
 using AirportTool.Infrastructure.Services;
 using AirportTool.Infrastructure.Utils;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AirportTool.Infrastructure.Repositories
 {
@@ -93,27 +87,21 @@ namespace AirportTool.Infrastructure.Repositories
             return flights.Select(FlightMapper.ToDomain).ToList();
         }
 
-        public async Task<FlightDomain?> GetByNumberAsync(string number)
+        public async Task<FlightDomain?> GetByNumberAsync(string number, CancellationToken cancellationToken)
         {
-            var flight = await _context.Flights.FirstOrDefaultAsync(flight => flight.FlightNumber == number);
+            var flight = await _context.Flights.FirstOrDefaultAsync(flight => flight.FlightNumber == number, cancellationToken);
 
             return flight != null ? flight.ToDomain() : null;
         }
 
-        public async Task<AirportDomain> GetOriginAirportForFlightAsync(int flightId)
+        public async Task<AirportDomain> GetOriginAirportForFlightAsync(int flightId, CancellationToken cancellationToken)
         {
             var flight = await _context.Flights
                 .Include(f => f.OriginAirport)
-                .FirstOrDefaultAsync(f => f.FlightId == flightId);
+                .FirstOrDefaultAsync(f => f.FlightId == flightId, cancellationToken);
 
             return flight.OriginAirport.ToDomain();
         }
-
-        //public async Task<List<FlightDomain>> GetAllAsync(CancellationToken cancellationToken)
-        //{
-        //    var flights = await _context.Set<Flight>().ToListAsync(cancellationToken);
-        //    return flights.Select(FlightsMapper.ToDomain).ToList();
-        //}
 
         public async Task<bool> HasDependenciesAsync(int flightId, CancellationToken cancellationToken)
         {

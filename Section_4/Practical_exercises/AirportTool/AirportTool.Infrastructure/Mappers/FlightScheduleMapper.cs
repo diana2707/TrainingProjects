@@ -1,10 +1,6 @@
 ﻿using AirportTool.Domain.Entities;
+using AirportTool.Domain.Enums;
 using AirportTool.Infrastructure.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AirportTool.Infrastructure.Mappers
 {
@@ -22,7 +18,7 @@ namespace AirportTool.Infrastructure.Mappers
                 ScheduledArrivalUtc = flightSchedule.ScheduledArrivalUtc,
                 GateId = flightSchedule.GateId,
                 AssignedAircraftId = flightSchedule.AssignedAircraftId,
-                Status = flightSchedule.Status,
+                Status = (ScheduleStatus)flightSchedule.Status,
                 AssignedAircraft = flightSchedule.AssignedAircraft?.ToDomain(),
                 Flight = flightSchedule.Flight?.ToDomain(),
                 Gate = flightSchedule.Gate?.ToDomain(),
@@ -36,7 +32,6 @@ namespace AirportTool.Infrastructure.Mappers
             if (flightSchedule == null)
             {
                 flightSchedule = new FlightSchedule();
-                flightSchedule.FlightScheduleId = flightScheduleDomain.FlightScheduleId;
             }
 
             flightSchedule.FlightId = flightScheduleDomain.FlightId;
@@ -44,10 +39,7 @@ namespace AirportTool.Infrastructure.Mappers
             flightSchedule.ScheduledArrivalUtc = flightScheduleDomain.ScheduledArrivalUtc;
             flightSchedule.GateId = flightScheduleDomain.GateId;
             flightSchedule.AssignedAircraftId = flightScheduleDomain.AssignedAircraftId;
-            flightSchedule.Status = flightScheduleDomain.Status;
-            //flightSchedule.AssignedAircraft = flightScheduleDomain.AssignedAircraft?.ToEntity();
-            //flightSchedule.Flight = flightScheduleDomain.Flight?.ToEntity();
-            //flightSchedule.Gate = flightScheduleDomain.Gate?.ToEntity();
+            flightSchedule.Status = (byte)flightScheduleDomain.Status;
 
             return flightSchedule;
         }

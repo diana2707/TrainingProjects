@@ -1,11 +1,6 @@
 ﻿using AirportTool.Application.Contracts.Mappers;
 using AirportTool.Application.Dtos.Tickets;
 using AirportTool.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AirportTool.Application.Mappers
 {
@@ -30,6 +25,7 @@ namespace AirportTool.Application.Mappers
         {
             return new TicketDomain
             {
+                FlightScheduleId = request.FlightScheduleId,
                 FareClass = request.FareClass,
                 BasePrice = request.BasePrice,
                 Taxes = request.Taxes,

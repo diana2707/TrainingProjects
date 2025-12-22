@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-
+﻿
 namespace AirportTool.Application.Dtos.Schedules
 {
     public class ImportResultDto

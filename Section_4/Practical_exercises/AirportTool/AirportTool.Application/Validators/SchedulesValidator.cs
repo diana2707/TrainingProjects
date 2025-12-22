@@ -1,12 +1,7 @@
 ﻿using AirportTool.Application.Contracts.Validators;
 using AirportTool.Application.Dtos.Schedules;
 using AirportTool.Domain.Contracts;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AirportTool.Application.Validators
 {
@@ -28,7 +23,9 @@ namespace AirportTool.Application.Validators
             _schedulesRepository = schedulesRepository;
         }
 
-        public void ValidateDeserializedJson(List<ScheduleCreateDto> schedules, int maxRows)
+        public void ValidateDeserializedJson(
+            List<ScheduleCreateDto> schedules,
+            int maxRows)
         {
             if (schedules == null)
             {
@@ -41,7 +38,10 @@ namespace AirportTool.Application.Validators
             }
         }
 
-        public bool IsValidScheduleFormat(ScheduleCreateDto schedule, ImportResultDto importResult, int rowNumber)
+        public bool IsValidScheduleFormat(
+            ScheduleCreateDto schedule,
+            ImportResultDto importResult,
+            int rowNumber)
         {
             var validationResults = new List<ValidationResult>();
 
@@ -69,21 +69,40 @@ namespace AirportTool.Application.Validators
             return true;
         }
 
-        public async Task<bool> IsValidByBussinessRules(ScheduleCreateDto schedule, ImportResultDto importResult, int rowNumber, CancellationToken cancellationToken)
+        public async Task<bool> IsValidByBussinessRules(
+            ScheduleCreateDto schedule,
+            ImportResultDto importResult,
+            int rowNumber,
+            CancellationToken cancellationToken)
         {
-            var validArrivalAndDeparture = IsValidArrivalAndDeparture(schedule, importResult, rowNumber);
+            var validArrivalAndDeparture = IsValidArrivalAndDeparture(
+                schedule,
+                importResult,
+                rowNumber);
 
-            var validGateAllocation = await IsValidGateAllocationAsync(schedule, importResult, rowNumber, cancellationToken);
+            var validGateAllocation = await IsValidGateAllocationAsync(
+                schedule,
+                importResult,
+                rowNumber,
+                cancellationToken);
 
             return validArrivalAndDeparture && validGateAllocation;
         }
 
-        private async Task<bool> IsValidGateAllocationAsync(ScheduleCreateDto schedule, ImportResultDto importResult, int rowNumber, CancellationToken cancellationToken)
+        private async Task<bool> IsValidGateAllocationAsync(
+            ScheduleCreateDto schedule,
+            ImportResultDto importResult,
+            int rowNumber,
+            CancellationToken cancellationToken)
         {
             if (schedule.GateCode == null) return true;
 
-            var airport = await _flightRepository.GetOriginAirportForFlightAsync(schedule.FlightId!.Value);
-            var gate = await _gateRepository.GetByCodeAndAirportIdAsync(schedule.GateCode, airport.AirportId);
+            var airport = await _flightRepository.GetOriginAirportForFlightAsync(
+                schedule.FlightId!.Value,
+                cancellationToken);
+            var gate = await _gateRepository.GetByCodeAndAirportIdAsync(
+                schedule.GateCode,
+                airport.AirportId);
 
             if (gate == null) return true;
 
@@ -109,9 +128,11 @@ namespace AirportTool.Application.Validators
             return true;
         }
 
-        private bool IsValidArrivalAndDeparture(ScheduleCreateDto schedule, ImportResultDto importResult, int rowNumber)
+        private bool IsValidArrivalAndDeparture(
+            ScheduleCreateDto schedule,
+            ImportResultDto importResult,
+            int rowNumber)
         {
-            // Rule 1: Temporal logic
             if (schedule.ScheduledArrivalUtc <= schedule.ScheduledDepartureUtc)
             {
                 importResult.Errors.Add(new ImportErrorDto

@@ -1,10 +1,4 @@
 ﻿using AirportTool.Domain.Entities;
-using AirportTool.Infrastructure.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using AirportTool.Infrastructure.Services;
 using AirportTool.Infrastructure.Mappers;

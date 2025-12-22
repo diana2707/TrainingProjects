@@ -2,16 +2,7 @@
 using AirportTool.Application.Contracts.Services;
 using AirportTool.Application.Dtos.Tickets;
 using AirportTool.Application.Exceptions;
-using AirportTool.Application.Mappers;
 using AirportTool.Domain.Contracts;
-using AirportTool.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace AirportTool.Application.Services
 {
@@ -20,22 +11,28 @@ namespace AirportTool.Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly ITicketMapper _ticketMapper;
 
-        public TicketsService(IUnitOfWork unitOfWork, ITicketMapper ticketMapper)
+        public TicketsService(
+            IUnitOfWork unitOfWork,
+            ITicketMapper ticketMapper)
         {
             _unitOfWork = unitOfWork;
             _ticketMapper = ticketMapper;
         }
 
-        public async Task<IEnumerable<TicketResponseDto>> GetTicketsByFlightIdAsync(int flightId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<TicketResponseDto>> GetTicketsByFlightIdAsync(
+            int flightId,
+            CancellationToken cancellationToken)
         {
-            List<TicketDomain> tickets = await _unitOfWork.Tickets.GetByFlightIdAsync(flightId, cancellationToken);
+            var tickets = await _unitOfWork.Tickets.GetByFlightIdAsync(flightId, cancellationToken);
 
             var ticketsDtos = tickets.Select(_ticketMapper.ToResponseDto);
 
             return ticketsDtos;
         }
 
-        public async Task<TicketResponseDto> CreateTicketAsync(TicketRequestDto ticket, CancellationToken cancellationToken)
+        public async Task<TicketResponseDto> CreateTicketAsync(
+            TicketRequestDto ticket,
+            CancellationToken cancellationToken)
         {
             var ticketDomain = _ticketMapper.ToDomain(ticket);
 
@@ -46,32 +43,43 @@ namespace AirportTool.Application.Services
             return ticketResponseDto;
         }
 
-        public async Task<TicketResponseDto> UpdateTicketInventoryAsync(int id, TicketInventoryUpdateDto requestDto, CancellationToken cancellationToken)
+        public async Task<TicketResponseDto> UpdateTicketInventoryAsync(
+            long id, TicketInventoryUpdateDto requestDto,
+            CancellationToken cancellationToken)
         {
-            // how do i calculate the total price, should not come through dto
-            var updatedTicket = await _unitOfWork.Tickets.UpdateInventoryAsync(id, requestDto.SeatInventory, cancellationToken);
+            var updatedTicket = await _unitOfWork.Tickets.UpdateInventoryAsync(
+                id, 
+                requestDto.SeatInventory,
+                cancellationToken);
+
+            if (updatedTicket == null)
+            {
+                throw new ResourceNotFoundException($"Ticket with id {id} was not found.");
+            }
 
             await _unitOfWork.SaveChangesAsync();
 
             return _ticketMapper.ToResponseDto(updatedTicket);
         }
 
-        public async Task DeleteTicket(int id, CancellationToken cancellationToken)
+        public async Task DeleteTicket(
+            long id,
+            CancellationToken cancellationToken)
         {
             if (!await _unitOfWork.Tickets.ExistsAsync(id, cancellationToken))
             {
-                throw new NotFoundException("The resource was not found");
+                throw new ResourceNotFoundException("The resource was not found");
             }
 
             var hasDependencies = await _unitOfWork.Tickets.HasDependenciesAsync(id, cancellationToken);
+
             if (hasDependencies)
             {
                 throw new ConflictException("Cannot delete flight because it has related dependencies.");
             }
 
-            await _unitOfWork.Flights.DeleteFlightAsync(id, cancellationToken);
+            await _unitOfWork.Tickets.DeleteTicketAsync(id, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-
         }
     }
 }

@@ -1,9 +1,4 @@
 ﻿using AirportTool.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AirportTool.Domain.Contracts
 {
@@ -14,8 +9,8 @@ namespace AirportTool.Domain.Contracts
         public Task<decimal> GetTicketPriceByIdAsync(long ticketId, CancellationToken cancellationToken);
         public Task<int?> GetSeatInventoryByIdAsync(long ticketId, CancellationToken cancellationToken);
         public Task<TicketDomain> UpdateInventoryAsync(long ticketId, int seatInventory, CancellationToken cancellationToken);
-        public Task<bool> ExistsAsync(int ticketId, CancellationToken cancellationToken);
-        public Task<bool> HasDependenciesAsync(int ticketId, CancellationToken cancellationToken);
-        public Task DeleteTicketAsync(int id, CancellationToken cancellationToken);
+        public Task<bool> ExistsAsync(long ticketId, CancellationToken cancellationToken);
+        public Task<bool> HasDependenciesAsync(long ticketId, CancellationToken cancellationToken);
+        public Task DeleteTicketAsync(long ticketId, CancellationToken cancellationToken);
     }
 }

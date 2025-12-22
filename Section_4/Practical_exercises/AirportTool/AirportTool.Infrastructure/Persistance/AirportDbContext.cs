@@ -1,8 +1,7 @@
 ﻿using AirportTool.Domain.Entities;
 using AirportTool.Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
+
 
 namespace AirportTool.Infrastructure.Services;
 

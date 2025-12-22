@@ -5,10 +5,6 @@ using AirportTool.Application.Services;
 using AirportTool.WebApi.Settings;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using System.Runtime;
-using System.Text.Json;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace AirportTool.WebApi.Controllers
 {
@@ -19,53 +15,58 @@ namespace AirportTool.WebApi.Controllers
         private readonly ISchedulesService _schedulesService;
         private readonly ImportSettings _importSettings;
 
-        public SchedulesController(ISchedulesService schedulesService, IOptions<ImportSettings> settings)
+        public SchedulesController(
+            ISchedulesService schedulesService,
+            IOptions<ImportSettings> settings)
         {
             _schedulesService = schedulesService;
             _importSettings = settings.Value;
         }
 
-        //// GET: api/<SchedulesController>
-        //[HttpGet]
-        //public IEnumerable<string> Get()
-        //{
-        //    return new string[] { "value1", "value2" };
-        //}
-
-        // GET api/<SchedulesController>/5
+        // GET api/schedules/{id}
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ScheduleDetailedResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<ScheduleDetailedResponseDto>> Get(int id, CancellationToken cancellationToken)
+        public async Task<ActionResult<ScheduleDetailedResponseDto>> Get(
+            int id,
+            CancellationToken cancellationToken)
         {
             var schedule = await _schedulesService.GetScheduleById(id, cancellationToken);
             return Ok(schedule);
         }
 
-        // GET: api/<SchedulesController>
+        // GET: api/schedules
         [HttpGet]
         [ProducesResponseType(typeof(List<FlightResponseDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<FlightResponseDto>>> GetFlight(
+        public async Task<ActionResult<IEnumerable<ScheduleResponseDto>>> GetSchedules(
             [FromQuery] string origin,
             [FromQuery] string destination,
             [FromQuery] DateOnly date,
             CancellationToken cancellationToken)
         {
-            var flights = await _schedulesService.GetSchedulesByRouteAndDateAsync(origin, destination, date, cancellationToken);
+            var flights = await _schedulesService.GetSchedulesByRouteAndDateAsync(
+                origin,
+                destination,
+                date,
+                cancellationToken);
+
             return Ok(flights);
         }
 
+        // GET: api/schedules/stats/upcoming
         [HttpGet("stats/upcoming")]
-        [ProducesResponseType(typeof(List<FlightResponseDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<DailyScheduleStatsDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<DailyScheduleStatsDto>>> GetScheduledFlightStats(CancellationToken cancellationToken)
+        public async Task<ActionResult<IEnumerable<DailyScheduleStatsDto>>> GetScheduledFlightsStats(CancellationToken cancellationToken)
         {
             var stats = await _schedulesService.GetUpcomingScheduledFlightStatsAsync(cancellationToken);
             return Ok(stats);
         }
 
-        // POST api/<SchedulesController>
+        // POST api/schedules/import
         [HttpPost("import")]
         [Consumes("multipart/form-data")]
         [ProducesResponseType(typeof(ImportResultDto), StatusCodes.Status207MultiStatus)]
@@ -103,28 +104,15 @@ namespace AirportTool.WebApi.Controllers
             return Ok(result);
         }
 
-        // POST api/<SchedulesController>
+        // POST api/schedules
         [HttpPost]
         [ProducesResponseType(typeof(ScheduleDetailedResponseDto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ScheduleDetailedResponseDto>> CreateSchedule(ScheduleCreateDto requestDto, CancellationToken cancellationToken)
+        public async Task<ActionResult<ScheduleDetailedResponseDto>> Create(ScheduleCreateDto requestDto, CancellationToken cancellationToken)
         {
             var result = await _schedulesService.CreateSchedule(requestDto, cancellationToken);
 
             return Created(string.Empty, result);
-        }
-
-
-        // PUT api/<SchedulesController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<SchedulesController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }

@@ -1,9 +1,5 @@
 ﻿using AirportTool.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using AirportTool.Domain.Enums;
 
 namespace AirportTool.Domain.Contracts
 {
@@ -11,6 +7,6 @@ namespace AirportTool.Domain.Contracts
     {
         public Task<BookingDomain> AddAsync(BookingDomain bookingDomain, CancellationToken cancellationToken);
         public Task<BookingDomain?> GetByConfirmationCodeAsync(string confirmationCode, CancellationToken cancellationToken);
-        public Task<BookingDomain> UpdateAsync(BookingDomain bookingDomain, CancellationToken cancellationToken);
+        public Task UpdateStatusAsync(string confirmationCode, BookingStatus status, CancellationToken cancellationToken);
     }
 }

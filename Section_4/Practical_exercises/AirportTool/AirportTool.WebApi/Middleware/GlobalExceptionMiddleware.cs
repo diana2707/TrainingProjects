@@ -15,6 +15,9 @@ namespace AirportTool.WebApi.Middleware
 
         public async Task Invoke(HttpContext context)
         {
+            //Debugging
+            _logger.LogInformation("GlobalExceptionMiddleware invoked");
+
             try
             {
                 await _next(context);
@@ -24,7 +27,7 @@ namespace AirportTool.WebApi.Middleware
                 _logger.LogWarning(ex, "Domain validation failed");
                 await HandleExceptionAsync(context, ex, StatusCodes.Status400BadRequest);
             }
-            catch (NotFoundException ex)
+            catch (ResourceNotFoundException ex)
             {
                 _logger.LogWarning(ex, "Resource was not found");
                 await HandleExceptionAsync(context, ex, StatusCodes.Status404NotFound);
@@ -45,8 +48,6 @@ namespace AirportTool.WebApi.Middleware
                 );
             }
         }
-
-        // review the logging messages
 
         private Task HandleExceptionAsync(
             HttpContext context,

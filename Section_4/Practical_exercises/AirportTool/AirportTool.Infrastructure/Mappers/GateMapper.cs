@@ -1,10 +1,5 @@
 ﻿using AirportTool.Domain.Entities;
 using AirportTool.Infrastructure.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AirportTool.Infrastructure.Mappers
 {
@@ -18,8 +13,6 @@ namespace AirportTool.Infrastructure.Mappers
                 GateId = gate.GateId,
                 AirportId = gate.AirportId,
                 Code = gate.Code,
-                //Airport = gate.Airport?.ToDomain(),
-                FlightSchedules = gate.FlightSchedules?.Select(fs => fs.ToDomain()).ToList()
             };
         }
     }

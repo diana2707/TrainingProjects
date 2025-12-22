@@ -1,11 +1,5 @@
 ﻿using AirportTool.Domain.Entities;
 using AirportTool.Infrastructure.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AirportTool.Infrastructure.Mappers
 {
@@ -25,7 +19,6 @@ namespace AirportTool.Infrastructure.Mappers
                 Currency = ticket.Currency,
                 IsRefundable = ticket.IsRefundable,
                 SeatInventory = ticket.SeatInventory,
-                Bookings = ticket.Bookings?.Select(b => b.ToDomain()).ToList(),
                 FlightSchedule = ticket.FlightSchedule?.ToDomain(),
             };
         }
@@ -37,9 +30,9 @@ namespace AirportTool.Infrastructure.Mappers
             if (ticketDbModel == null)
             {
                 ticketDbModel = ticketDbModel ?? new Ticket();
-                ticketDbModel.FlightScheduleId = ticketDomain.FlightScheduleId;
             }
 
+            ticketDbModel.FlightScheduleId = ticketDomain.FlightScheduleId;
             ticketDbModel.FareClass = ticketDomain.FareClass;
             ticketDbModel.BasePrice = ticketDomain.BasePrice;
             ticketDbModel.Taxes = ticketDomain.Taxes;

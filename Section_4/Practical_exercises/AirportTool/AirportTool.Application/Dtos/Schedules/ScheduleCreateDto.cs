@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using AirportTool.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AirportTool.Application.Dtos.Schedules
 {
@@ -27,7 +23,7 @@ namespace AirportTool.Application.Dtos.Schedules
         public string? AssignedAircraftTail { get; set; }
 
         [Range(0, 5)]
-        public byte? Status { get; set; } = 0;
+        public ScheduleStatus? Status { get; set; } = 0;
     }
 }
 

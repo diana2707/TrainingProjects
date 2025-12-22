@@ -13,6 +13,7 @@ using AirportTool.Infrastructure.Utils;
 using AirportTool.WebApi.Middleware;
 using AirportTool.WebApi.Settings;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,28 +30,37 @@ builder.Services.AddDbContext<AirportDbContext>(options =>
 
 // Services
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<PendingEntitiesService>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
 builder.Services.AddScoped<IFlightsRepository, FlightsRepository>();
 builder.Services.AddScoped<IAircraftRepository, AircraftsRepository>();
 builder.Services.AddScoped<IAirportRepository, AirportsRepository>();
 builder.Services.AddScoped<IAirlineRepository, AirlinesRepository>();
+builder.Services.AddScoped<IGateRepository, GatesRepository>();
 builder.Services.AddScoped<ISchedulesRepository, SchedulesRepository>();
 builder.Services.AddScoped<ITicketsRepository, TicketsRepository>();
+builder.Services.AddScoped<IBookingRepository, BookingsRepository>();
 
 builder.Services.AddScoped<IFlightMapper, FlightMapper>();
-
-builder.Services.AddScoped<PendingEntitiesService>();
+builder.Services.AddScoped<ISchedulesMapper, SchedulesMapper>();
+builder.Services.AddScoped<ITicketMapper, TicketMapper>();
+builder.Services.AddScoped<IBookingMapper, BookingMapper>();
 
 builder.Services.AddScoped<IFlightsService, FlightsService>();
 builder.Services.AddScoped<ISchedulesService, SchedulesService>();
 builder.Services.AddScoped<ITicketsService, TicketsService>();
+builder.Services.AddScoped<IBookingsService, BookingService>();
 
 builder.Services.AddScoped<ISchedulesValidator, SchedulesValidator>();
+builder.Services.AddScoped<IBookingValidator, BookingValidator>();
 
 // Configurations
 builder.Services.Configure<ImportSettings>(
     builder.Configuration.GetSection("ImportSettings"));
+
+builder.Services.Configure<PagingOptions>(
+    builder.Configuration.GetSection("PagingOptions"));
 
 // Add CORS policy
 builder.Services.AddCors(options =>
@@ -68,6 +78,8 @@ builder.Logging.AddConsole();
 
 var app = builder.Build();
 
+app.UseMiddleware<GlobalExceptionMiddleware>();
+
 app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
@@ -81,8 +93,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseAuthorization();
-
-app.UseMiddleware<GlobalExceptionMiddleware>();
 
 app.MapControllers();
 

@@ -1,10 +1,6 @@
 ﻿using AirportTool.Application.Contracts.Services;
 using AirportTool.Application.Dtos.Booking;
-using AirportTool.Application.Dtos.Tickets;
-using AirportTool.Application.Services;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace AirportTool.WebApi.Controllers
 {
@@ -15,31 +11,34 @@ namespace AirportTool.WebApi.Controllers
         private readonly IBookingsService _bookingService;
         public BookingsController(IBookingsService bookingService)
         {
-
+            _bookingService = bookingService;
         }
 
-        // GET: api/<BookingsController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET api/<BookingsController>/5
+        // GET api/bookings/{code}
         [HttpGet("{code}")]
-        public async Task<ActionResult<BookingDetailedResponseDto>> GetByConfirmationCode(string code, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(BookingDetailedResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<BookingDetailedResponseDto>> GetByConfirmationCode(
+            string code,
+            CancellationToken cancellationToken)
         {
-            var result = await _bookingService.GetBookingByConfirmationCodeAsync(code, cancellationToken);
-            if (result == null)
+            if (string.IsNullOrWhiteSpace(code))
             {
-                return NotFound();
+                return BadRequest("Confirmation code must be provided.");
             }
+
+            var result = await _bookingService.GetBookingByConfirmationCodeAsync(code, cancellationToken);
+
             return Ok(result);
         }
 
-        // POST api/<BookingsController>
+        // POST api/bookings
         [HttpPost]
-        public async Task<ActionResult<BookingResponseDto>> CreateBooking([FromBody] BookingRequestDto requstDto, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(BookingResponseDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<BookingResponseDto>> Create(
+            [FromBody] BookingRequestDto requstDto,
+            CancellationToken cancellationToken)
         {
             if (requstDto == null)
             {
@@ -51,18 +50,19 @@ namespace AirportTool.WebApi.Controllers
             return Created(string.Empty, result);
         }
 
-        // PUT api/<BookingsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<BookingsController>/5
+        // DELETE api/bookings/{code}
         [HttpDelete("{code}")]
-        public async Task<IActionResult> DeleteBooking(string confirmationCode, CancellationToken cancellationToken)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> Delete(
+            string code,
+            CancellationToken cancellationToken)
         {
-            // add not found id or not use NotFound in controller?
-            await _bookingService.CancelBooking(confirmationCode, cancellationToken);
+            if (string.IsNullOrWhiteSpace(code))
+            {
+                return BadRequest("Confirmation code must be provided.");
+            }
+
+            await _bookingService.CancelBooking(code, cancellationToken);
             return NoContent();
         }
     }

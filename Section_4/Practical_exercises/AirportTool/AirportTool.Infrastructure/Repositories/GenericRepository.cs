@@ -1,7 +1,6 @@
 ﻿using AirportTool.Domain.Contracts;
 using AirportTool.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 
 namespace AirportTool.Infrastructure.Repositories
 {
@@ -26,7 +25,6 @@ namespace AirportTool.Infrastructure.Repositories
             return entity;
         }
 
-        // verify here if the entity exists in the database before updating
         public T Update(T entity)
         {
             if (entity == null)

@@ -1,10 +1,5 @@
 ﻿using AirportTool.Domain.Entities;
 using AirportTool.Infrastructure.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AirportTool.Infrastructure.Mappers
 {
@@ -37,7 +32,6 @@ namespace AirportTool.Infrastructure.Mappers
             if (existingFlight == null)
             {
                 existingFlight = new Flight();
-                existingFlight.FlightId = flightDomain.FlightId;
             }
 
             existingFlight.AirlineId = flightDomain.AirlineId;

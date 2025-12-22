@@ -91,7 +91,7 @@ namespace AirportTool.Application.Mappers
 
         private void ValidateForExistingResource<T>(T? model, string message) where T : class
         {
-            if (model is null) throw new NotFoundException(message);
+            if (model is null) throw new ResourceNotFoundException(message);
         }
     }
 }

@@ -4,12 +4,6 @@ using AirportTool.Domain.Entities;
 using AirportTool.Infrastructure.Models;
 using AirportTool.Infrastructure.Services;
 using AirportTool.Infrastructure.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using AirportTool.Infrastructure.Mappers;
 
 namespace AirportTool.Infrastructure.Repositories
@@ -40,7 +34,7 @@ namespace AirportTool.Infrastructure.Repositories
             _pending.Add(
                ticketDomain,
                createdTicket.Entity,
-               (dom, db) => dom.FlightScheduleId = db.FlightScheduleId
+               (dom, db) => dom.TicketId = db.TicketId
             );
 
             return ticketDomain;
@@ -87,7 +81,7 @@ namespace AirportTool.Infrastructure.Repositories
         }
 
         
-        public async Task DeleteTicketAsync(int id, CancellationToken cancellationToken)
+        public async Task DeleteTicketAsync(long id, CancellationToken cancellationToken)
         {
             var ticket = await _context.Tickets.FindAsync(id, cancellationToken);
 
@@ -100,13 +94,13 @@ namespace AirportTool.Infrastructure.Repositories
         }
 
 
-        public async Task<bool> HasDependenciesAsync(int ticketId, CancellationToken cancellationToken)
+        public async Task<bool> HasDependenciesAsync(long ticketId, CancellationToken cancellationToken)
         {
             return await _context.Bookings
                        .AnyAsync(s => s.TicketId == ticketId, cancellationToken);
         }
 
-        public async Task<bool> ExistsAsync(int ticketId, CancellationToken cancellationToken)
+        public async Task<bool> ExistsAsync(long ticketId, CancellationToken cancellationToken)
         {
             return await _context.Tickets
                        .AnyAsync(f => f.TicketId == ticketId, cancellationToken);

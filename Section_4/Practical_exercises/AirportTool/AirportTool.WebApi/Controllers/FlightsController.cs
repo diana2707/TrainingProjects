@@ -2,8 +2,6 @@
 using AirportTool.Application.Dtos.Flights;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace AirportTool.WebApi.Controllers
 {
     [Route("api/[controller]")]
@@ -11,34 +9,32 @@ namespace AirportTool.WebApi.Controllers
     public class FlightsController : ControllerBase
     {
         private readonly IFlightsService _flightsService;
+
         public FlightsController(IFlightsService flightsService)
         {
             _flightsService = flightsService;
         }
 
-        // GET: api/<FlightsController>
-        [HttpGet]
-        [ProducesResponseType(typeof(List<FlightResponseDto>), StatusCodes.Status200OK)]
+        // GET: api/flights/{number}
+        [HttpGet("{number}")]
+        [ProducesResponseType(typeof(IEnumerable<FlightResponseDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<FlightResponseDto>>> GetFlight(
-            [FromQuery] string origin,
-            [FromQuery] string destination,
+        public async Task<ActionResult<IEnumerable<FlightResponseDto>>> GetByNumber(
+            string number,
             CancellationToken cancellationToken)
         {
-            var flights = await _flightsService.GetFlightsByRouteAsync(origin, destination, cancellationToken);
+            var flights = await _flightsService.GetFlightByNumberAsync(number, cancellationToken);
             return Ok(flights);
         }
 
-        //// GET api/<FlightsController>/5
-        //[HttpGet("{id}")]
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
-
-        // POST api/<FlightsController>
+        // POST api/flights
         [HttpPost]
-        public async Task<ActionResult<FlightResponseDto>> CreateFlight([FromBody] FlightRequestDto flightRequest, CancellationToken cancelationToken)
+        [ProducesResponseType(typeof(FlightResponseDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<FlightResponseDto>> Create(
+            [FromBody] FlightRequestDto flightRequest,
+            CancellationToken cancelationToken)
         {
             if (flightRequest == null)
             {
@@ -50,9 +46,16 @@ namespace AirportTool.WebApi.Controllers
             return Created(string.Empty, createdFlight);
         }
 
-        // PUT api/<FlightsController>/5
+        // PUT api/flights/{id}
         [HttpPut("{id}")]
-        public async Task<ActionResult<FlightResponseDto>> Put(int id, [FromBody] FlightRequestDto flightRequest, CancellationToken cancelationToken)
+        [ProducesResponseType(typeof(FlightResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<FlightResponseDto>> Update(
+            int id,
+            [FromBody] FlightRequestDto flightRequest,
+            CancellationToken cancelationToken)
         {
             if (flightRequest == null)
             {
@@ -64,11 +67,15 @@ namespace AirportTool.WebApi.Controllers
             return Ok(updatedFlight);
         }
 
-        // DELETE api/<FlightsController>/5
+        // DELETE api/flights/{id}
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id, CancellationToken cancelationToken)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Delete(
+            int id,
+            CancellationToken cancelationToken)
         {
-            // add not found for not founding the id
             await _flightsService.DeleteFlight(id, cancelationToken);
             return NoContent();
         }

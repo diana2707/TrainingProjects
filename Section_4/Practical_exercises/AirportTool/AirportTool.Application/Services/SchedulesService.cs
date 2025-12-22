@@ -2,13 +2,10 @@
 using AirportTool.Application.Contracts.Validators;
 using AirportTool.Application.Dtos.Schedules;
 using AirportTool.Application.Exceptions;
-using AirportTool.Application.Validators;
 using AirportTool.Domain.Contracts;
 using AirportTool.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
-using System.Threading;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AirportTool.Application.Services
 {
@@ -29,106 +26,167 @@ namespace AirportTool.Application.Services
             _schedulesValidator = schedulesValidator;
         }
 
-        public async Task<ScheduleDetailedResponseDto> GetScheduleById(int id, CancellationToken cancellationToken)
+        public async Task<ScheduleDetailedResponseDto> GetScheduleById(
+            int id,
+            CancellationToken cancellationToken)
         {
-            var schedule = await _unitOfWork.Schedules.GetDetailedScheduleByIdAsync(id, cancellationToken);
+            var schedule = await _unitOfWork.Schedules.GetDetailedScheduleByIdAsync(
+                id,
+                cancellationToken);
 
             if (schedule == null)
             {
-                throw new NotFoundException($"Schedule with ID {id} not found.");
+                throw new ResourceNotFoundException($"Schedule with ID {id} not found.");
             }
 
             return _schedulesMapper.MapToDetailedResponseDto(schedule);
         }
 
-        public async Task<List<ScheduleResponseDto>> GetSchedulesByRouteAndDateAsync(string origin, string destination, DateOnly date, CancellationToken cancellationToken)
+        public async Task<List<ScheduleResponseDto>> GetSchedulesByRouteAndDateAsync(
+            string origin,
+            string destination,
+            DateOnly date,
+            CancellationToken cancellationToken)
         {
-            var schedules = await _unitOfWork.Schedules.GetByRouteAndDateAsync(origin, destination, date, cancellationToken);
+            var schedules = await _unitOfWork.Schedules.GetByRouteAndDateAsync(
+                origin,
+                destination,
+                date,
+                cancellationToken);
 
-            var scheduleDtos = schedules.Select(schedules => _schedulesMapper.MapToResponseDto(schedules)).ToList();
+            var scheduleDtos = schedules.Select(_schedulesMapper.MapToResponseDto).ToList();
 
             return scheduleDtos;
         }
 
         public async Task<List<DailyScheduleStatsDto>> GetUpcomingScheduledFlightStatsAsync(CancellationToken cancellationToken)
         {
-            List<DailyScheduleStats> stats = await _unitOfWork.Schedules.GetUpcomingFlightStatsAsync(StatsUpcomingDays, cancellationToken);
+            var stats = await _unitOfWork.Schedules.GetUpcomingFlightStatsAsync(
+                StatsUpcomingDays,
+                cancellationToken);
 
             var statsDtos = stats.Select(_schedulesMapper.MapToDailyStatsDto).ToList();
 
             return statsDtos;
         }
 
-        public async Task<ScheduleDetailedResponseDto> CreateSchedule(ScheduleCreateDto requestDto, CancellationToken cancellationToken)
+        public async Task<ScheduleDetailedResponseDto> CreateSchedule(
+            ScheduleCreateDto requestDto,
+            CancellationToken cancellationToken)
         {
             var scheduleDomain = await _schedulesMapper.MapToDomainAsync(requestDto, cancellationToken);
 
             var createdSchedule = await _unitOfWork.Schedules.AddAsync(scheduleDomain, cancellationToken);
             await _unitOfWork.SaveChangesAsync();
 
-            var detailedSchedule = await _unitOfWork.Schedules.GetDetailedScheduleByIdAsync(createdSchedule.FlightScheduleId, cancellationToken);
+            var detailedSchedule = await _unitOfWork.Schedules.GetDetailedScheduleByIdAsync(
+                createdSchedule.FlightScheduleId,
+                cancellationToken);
 
             return _schedulesMapper.MapToDetailedResponseDto(detailedSchedule);
         }
 
-        public async Task<ImportResultDto> ImportFromJsonStreamAsync(Stream jsonStream, int maxRows, CancellationToken cancellationToken)
+        public async Task<ImportResultDto> ImportFromJsonStreamAsync(
+            Stream jsonStream,
+            int maxRows,
+            CancellationToken cancellationToken)
         {
-            using var reader = new StreamReader(jsonStream);
-            var content = await reader.ReadToEndAsync();
+            
+            ImportResultDto importResult = new();
 
-            List<ScheduleCreateDto> schedules = [];
+            var schedules = await DeserializeJsonAsync(jsonStream, maxRows, cancellationToken);
 
+            importResult.Total = schedules.Count;
+            
+            for (int i = 0; i < schedules.Count; i++)
+            {
+                await ProcessScheduleAsync(
+                    schedules[i],
+                    rowNumber: i + 1,
+                    importResult,
+                    cancellationToken);
+            }
+
+            return importResult;
+        }
+
+        private async Task<List<ScheduleCreateDto>> DeserializeJsonAsync(
+            Stream jsonStream,
+            int maxRows,
+            CancellationToken cancellationToken)
+        {
+            List<ScheduleCreateDto>? schedules = [];
+            
             try
             {
-                schedules = JsonSerializer.Deserialize<List<ScheduleCreateDto>>(content);
+                schedules = await JsonSerializer.DeserializeAsync<List<ScheduleCreateDto>>(
+                    jsonStream,
+                    new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    },
+                    cancellationToken
+                );
             }
-            catch
+            catch (JsonException)
             {
                 throw new ValidationException("Invalid JSON structure.");
             }
 
             _schedulesValidator.ValidateDeserializedJson(schedules, maxRows);
 
+            return schedules;
+        }
 
-            var importResult = new ImportResultDto();
-            importResult.Total = schedules.Count;
-            
-            for (int i = 0; i < schedules.Count; i++)
+        private async Task ProcessScheduleAsync(
+            ScheduleCreateDto schedule,
+            int rowNumber,
+            ImportResultDto importResult,
+            CancellationToken cancellationToken)
+        {
+            if (!_schedulesValidator.IsValidScheduleFormat(
+                schedule,
+                importResult,
+                rowNumber))
+            { return; }
+
+            if (!await _schedulesValidator.IsValidByBussinessRules(
+                schedule,
+                importResult,
+                rowNumber,
+                cancellationToken))
+            { return; }
+
+            try
             {
-                int rowNumber = i + 1;
+                var scheduleDomain = await _schedulesMapper.MapToDomainAsync(
+                    schedule,
+                    cancellationToken);
 
-                var schedule = schedules[i];
+                UpsertResult processedSchedule = await _unitOfWork.Schedules.UpsertAsync(
+                    scheduleDomain,
+                    cancellationToken);
 
-                bool validScheduleFormat = _schedulesValidator.IsValidScheduleFormat(schedule, importResult, rowNumber);
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                bool validScheduleBussinessRules = await _schedulesValidator.IsValidByBussinessRules(schedule, importResult, rowNumber, cancellationToken);
-
-                if(!validScheduleFormat || !validScheduleBussinessRules) continue;
-                
-                try
+                if(processedSchedule is UpsertResult.Created)
                 {
-                    var scheduleDomain = await _schedulesMapper.MapToDomainAsync(schedule, cancellationToken);
+                    importResult.Created++;
+                }
+                else
+                {
+                    importResult.Updated++;
+                }
                     
-                    UpsertResult processedSchedule = await _unitOfWork.Schedules.UpsertAsync(scheduleDomain, cancellationToken);
-
-                    await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-                    if (processedSchedule is UpsertResult.Created)
-                        importResult.Created++;
-                    else
-                        importResult.Updated++;
-                }
-                catch (Exception ex)
-                {
-                    importResult.Errors.Add(new ImportErrorDto
-                    {
-                        Row = rowNumber,
-                        Message = ex.Message
-                    });
-                }
             }
-
-            return importResult;
+            catch (Exception ex)
+            {
+                importResult.Errors.Add(new ImportErrorDto
+                {
+                    Row = rowNumber,
+                    Message = ex.Message
+                });
+            }
         }
     }
 }

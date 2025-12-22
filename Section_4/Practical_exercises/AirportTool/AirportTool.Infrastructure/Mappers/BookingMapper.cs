@@ -1,10 +1,6 @@
 ﻿using AirportTool.Domain.Entities;
+using AirportTool.Domain.Enums;
 using AirportTool.Infrastructure.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AirportTool.Infrastructure.Mappers
 {
@@ -22,7 +18,7 @@ namespace AirportTool.Infrastructure.Mappers
                 PassengerEmail = booking.PassengerEmail,
                 ConfirmationCode = booking.ConfirmationCode,
                 Quantity = booking.Quantity,
-                Status = booking.Status,
+                Status = (BookingStatus)booking.Status,
                 CreatedUtc = booking.CreatedUtc,
                 Ticket = booking.Ticket?.ToDomain(),
             };
@@ -35,16 +31,14 @@ namespace AirportTool.Infrastructure.Mappers
             if (existingBooking == null)
             {
                 existingBooking = new Booking();
-                existingBooking.BookingId = bookingDomain.BookingId;
             }
 
-            existingBooking.BookingId = bookingDomain.BookingId;
             existingBooking.TicketId = bookingDomain.TicketId;
             existingBooking.PassengerFullName = bookingDomain.PassengerFullName;
             existingBooking.PassengerEmail = bookingDomain.PassengerEmail;
             existingBooking.ConfirmationCode = bookingDomain.ConfirmationCode;
             existingBooking.Quantity = bookingDomain.Quantity;
-            existingBooking.Status = bookingDomain.Status;
+            existingBooking.Status = (byte)bookingDomain.Status;
             existingBooking.CreatedUtc = bookingDomain.CreatedUtc;
             existingBooking.Ticket = bookingDomain.Ticket?.ToDbModel();
 

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AirportTool.Domain.Enums;
 
 namespace AirportTool.Application.Dtos.Schedules
 {
@@ -19,6 +15,6 @@ namespace AirportTool.Application.Dtos.Schedules
         public string GateCode { get; set; }
         public string AircraftTailNumber { get; set; }
 
-        public byte Status { get; set; }
+        public ScheduleStatus Status { get; set; }
     }
 }
