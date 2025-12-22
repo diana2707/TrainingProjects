@@ -15,8 +15,5 @@ namespace AirportTool.Domain.Entities
         public string? Country { get; set; }
 
         public string TimeZone { get; set; } = null!;
-
-        //should keep?
-        //public List<GateDomain> Gates { get; set; } = [];
     }
 }

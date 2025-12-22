@@ -1,6 +1,7 @@
 ﻿using AirportTool.Application.Contracts;
 using AirportTool.Application.Dtos.Flights;
 using AirportTool.Application.Dtos.Schedules;
+using AirportTool.Application.Paging;
 using AirportTool.Application.Services;
 using AirportTool.WebApi.Settings;
 using Microsoft.AspNetCore.Mvc;
@@ -17,10 +18,10 @@ namespace AirportTool.WebApi.Controllers
 
         public SchedulesController(
             ISchedulesService schedulesService,
-            IOptions<ImportSettings> settings)
+            IOptions<ImportSettings> importSettings)
         {
             _schedulesService = schedulesService;
-            _importSettings = settings.Value;
+            _importSettings = importSettings.Value;
         }
 
         // GET api/schedules/{id}
@@ -37,24 +38,26 @@ namespace AirportTool.WebApi.Controllers
             return Ok(schedule);
         }
 
-        // GET: api/schedules
         [HttpGet]
-        [ProducesResponseType(typeof(List<FlightResponseDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PagedResult<ScheduleResponseDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<ScheduleResponseDto>>> GetSchedules(
+        public async Task<ActionResult<PagedResult<ScheduleResponseDto>>> GetSchedules(
             [FromQuery] string origin,
             [FromQuery] string destination,
             [FromQuery] DateOnly date,
+            [FromQuery] PagingRequest paging,
             CancellationToken cancellationToken)
         {
-            var flights = await _schedulesService.GetSchedulesByRouteAndDateAsync(
+            var result = await _schedulesService.GetSchedulesByRouteAndDateAsync(
                 origin,
                 destination,
                 date,
+                paging,
                 cancellationToken);
 
-            return Ok(flights);
+            return Ok(result);
         }
+
 
         // GET: api/schedules/stats/upcoming
         [HttpGet("stats/upcoming")]
@@ -72,7 +75,9 @@ namespace AirportTool.WebApi.Controllers
         [ProducesResponseType(typeof(ImportResultDto), StatusCodes.Status207MultiStatus)]
         [ProducesResponseType(typeof(ImportResultDto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ImportResultDto>> Import(IFormFile file, CancellationToken cancellationToken)
+        public async Task<ActionResult<ImportResultDto>> Import(
+            IFormFile file,
+            CancellationToken cancellationToken)
         {
             if (file == null || file.Length == 0)
             {

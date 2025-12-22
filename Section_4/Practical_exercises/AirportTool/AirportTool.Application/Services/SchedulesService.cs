@@ -2,8 +2,10 @@
 using AirportTool.Application.Contracts.Validators;
 using AirportTool.Application.Dtos.Schedules;
 using AirportTool.Application.Exceptions;
+using AirportTool.Application.Paging;
 using AirportTool.Domain.Contracts;
 using AirportTool.Domain.Enums;
+using Microsoft.Extensions.Options;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 
@@ -15,15 +17,18 @@ namespace AirportTool.Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISchedulesMapper _schedulesMapper;
         private readonly ISchedulesValidator _schedulesValidator;
+        private readonly PagingOptions _pagingOptions;
 
         public SchedulesService(
             IUnitOfWork unitOfWork,
             ISchedulesMapper schedulesMapper,
-            ISchedulesValidator schedulesValidator)
+            ISchedulesValidator schedulesValidator,
+            IOptions<PagingOptions> pagingOptions)
         {
             _unitOfWork = unitOfWork;
             _schedulesMapper = schedulesMapper;
             _schedulesValidator = schedulesValidator;
+            _pagingOptions = pagingOptions.Value;
         }
 
         public async Task<ScheduleDetailedResponseDto> GetScheduleById(
@@ -42,21 +47,31 @@ namespace AirportTool.Application.Services
             return _schedulesMapper.MapToDetailedResponseDto(schedule);
         }
 
-        public async Task<List<ScheduleResponseDto>> GetSchedulesByRouteAndDateAsync(
+        public async Task<PagedResult<ScheduleResponseDto>> GetSchedulesByRouteAndDateAsync(
             string origin,
             string destination,
             DateOnly date,
+            PagingRequest pagingRequest,
             CancellationToken cancellationToken)
         {
+            var paging = PagingHelper.Resolve(pagingRequest, _pagingOptions);
+
             var schedules = await _unitOfWork.Schedules.GetByRouteAndDateAsync(
                 origin,
                 destination,
                 date,
+                paging.Skip,
+                paging.Take,
                 cancellationToken);
 
             var scheduleDtos = schedules.Select(_schedulesMapper.MapToResponseDto).ToList();
 
-            return scheduleDtos;
+            return new PagedResult<ScheduleResponseDto>
+            {
+                Items = scheduleDtos,
+                PageNumber = paging.PageNumber,
+                PageSize = paging.PageSize,
+            };
         }
 
         public async Task<List<DailyScheduleStatsDto>> GetUpcomingScheduledFlightStatsAsync(CancellationToken cancellationToken)

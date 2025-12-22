@@ -3,6 +3,7 @@ using AirportTool.Application.Contracts.Mappers;
 using AirportTool.Application.Contracts.Services;
 using AirportTool.Application.Contracts.Validators;
 using AirportTool.Application.Mappers;
+using AirportTool.Application.Paging;
 using AirportTool.Application.Services;
 using AirportTool.Application.Validators;
 using AirportTool.Domain.Contracts;
@@ -13,7 +14,6 @@ using AirportTool.Infrastructure.Utils;
 using AirportTool.WebApi.Middleware;
 using AirportTool.WebApi.Settings;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 

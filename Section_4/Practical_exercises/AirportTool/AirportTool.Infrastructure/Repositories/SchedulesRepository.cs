@@ -77,9 +77,16 @@ namespace AirportTool.Infrastructure.Repositories
             return schedule != null ? schedule.ToDomain() : null;
         }
 
-        public async Task<List<FlightScheduleDomain>> GetByRouteAndDateAsync(string origin, string destination, DateOnly date, CancellationToken cancellationToken)
+        public async Task<List<FlightScheduleDomain>> GetByRouteAndDateAsync(
+            string origin,
+            string destination,
+            DateOnly date,
+            int skip,
+            int take,
+            CancellationToken cancellationToken)
         {
-            var dateUtc = date.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc);
+            var start = date.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc);
+            var end = start.AddDays(1);
 
             var schedules = await _dbContext.FlightSchedules
                 .Include(s => s.Flight)
@@ -87,8 +94,11 @@ namespace AirportTool.Infrastructure.Repositories
                 .Where(s => s.Flight != null &&
                             s.Flight.OriginAirport.IATACode == origin &&
                             s.Flight.DestinationAirport.IATACode == destination &&
-                            s.ScheduledDepartureUtc >= dateUtc &&
-                            s.ScheduledDepartureUtc < dateUtc.AddDays(1))
+                            s.ScheduledDepartureUtc >= start &&
+                            s.ScheduledDepartureUtc < end)
+                .OrderBy(s => s.ScheduledDepartureUtc)
+                .Skip(skip)
+                .Take(take)
                 .ToListAsync(cancellationToken);
 
             return schedules.Select(FlightScheduleMapper.ToDomain).ToList();
