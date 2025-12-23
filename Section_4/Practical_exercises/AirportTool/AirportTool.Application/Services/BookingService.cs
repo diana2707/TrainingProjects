@@ -4,6 +4,7 @@ using AirportTool.Application.Contracts.Validators;
 using AirportTool.Application.Dtos.Booking;
 using AirportTool.Application.Exceptions;
 using AirportTool.Application.Utils;
+using AirportTool.Application.Validators;
 using AirportTool.Domain.Contracts;
 using AirportTool.Domain.Entities;
 using AirportTool.Domain.Enums;
@@ -56,6 +57,8 @@ namespace AirportTool.Application.Services
             string confirmationCode,
             CancellationToken cancellationToken)
         {
+            FormatValidator.ValidateConfirmationCode(confirmationCode);
+
             var booking = await _unitOfWork.Bookings.GetByConfirmationCodeAsync(
                 confirmationCode,
                 cancellationToken);
@@ -75,6 +78,8 @@ namespace AirportTool.Application.Services
             string confirmationCode,
             CancellationToken cancellationToken)
         {
+            FormatValidator.ValidateConfirmationCode(confirmationCode);
+
             var booking = await _unitOfWork.Bookings.GetByConfirmationCodeAsync(
                 confirmationCode,
                 cancellationToken);

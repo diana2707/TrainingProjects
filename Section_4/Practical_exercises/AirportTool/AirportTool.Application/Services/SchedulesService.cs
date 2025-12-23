@@ -3,6 +3,7 @@ using AirportTool.Application.Contracts.Validators;
 using AirportTool.Application.Dtos.Schedules;
 using AirportTool.Application.Exceptions;
 using AirportTool.Application.Paging;
+using AirportTool.Application.Validators;
 using AirportTool.Domain.Contracts;
 using AirportTool.Domain.Enums;
 using Microsoft.Extensions.Options;
@@ -54,6 +55,9 @@ namespace AirportTool.Application.Services
             PagingRequest pagingRequest,
             CancellationToken cancellationToken)
         {
+            FormatValidator.ValidateAirportIataCode(origin);
+            FormatValidator.ValidateAirportIataCode(destination);
+
             var paging = PagingHelper.Resolve(pagingRequest, _pagingOptions);
 
             var schedules = await _unitOfWork.Schedules.GetByRouteAndDateAsync(

@@ -1,7 +1,9 @@
 ﻿using AirportTool.Application.Contracts.Validators;
 using AirportTool.Application.Dtos.Schedules;
+using AirportTool.Application.Exceptions;
 using AirportTool.Domain.Contracts;
 using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace AirportTool.Application.Validators
 {
@@ -22,6 +24,8 @@ namespace AirportTool.Application.Validators
             _gateRepository = gateRepository;
             _schedulesRepository = schedulesRepository;
         }
+
+        
 
         public void ValidateDeserializedJson(
             List<ScheduleCreateDto> schedules,

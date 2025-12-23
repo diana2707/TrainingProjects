@@ -1,9 +1,12 @@
 ﻿using AirportTool.Application.Contracts.Mappers;
 using AirportTool.Application.Contracts.Services;
+using AirportTool.Application.Contracts.Validators;
 using AirportTool.Application.Dtos.Flights;
 using AirportTool.Application.Exceptions;
 using AirportTool.Application.Mappers;
+using AirportTool.Application.Validators;
 using AirportTool.Domain.Contracts;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AirportTool.Application.Services
 {
@@ -21,6 +24,8 @@ namespace AirportTool.Application.Services
 
         public async Task<FlightResponseDto> GetFlightByNumberAsync(string number, CancellationToken cancellationToken)
         {
+            FormatValidator.ValidateFlightNumber(number);
+
             var flight = await _unitOfWork.Flights.GetByNumberAsync(number, cancellationToken);
 
             if (flight == null)
@@ -77,6 +82,9 @@ namespace AirportTool.Application.Services
 
         public async Task<List<FlightResponseDto>> GetFlightsByRouteAsync(string origin, string destination, CancellationToken cancellationToken)
         {
+            FormatValidator.ValidateAirportIataCode(origin);
+            FormatValidator.ValidateAirportIataCode(destination);
+
             var flights = await _unitOfWork.Flights.GetByRouteAsync(origin, destination, cancellationToken);
 
             var flightsDtos = flights.Select(flight => _flightMapper.MapToFlightResponseDto(flight)).ToList();
