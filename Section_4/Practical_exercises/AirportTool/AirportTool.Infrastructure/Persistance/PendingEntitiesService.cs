@@ -1,7 +1,9 @@
 ﻿
+using AirportTool.Infrastructure.Persistance;
+
 namespace AirportTool.Infrastructure.Utils
 {
-    public class PendingEntitiesService
+    public class PendingEntitiesService : IPendingEntitiesService
     {
         private readonly List<IPendingPair> _pending = new();
 

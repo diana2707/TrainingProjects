@@ -3,6 +3,7 @@ using AirportTool.Domain.Entities;
 using AirportTool.Domain.Enums;
 using AirportTool.Infrastructure.Mappers;
 using AirportTool.Infrastructure.Models;
+using AirportTool.Infrastructure.Persistance;
 using AirportTool.Infrastructure.Services;
 using AirportTool.Infrastructure.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -12,11 +13,11 @@ namespace AirportTool.Infrastructure.Repositories
     public class SchedulesRepository : ISchedulesRepository
     {
         private readonly AirportDbContext _dbContext;
-        private readonly PendingEntitiesService _pendingEntitiesService;
+        private readonly IPendingEntitiesService _pendingEntitiesService;
 
         public SchedulesRepository(
             AirportDbContext dbContext,
-            PendingEntitiesService pendingEntitiesService)
+            IPendingEntitiesService pendingEntitiesService)
         {
             _dbContext = dbContext;
             _pendingEntitiesService = pendingEntitiesService;

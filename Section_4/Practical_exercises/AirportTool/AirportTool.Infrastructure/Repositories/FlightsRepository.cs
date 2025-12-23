@@ -1,6 +1,7 @@
 ﻿using AirportTool.Domain.Contracts;
 using AirportTool.Domain.Entities;
 using AirportTool.Infrastructure.Mappers;
+using AirportTool.Infrastructure.Persistance;
 using AirportTool.Infrastructure.Services;
 using AirportTool.Infrastructure.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -10,11 +11,11 @@ namespace AirportTool.Infrastructure.Repositories
     public class FlightsRepository : IFlightsRepository
     {
         private readonly AirportDbContext _context;
-        private readonly PendingEntitiesService _pendingEntitiesService;
+        private readonly IPendingEntitiesService _pendingEntitiesService;
 
         public FlightsRepository(
             AirportDbContext context,
-            PendingEntitiesService pendingEntitiesService)
+            IPendingEntitiesService pendingEntitiesService)
         {
             _context = context;
             _pendingEntitiesService = pendingEntitiesService;

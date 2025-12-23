@@ -12,11 +12,11 @@ namespace AirportTool.Infrastructure.Repositories
     public class BookingsRepository : IBookingRepository
     {
         private readonly AirportDbContext _dbContext;
-        private readonly PendingEntitiesService _pending;
+        private readonly IPendingEntitiesService _pending;
 
         public BookingsRepository(
             AirportDbContext dbContext,
-            PendingEntitiesService pendingEntitiesService)
+            IPendingEntitiesService pendingEntitiesService)
         {
             _dbContext = dbContext;
             _pending = pendingEntitiesService;

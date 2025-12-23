@@ -19,6 +19,7 @@ public static class DependencyInjection
             options.UseSqlServer(configuration.GetConnectionString("AirportDb")));
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IPendingEntitiesService, PendingEntitiesService>();
 
         services.AddScoped<IFlightsRepository, FlightsRepository>();
         services.AddScoped<IAircraftRepository, AircraftsRepository>();

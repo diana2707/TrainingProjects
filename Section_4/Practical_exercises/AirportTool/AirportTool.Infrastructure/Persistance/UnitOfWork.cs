@@ -7,7 +7,7 @@ namespace AirportTool.Infrastructure.Persistance
     public class UnitOfWork : IUnitOfWork
     {
         private readonly AirportDbContext _context;
-        private readonly PendingEntitiesService _pendingEntitiesService;
+        private readonly IPendingEntitiesService _pendingEntitiesService;
         private readonly IAircraftRepository _aircraftRepository;
         private readonly IAirlineRepository _airlineRepository;
         private readonly IAirportRepository _airportRepository;
@@ -17,7 +17,7 @@ namespace AirportTool.Infrastructure.Persistance
         private readonly IBookingRepository _bookingRepository;
 
         public UnitOfWork(AirportDbContext context,
-            PendingEntitiesService pendingEntitiesService,
+            IPendingEntitiesService pendingEntitiesService,
             IAircraftRepository aircraftRepository,
             IAirlineRepository airlineRepository,
             IAirportRepository airpostRepository,

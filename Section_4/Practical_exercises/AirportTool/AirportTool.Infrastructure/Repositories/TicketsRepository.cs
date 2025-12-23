@@ -5,18 +5,19 @@ using AirportTool.Infrastructure.Models;
 using AirportTool.Infrastructure.Services;
 using AirportTool.Infrastructure.Utils;
 using AirportTool.Infrastructure.Mappers;
+using AirportTool.Infrastructure.Persistance;
 
 namespace AirportTool.Infrastructure.Repositories
 {
     public class TicketsRepository : ITicketsRepository
     {
         private readonly AirportDbContext _context;
-        private readonly PendingEntitiesService _pending;
+        private readonly IPendingEntitiesService _pending;
 
 
         public TicketsRepository(
             AirportDbContext context,
-            PendingEntitiesService pending)
+            IPendingEntitiesService pending)
         {
             _context = context;
             _pending = pending;
