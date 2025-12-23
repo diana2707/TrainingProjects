@@ -15,7 +15,9 @@ namespace AirportTool.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<GateDomain> GetByCodeAndAirportIdAsync(string gateCode, int airportId)
+        public async Task<GateDomain?> GetByCodeAndAirportIdAsync(
+            string gateCode,
+            int airportId)
         {
             if (string.IsNullOrWhiteSpace(gateCode))
             {
@@ -23,14 +25,10 @@ namespace AirportTool.Infrastructure.Repositories
             }
 
             var gate = await _context.Gates
+                .AsNoTracking()
                 .FirstOrDefaultAsync(g => g.Code == gateCode && g.AirportId == airportId);
     
-            if (gate == null)
-            {
-                return null;
-            }
-
-            return gate.ToDomain();
+            return gate?.ToDomain();
         }
     }
 }

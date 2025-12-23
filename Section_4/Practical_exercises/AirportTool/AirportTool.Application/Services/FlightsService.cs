@@ -6,7 +6,6 @@ using AirportTool.Application.Exceptions;
 using AirportTool.Application.Mappers;
 using AirportTool.Application.Validators;
 using AirportTool.Domain.Contracts;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AirportTool.Application.Services
 {
@@ -78,18 +77,6 @@ namespace AirportTool.Application.Services
 
 
             return _flightMapper.MapToFlightResponseDto(updatedFlight);
-        }
-
-        public async Task<List<FlightResponseDto>> GetFlightsByRouteAsync(string origin, string destination, CancellationToken cancellationToken)
-        {
-            FormatValidator.ValidateAirportIataCode(origin);
-            FormatValidator.ValidateAirportIataCode(destination);
-
-            var flights = await _unitOfWork.Flights.GetByRouteAsync(origin, destination, cancellationToken);
-
-            var flightsDtos = flights.Select(flight => _flightMapper.MapToFlightResponseDto(flight)).ToList();
-
-            return flightsDtos;
         }
 
         public async Task DeleteFlight(int id, CancellationToken cancellationToken)

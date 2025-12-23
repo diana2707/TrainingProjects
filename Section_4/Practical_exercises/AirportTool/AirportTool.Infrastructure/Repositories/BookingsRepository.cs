@@ -14,13 +14,17 @@ namespace AirportTool.Infrastructure.Repositories
         private readonly AirportDbContext _dbContext;
         private readonly PendingEntitiesService _pending;
 
-        public BookingsRepository(AirportDbContext dbContext, PendingEntitiesService pendingEntitiesService)
+        public BookingsRepository(
+            AirportDbContext dbContext,
+            PendingEntitiesService pendingEntitiesService)
         {
             _dbContext = dbContext;
             _pending = pendingEntitiesService;
         }
 
-        public async Task<BookingDomain> AddAsync(BookingDomain bookingDomain, CancellationToken cancellationToken)
+        public async Task<BookingDomain> AddAsync(
+            BookingDomain bookingDomain,
+            CancellationToken cancellationToken)
         {
             if (bookingDomain == null)
             {
@@ -40,15 +44,21 @@ namespace AirportTool.Infrastructure.Repositories
             return bookingDomain;
         }
 
-        public async Task<BookingDomain?> GetByConfirmationCodeAsync(string confirmationCode, CancellationToken cancellationToken)
+        public async Task<BookingDomain?> GetByConfirmationCodeAsync(
+            string confirmationCode, 
+            CancellationToken cancellationToken)
         {
             var booking = await _dbContext.Bookings
+                .AsNoTracking()
                 .FirstOrDefaultAsync(b => b.ConfirmationCode == confirmationCode, cancellationToken);
 
             return booking?.ToDomain();
         }
 
-        public async Task UpdateStatusAsync(string confirmationCode, BookingStatus status, CancellationToken cancellationToken)
+        public async Task UpdateStatusAsync(
+            string confirmationCode, 
+            BookingStatus status, 
+            CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(confirmationCode))
             {

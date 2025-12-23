@@ -17,7 +17,9 @@ namespace AirportTool.Infrastructure.Repositories
 
         public async Task<AirportDomain?> GetByIataAsync(string iataCode)
         {
-            var airport = await _context.Airports.FirstOrDefaultAsync(a => a.IATACode == iataCode);
+            var airport = await _context.Airports
+                .AsNoTracking()
+                .FirstOrDefaultAsync(a => a.IATACode == iataCode);
 
             return airport?.ToDomain();
         }

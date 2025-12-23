@@ -17,14 +17,19 @@ namespace AirportTool.Infrastructure.Repositories
 
         public async Task<string?> GetTailNumberByIdAsync(int id)
         {
-            var aircraft = await _context.Aircraft.FindAsync(id);
+            var tailNumber = await _context.Aircraft
+                .AsNoTracking()
+                .Where(a => a.AircraftId == id)
+                .Select(a => a.TailNumber)
+                .FirstOrDefaultAsync();
 
-            return aircraft?.TailNumber ?? null;
+            return tailNumber;
         }
 
         public async Task<AircraftDomain?> GetByTailNumberAsync(string tailNumber)
         {
             var aircraft = await _context.Aircraft
+                .AsNoTracking()
                 .FirstOrDefaultAsync(a => a.TailNumber == tailNumber);
 
             return aircraft?.ToDomain();

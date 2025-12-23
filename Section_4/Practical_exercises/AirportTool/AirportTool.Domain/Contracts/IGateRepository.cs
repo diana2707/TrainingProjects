@@ -4,6 +4,6 @@ namespace AirportTool.Domain.Contracts
 {
     public interface IGateRepository
     {
-        public Task<GateDomain> GetByCodeAndAirportIdAsync(string gateCode, int airportId);
+        public Task<GateDomain?> GetByCodeAndAirportIdAsync(string gateCode, int airportId);
     }
 }

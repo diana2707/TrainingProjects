@@ -14,13 +14,17 @@ namespace AirportTool.Infrastructure.Repositories
         private readonly AirportDbContext _dbContext;
         private readonly PendingEntitiesService _pendingEntitiesService;
 
-        public SchedulesRepository(AirportDbContext dbContext, PendingEntitiesService pendingEntitiesService)
+        public SchedulesRepository(
+            AirportDbContext dbContext,
+            PendingEntitiesService pendingEntitiesService)
         {
             _dbContext = dbContext;
             _pendingEntitiesService = pendingEntitiesService;
         }
 
-        public async Task<FlightScheduleDomain> AddAsync(FlightScheduleDomain scheduleDomain, CancellationToken cancellationToken)
+        public async Task<FlightScheduleDomain> AddAsync(
+            FlightScheduleDomain scheduleDomain,
+            CancellationToken cancellationToken)
         {
             if (scheduleDomain == null)
             {
@@ -39,7 +43,9 @@ namespace AirportTool.Infrastructure.Repositories
             return scheduleDomain;
         }
 
-        public async Task<UpsertResult> UpsertAsync(FlightScheduleDomain schedule, CancellationToken cancellationToken)
+        public async Task<UpsertResult> UpsertAsync(
+            FlightScheduleDomain schedule,
+            CancellationToken cancellationToken)
         {
             if (schedule == null)
             {
@@ -61,7 +67,9 @@ namespace AirportTool.Infrastructure.Repositories
             }
         }
 
-        public async Task<FlightScheduleDomain?> GetDetailedScheduleByIdAsync(int id, CancellationToken cancellationToken)
+        public async Task<FlightScheduleDomain?> GetDetailedScheduleByIdAsync(
+            int id,
+            CancellationToken cancellationToken)
         {
             var schedule = await _dbContext.FlightSchedules
                 .Include(s => s.Flight)
@@ -72,9 +80,10 @@ namespace AirportTool.Infrastructure.Repositories
                     .ThenInclude(f => f.DestinationAirport)
                 .Include(s => s.Gate)
                 .Include(s => s.AssignedAircraft)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(s => s.FlightScheduleId == id, cancellationToken);
             
-            return schedule != null ? schedule.ToDomain() : null;
+            return schedule?.ToDomain();
         }
 
         public async Task<List<FlightScheduleDomain>> GetByRouteAndDateAsync(
@@ -99,27 +108,37 @@ namespace AirportTool.Infrastructure.Repositories
                 .OrderBy(s => s.ScheduledDepartureUtc)
                 .Skip(skip)
                 .Take(take)
+                .AsNoTracking()
                 .ToListAsync(cancellationToken);
 
             return schedules.Select(FlightScheduleMapper.ToDomain).ToList();
         }
 
-        public async Task<List<DailyScheduleStats>> GetUpcomingFlightStatsAsync(int upcomingDays, CancellationToken cancellationToken)
+        public async Task<List<DailyScheduleStats>> GetUpcomingFlightStatsAsync(
+            int upcomingDays,
+            CancellationToken cancellationToken)
         {
-            var untilDate = DateTime.UtcNow.AddDays(upcomingDays);
+            var now = DateTime.UtcNow;
+            var untilDate = now.AddDays(upcomingDays);
 
             return await _dbContext.FlightSchedules
-                .Where(s => s.ScheduledDepartureUtc >= DateTime.UtcNow && s.ScheduledDepartureUtc < untilDate)
+                .Where(s => s.ScheduledDepartureUtc >= now && s.ScheduledDepartureUtc < untilDate)
                 .GroupBy(s => new DateOnly(s.ScheduledDepartureUtc.Year, s.ScheduledDepartureUtc.Month, s.ScheduledDepartureUtc.Day))
                 .Select(g => new DailyScheduleStats
                 {
                     Date = g.Key,
                     TotalFlights = g.Count()
                 })
+                .AsNoTracking()
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<bool> HasGateConflictAsync(int gateId, DateTime start, DateTime end, int flightId, CancellationToken cancellationToken)
+        public async Task<bool> HasGateConflictAsync(
+            int gateId,
+            DateTime start,
+            DateTime end,
+            int flightId,
+            CancellationToken cancellationToken)
         {
             var excludedSchedule = await GetByFlightIdAndDepartureAsync(flightId, start, cancellationToken);
             
@@ -134,7 +153,10 @@ namespace AirportTool.Infrastructure.Repositories
                     cancellationToken);
         }
 
-        private async Task<FlightSchedule?> GetByFlightIdAndDepartureAsync(int flightId, DateTime scheduledDepartureUtc, CancellationToken cancellationToken)
+        private async Task<FlightSchedule?> GetByFlightIdAndDepartureAsync(
+            int flightId,
+            DateTime scheduledDepartureUtc,
+            CancellationToken cancellationToken)
         {
             return await _dbContext.FlightSchedules
                 .FirstOrDefaultAsync(s =>

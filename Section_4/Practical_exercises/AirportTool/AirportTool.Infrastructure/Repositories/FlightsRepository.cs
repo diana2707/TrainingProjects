@@ -12,7 +12,9 @@ namespace AirportTool.Infrastructure.Repositories
         private readonly AirportDbContext _context;
         private readonly PendingEntitiesService _pendingEntitiesService;
 
-        public FlightsRepository(AirportDbContext context, PendingEntitiesService pendingEntitiesService)
+        public FlightsRepository(
+            AirportDbContext context,
+            PendingEntitiesService pendingEntitiesService)
         {
             _context = context;
             _pendingEntitiesService = pendingEntitiesService;
@@ -39,7 +41,10 @@ namespace AirportTool.Infrastructure.Repositories
             return flightDomain;
         }
 
-        public async Task<FlightDomain> UpdateAsync(int id, FlightDomain flightDomain, CancellationToken cancellationToken)
+        public async Task<FlightDomain> UpdateAsync(
+            int id,
+            FlightDomain flightDomain,
+            CancellationToken cancellationToken)
         {
             if (flightDomain == null)
             {
@@ -55,7 +60,9 @@ namespace AirportTool.Infrastructure.Repositories
             return flightDomain;
         }
 
-        public async Task DeleteFlightAsync(int id, CancellationToken cancellationToken)
+        public async Task DeleteFlightAsync(
+            int id,
+            CancellationToken cancellationToken)
         {
             var flight = await _context.Flights.FindAsync(id, cancellationToken);
             
@@ -67,49 +74,51 @@ namespace AirportTool.Infrastructure.Repositories
             _context.Flights.Remove(flight);
         }
 
-        public async Task<FlightDomain?> GetByIdAsync(int id, CancellationToken cancellationToken)
+        public async Task<FlightDomain?> GetByIdAsync(
+            int id,
+            CancellationToken cancellationToken)
         {
-            var flight = await _context.Flights.FindAsync([id], cancellationToken);
+            var flight = await _context.Flights
+                .AsNoTracking()
+                .FirstOrDefaultAsync(flight => flight.FlightId == id, cancellationToken);
 
             return flight?.ToDomain();
         }
 
-        public async Task<List<FlightDomain>> GetByRouteAsync(string originIata, string destinationIata, CancellationToken cancellationToken)
+        public async Task<FlightDomain?> GetByNumberAsync(
+            string number,
+            CancellationToken cancellationToken)
         {
-            var flights = await _context.Flights.Where(flight => flight.OriginAirport.IATACode == originIata
-                                                                && flight.DestinationAirport.IATACode == destinationIata)
-                                                .Include(flight => flight.Airline)
-                                                .Include(flight => flight.DefaultAircraft)
-                                                .Include(flight => flight.OriginAirport)
-                                                .Include(flight => flight.DestinationAirport)
-                                                .ToListAsync(cancellationToken);
-
-            return flights.Select(FlightMapper.ToDomain).ToList();
-        }
-
-        public async Task<FlightDomain?> GetByNumberAsync(string number, CancellationToken cancellationToken)
-        {
-            var flight = await _context.Flights.FirstOrDefaultAsync(flight => flight.FlightNumber == number, cancellationToken);
+            var flight = await _context.Flights
+                .AsNoTracking()
+                .FirstOrDefaultAsync(flight => flight.FlightNumber == number, cancellationToken);
 
             return flight != null ? flight.ToDomain() : null;
         }
 
-        public async Task<AirportDomain> GetOriginAirportForFlightAsync(int flightId, CancellationToken cancellationToken)
+        public async Task<AirportDomain?> GetOriginAirportForFlightAsync(
+            int flightId,
+            CancellationToken cancellationToken)
         {
             var flight = await _context.Flights
+                .AsNoTracking()
                 .Include(f => f.OriginAirport)
                 .FirstOrDefaultAsync(f => f.FlightId == flightId, cancellationToken);
 
-            return flight.OriginAirport.ToDomain();
+            return flight?.OriginAirport.ToDomain();
         }
 
-        public async Task<bool> HasDependenciesAsync(int flightId, CancellationToken cancellationToken)
+        public async Task<bool> HasDependenciesAsync(
+            int flightId,
+            CancellationToken cancellationToken)
         {
             return await _context.FlightSchedules
                        .AnyAsync(s => s.FlightId == flightId, cancellationToken);
         }
 
-        public async Task<bool> ExistsAsync(int flightId, CancellationToken cancellationToken)
+        public async Task<bool> ExistsAsync(
+            int flightId,
+            CancellationToken cancellationToken)
         {
             return await _context.Flights
                        .AnyAsync(f => f.FlightId == flightId, cancellationToken);

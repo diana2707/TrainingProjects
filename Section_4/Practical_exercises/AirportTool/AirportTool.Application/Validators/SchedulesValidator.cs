@@ -104,6 +104,9 @@ namespace AirportTool.Application.Validators
             var airport = await _flightRepository.GetOriginAirportForFlightAsync(
                 schedule.FlightId!.Value,
                 cancellationToken);
+
+            if (airport == null) return true;
+
             var gate = await _gateRepository.GetByCodeAndAirportIdAsync(
                 schedule.GateCode,
                 airport.AirportId);

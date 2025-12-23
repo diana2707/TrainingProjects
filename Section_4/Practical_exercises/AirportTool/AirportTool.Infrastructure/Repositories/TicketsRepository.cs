@@ -14,13 +14,17 @@ namespace AirportTool.Infrastructure.Repositories
         private readonly PendingEntitiesService _pending;
 
 
-        public TicketsRepository(AirportDbContext context, PendingEntitiesService pending)
+        public TicketsRepository(
+            AirportDbContext context,
+            PendingEntitiesService pending)
         {
             _context = context;
             _pending = pending;
         }
 
-        public async Task<TicketDomain> AddAsync(TicketDomain ticketDomain, CancellationToken cancellationToken)
+        public async Task<TicketDomain> AddAsync(
+            TicketDomain ticketDomain,
+            CancellationToken cancellationToken)
         {
             if (ticketDomain == null)
             {
@@ -40,18 +44,23 @@ namespace AirportTool.Infrastructure.Repositories
             return ticketDomain;
         }
 
-        public async Task<List<TicketDomain>> GetByFlightIdAsync(int flightId, CancellationToken cancellationToken)
+        public async Task<List<TicketDomain>> GetByFlightIdAsync(
+            int flightId,
+            CancellationToken cancellationToken)
         {
             var tickets = await _context.Flights
                 .Where(f => f.FlightId == flightId)
                 .SelectMany(f => f.FlightSchedules)
                 .SelectMany(fs => fs.Tickets)
+                .AsNoTracking()
                 .ToListAsync(cancellationToken);
 
             return tickets.Select(TicketMapper.ToDomain).ToList();
         }
 
-        public async Task<decimal> GetTicketPriceByIdAsync(long ticketId, CancellationToken cancellationToken)
+        public async Task<decimal> GetTicketPriceByIdAsync(
+            long ticketId,
+            CancellationToken cancellationToken)
         {
             decimal price = await _context.Tickets
                 .Where(t => t.TicketId == ticketId)
@@ -61,7 +70,9 @@ namespace AirportTool.Infrastructure.Repositories
             return price;
         }
 
-        public async Task<int?> GetSeatInventoryByIdAsync(long ticketId, CancellationToken cancellationToken)
+        public async Task<int?> GetSeatInventoryByIdAsync(
+            long ticketId,
+            CancellationToken cancellationToken)
         {
             return await _context.Tickets
                 .Where(t => t.TicketId == ticketId)
@@ -69,7 +80,10 @@ namespace AirportTool.Infrastructure.Repositories
                 .FirstOrDefaultAsync(cancellationToken);
         }
 
-        public async Task<TicketDomain> UpdateInventoryAsync(long ticketId, int seatInventory, CancellationToken cancellationToken)
+        public async Task<TicketDomain?> UpdateInventoryAsync(
+            long ticketId,
+            int seatInventory,
+            CancellationToken cancellationToken)
         {
             var ticket = await _context.Tickets.FindAsync(ticketId , cancellationToken);
 
@@ -81,7 +95,9 @@ namespace AirportTool.Infrastructure.Repositories
         }
 
         
-        public async Task DeleteTicketAsync(long id, CancellationToken cancellationToken)
+        public async Task DeleteTicketAsync(
+            long id,
+            CancellationToken cancellationToken)
         {
             var ticket = await _context.Tickets.FindAsync(id, cancellationToken);
 
@@ -94,13 +110,17 @@ namespace AirportTool.Infrastructure.Repositories
         }
 
 
-        public async Task<bool> HasDependenciesAsync(long ticketId, CancellationToken cancellationToken)
+        public async Task<bool> HasDependenciesAsync(
+            long ticketId,
+            CancellationToken cancellationToken)
         {
             return await _context.Bookings
                        .AnyAsync(s => s.TicketId == ticketId, cancellationToken);
         }
 
-        public async Task<bool> ExistsAsync(long ticketId, CancellationToken cancellationToken)
+        public async Task<bool> ExistsAsync(
+            long ticketId,
+            CancellationToken cancellationToken)
         {
             return await _context.Tickets
                        .AnyAsync(f => f.TicketId == ticketId, cancellationToken);
