@@ -3,7 +3,6 @@ using AirportTool.Domain.Entities;
 using AirportTool.Domain.Enums;
 using AirportTool.Infrastructure.Mappers;
 using AirportTool.Infrastructure.Models;
-using AirportTool.Infrastructure.Persistance;
 using AirportTool.Infrastructure.Services;
 using AirportTool.Infrastructure.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -13,11 +12,11 @@ namespace AirportTool.Infrastructure.Repositories
     public class SchedulesRepository : ISchedulesRepository
     {
         private readonly AirportDbContext _dbContext;
-        private readonly IPendingEntitiesService _pendingEntitiesService;
+        private readonly PendingEntitiesService _pendingEntitiesService;
 
         public SchedulesRepository(
             AirportDbContext dbContext,
-            IPendingEntitiesService pendingEntitiesService)
+            PendingEntitiesService pendingEntitiesService)
         {
             _dbContext = dbContext;
             _pendingEntitiesService = pendingEntitiesService;
@@ -83,36 +82,39 @@ namespace AirportTool.Infrastructure.Repositories
                 .Include(s => s.AssignedAircraft)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(s => s.FlightScheduleId == id, cancellationToken);
-            
+
             return schedule?.ToDomain();
         }
 
         public async Task<List<FlightScheduleDomain>> GetByRouteAndDateAsync(
             string origin,
             string destination,
-            DateOnly date,
+            DateOnly? date,
             int skip,
             int take,
             CancellationToken cancellationToken)
         {
-            var start = date.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc);
-            var end = start.AddDays(1);
-
-            var schedules = await _dbContext.FlightSchedules
+            var schedules = _dbContext.FlightSchedules
                 .Include(s => s.Flight)
                     .ThenInclude(f => f.Airline)
                 .Where(s => s.Flight != null &&
                             s.Flight.OriginAirport.IATACode == origin &&
-                            s.Flight.DestinationAirport.IATACode == destination &&
-                            s.ScheduledDepartureUtc >= start &&
-                            s.ScheduledDepartureUtc < end)
-                .OrderBy(s => s.ScheduledDepartureUtc)
-                .Skip(skip)
-                .Take(take)
-                .AsNoTracking()
-                .ToListAsync(cancellationToken);
+                            s.Flight.DestinationAirport.IATACode == destination);
 
-            return schedules.Select(FlightScheduleMapper.ToDomain).ToList();
+            if (date != null)
+            {
+                var start = date?.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc);
+                var end = start?.AddDays(1);
+                schedules.Where(s => s.ScheduledDepartureUtc >= start && s.ScheduledDepartureUtc < end);
+            }
+
+            var results = await schedules.OrderBy(s => s.ScheduledDepartureUtc)
+                 .Skip(skip)
+                 .Take(take)
+                 .AsNoTracking()
+                 .ToListAsync(cancellationToken);
+
+            return results.Select(FlightScheduleMapper.ToDomain).ToList();
         }
 
         public async Task<List<DailyScheduleStats>> GetUpcomingFlightStatsAsync(
@@ -142,22 +144,19 @@ namespace AirportTool.Infrastructure.Repositories
             CancellationToken cancellationToken)
         {
             var excludedSchedule = await GetByFlightIdAndDepartureAsync(flightId, start, cancellationToken);
-            
+
             int? excludedId = excludedSchedule?.FlightScheduleId;
 
             return await _dbContext.FlightSchedules
                 .AnyAsync(s =>
                     s.GateId == gateId &&
                     s.FlightScheduleId != excludedId &&
-                    s.ScheduledDepartureUtc < end && 
+                    s.ScheduledDepartureUtc < end &&
                     start < s.ScheduledArrivalUtc,
                     cancellationToken);
         }
 
-        private async Task<FlightSchedule?> GetByFlightIdAndDepartureAsync(
-            int flightId,
-            DateTime scheduledDepartureUtc,
-            CancellationToken cancellationToken)
+        private async Task<FlightSchedule?> GetByFlightIdAndDepartureAsync(int flightId, DateTime scheduledDepartureUtc, CancellationToken cancellationToken)
         {
             return await _dbContext.FlightSchedules
                 .FirstOrDefaultAsync(s =>

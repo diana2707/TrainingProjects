@@ -44,7 +44,7 @@ namespace AirportTool.WebApi.Controllers
         public async Task<ActionResult<PagedResult<ScheduleResponseDto>>> GetSchedules(
             [FromQuery] string origin,
             [FromQuery] string destination,
-            [FromQuery] DateOnly date,
+            [FromQuery] DateOnly? date,
             [FromQuery] PagingRequest paging,
             CancellationToken cancellationToken)
         {

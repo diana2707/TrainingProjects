@@ -15,15 +15,6 @@ namespace AirportTool.Application.Paging
 
             return new PagingParameters(pageNumber, pageSize);
         }
-
-        //public static IEnumerable<T> Apply<T>(
-        //    IEnumerable<T> source,
-        //    PagingParameters paging)
-        //{
-        //    return source
-        //        .Skip((paging.PageNumber - 1) * paging.PageSize)
-        //        .Take(paging.PageSize);
-        //}
     }
 
 }

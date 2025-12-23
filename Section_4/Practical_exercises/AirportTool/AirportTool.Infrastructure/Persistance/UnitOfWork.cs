@@ -54,7 +54,7 @@ namespace AirportTool.Infrastructure.Persistance
                 pair.Apply();
             }
 
-            _pendingEntitiesService.Clear();
+            //_pendingEntitiesService.Clear();
         }
     }
 }

@@ -51,7 +51,7 @@ namespace AirportTool.Application.Services
         public async Task<PagedResult<ScheduleResponseDto>> GetSchedulesByRouteAndDateAsync(
             string origin,
             string destination,
-            DateOnly date,
+            DateOnly? date,
             PagingRequest pagingRequest,
             CancellationToken cancellationToken)
         {
