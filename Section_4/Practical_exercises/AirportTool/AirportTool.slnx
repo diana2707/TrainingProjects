@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="AirportTool.Application/AirportTool.Application.csproj" />
+  <Project Path="AirportTool.Domain/AirportTool.Domain.csproj" />
+  <Project Path="AirportTool.Infrastructure/AirportTool.Infrastructure.csproj" />
+  <Project Path="AirportTool.Tests/AirportTool.Tests.csproj" />
+  <Project Path="AirportTool.WebApi/AirportTool.WebApi.csproj" />
+</Solution>

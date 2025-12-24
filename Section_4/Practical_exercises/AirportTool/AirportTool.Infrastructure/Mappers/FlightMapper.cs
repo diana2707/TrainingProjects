@@ -1,0 +1,47 @@
+﻿using AirportTool.Domain.Entities;
+using AirportTool.Infrastructure.Models;
+
+namespace AirportTool.Infrastructure.Mappers
+{
+    public static class FlightMapper
+    {
+        public static FlightDomain ToDomain(this Flight flight)
+        {
+            if (flight == null) return null;
+
+            return new FlightDomain
+            {
+                FlightId = flight.FlightId,
+                AirlineId = flight.AirlineId,
+                FlightNumber = flight.FlightNumber,
+                OriginAirportId = flight.OriginAirportId,
+                DestinationAirportId = flight.DestinationAirportId,
+                DefaultAircraftId = flight.DefaultAircraftId,
+                Airline = flight.Airline?.ToDomain(),
+                OriginAirport = flight.OriginAirport?.ToDomain(),
+                DestinationAirport = flight.DestinationAirport?.ToDomain(),
+                DefaultAircraft = flight.DefaultAircraft?.ToDomain(),
+                IsActive = flight.IsActive,
+            };
+        }
+
+        public static Flight ToDbModel(this FlightDomain flightDomain, Flight existingFlight = null)
+        {
+            if (flightDomain == null) return null;
+
+            if (existingFlight == null)
+            {
+                existingFlight = new Flight();
+            }
+
+            existingFlight.AirlineId = flightDomain.AirlineId;
+            existingFlight.FlightNumber = flightDomain.FlightNumber;
+            existingFlight.OriginAirportId = flightDomain.OriginAirportId;
+            existingFlight.DestinationAirportId = flightDomain.DestinationAirportId;
+            existingFlight.DefaultAircraftId = flightDomain.DefaultAircraftId;
+            existingFlight.IsActive = flightDomain.IsActive;
+
+            return existingFlight;
+        }
+    }
+}
